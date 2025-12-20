@@ -54,6 +54,41 @@
         display: flex;
         width: fit-content;
       }
+
+      /* Floating particles effect - B&W */
+      .particle {
+        position: absolute;
+        width: 4px;
+        height: 4px;
+        background: white;
+        border-radius: 50%;
+        pointer-events: none;
+      }
+
+      /* Subtle white glow for buttons */
+      .btn-glow {
+        box-shadow: 0 0 20px rgba(255, 255, 255, 0.1),
+                    0 0 40px rgba(255, 255, 255, 0.05);
+      }
+
+      .btn-glow:hover {
+        box-shadow: 0 0 30px rgba(255, 255, 255, 0.2),
+                    0 0 60px rgba(255, 255, 255, 0.1);
+      }
+
+      /* Gradient text - white to gray */
+      .gradient-text {
+        background: linear-gradient(135deg, #ffffff 0%, #a1a1aa 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      /* Outline text effect */
+      .outline-text {
+        -webkit-text-stroke: 2px white;
+        -webkit-text-fill-color: transparent;
+      }
     </style>
   </head>
   <body>

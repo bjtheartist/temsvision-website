@@ -41,7 +41,7 @@ const App: React.FC = () => {
 
       const headings = document.querySelectorAll('h2');
       headings.forEach((heading) => {
-        gsap.fromTo(heading, 
+        gsap.fromTo(heading,
           { y: 50, opacity: 0, filter: 'blur(10px)' },
           {
             y: 0,
@@ -95,9 +95,9 @@ const App: React.FC = () => {
   }, []);
 
   return (
-    <main className="relative bg-black text-white selection:bg-orange-600 selection:text-white min-h-screen overflow-x-hidden">
+    <main className="relative bg-black text-white selection:bg-white selection:text-black min-h-screen overflow-x-hidden">
       <Navbar />
-      
+
       <div className="fixed inset-0 z-[1] pointer-events-none opacity-[0.02] bg-[url('https://grainy-gradients.vercel.app/noise.svg')] bg-repeat"></div>
 
       <div className="relative z-10">
@@ -123,7 +123,7 @@ const App: React.FC = () => {
                 </p>
                 <button className="flex items-center gap-4 font-black text-sm group w-fit">
                   <span className="tracking-[0.2em] uppercase">About us</span>
-                  <span className="w-12 h-12 rounded-full bg-orange-600 flex items-center justify-center transition-transform group-hover:scale-110 group-active:scale-95">
+                  <span className="w-12 h-12 rounded-full bg-white text-black flex items-center justify-center transition-transform group-hover:scale-110 group-active:scale-95">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
                   </span>
                 </button>
@@ -152,7 +152,7 @@ const App: React.FC = () => {
                   <p className="text-zinc-500 text-lg max-w-lg leading-relaxed">Every project starts with understanding your goals. I combine design thinking with visual storytelling to create work that resonates.</p>
                </div>
                <div className="md:col-span-4 bg-zinc-900/30 border border-white/5 p-16 rounded-2xl bento-item flex flex-col justify-end min-h-[400px]">
-                  <span className="text-8xl font-black mb-4 tracking-tighter text-orange-600">50+</span>
+                  <span className="text-8xl font-black mb-4 tracking-tighter text-white">50+</span>
                   <p className="text-zinc-400 uppercase text-xs font-black tracking-[0.3em]">Projects Completed</p>
                </div>
                <div className="md:col-span-4 bg-zinc-900/30 border border-white/5 p-16 rounded-2xl bento-item flex flex-col justify-end min-h-[400px] overflow-hidden relative group">
@@ -162,12 +162,12 @@ const App: React.FC = () => {
                     <p className="text-zinc-400 uppercase text-xs font-black tracking-[0.3em]">Years Experience</p>
                   </div>
                </div>
-               <div className="md:col-span-8 bg-orange-600 p-16 rounded-2xl bento-item flex flex-col md:flex-row items-center justify-between gap-12 overflow-hidden relative">
+               <div className="md:col-span-8 bg-white p-16 rounded-2xl bento-item flex flex-col md:flex-row items-center justify-between gap-12 overflow-hidden relative">
                   <div className="relative z-10">
-                    <h3 className="text-4xl font-black mb-4 text-white uppercase tracking-tight">User-Centered Design</h3>
-                    <p className="text-white/80 text-lg max-w-md leading-relaxed">I design with purpose. Every pixel and every frame is crafted to connect with your audience and drive results.</p>
+                    <h3 className="text-4xl font-black mb-4 text-black uppercase tracking-tight">User-Centered Design</h3>
+                    <p className="text-black/70 text-lg max-w-md leading-relaxed">I design with purpose. Every pixel and every frame is crafted to connect with your audience and drive results.</p>
                   </div>
-                  <div className="hidden md:block w-64 h-64 bg-white/10 rounded-full blur-3xl absolute -right-20 -bottom-20"></div>
+                  <div className="hidden md:block w-64 h-64 bg-black/5 rounded-full blur-3xl absolute -right-20 -bottom-20"></div>
                </div>
             </div>
           </div>
