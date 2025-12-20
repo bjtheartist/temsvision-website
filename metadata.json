@@ -1,0 +1,7 @@
+{
+  "name": "BJTHEARTIST Photography",
+  "description": "A premium, editorial-style photography portfolio featuring smooth GSAP animations, a minimalist dark aesthetic, and interactive service showcases.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
