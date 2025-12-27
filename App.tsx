@@ -189,7 +189,7 @@ const AppContent: React.FC = () => {
         <div className="relative z-[15] h-0 pointer-events-none">
            <div className="absolute left-[8%] -top-28 md:-top-32 w-40 h-40 md:w-56 md:h-56 rounded-full overflow-hidden shadow-2xl parallax-img border-4 border-white/30" data-speed="-40">
               <img
-                src="/headshot.jpeg"
+                src="/headshot.png"
                 alt="Billy Ndizeye - BJ The Artist"
                 className="w-full h-full object-cover"
               />
