@@ -118,6 +118,35 @@ const AppContent: React.FC = () => {
         });
       });
 
+      // Scroll Progress Indicator - Circle moves along the line
+      const progressCircle = document.querySelector('.scroll-progress-circle');
+      const progressLine = document.querySelector('.scroll-progress-line');
+      if (progressCircle && progressLine) {
+        gsap.to(progressCircle, {
+          y: 240, // Move down the length of the line (h-64 = 256px, minus circle size)
+          ease: "none",
+          scrollTrigger: {
+            trigger: "body",
+            start: "top top",
+            end: "bottom bottom",
+            scrub: 0.5
+          }
+        });
+      }
+
+      // Project cards animation
+      gsap.from(".project-card", {
+        scrollTrigger: {
+          trigger: ".portfolio-grid",
+          start: "top 80%",
+        },
+        y: 80,
+        opacity: 0,
+        stagger: 0.12,
+        duration: 1.2,
+        ease: "expo.out"
+      });
+
       const timer = setTimeout(() => {
         ScrollTrigger.refresh();
       }, 1000);
@@ -143,23 +172,27 @@ const AppContent: React.FC = () => {
       <div className="relative z-10">
         <Hero />
 
-        {/* Floating Roadmap Element - Bridge 1 */}
+        {/* Floating Headshot - Top Left */}
         <div className="relative z-[15] h-0 pointer-events-none">
-           <div className="absolute left-[10%] -top-32 w-64 h-64 bg-black border border-white/10 rounded-2xl rotate-12 flex items-center justify-center shadow-2xl parallax-img" data-speed="-40">
-              <span className="text-[8px] font-black tracking-[0.5em] uppercase text-white -rotate-12">Perspective</span>
+           <div className="absolute left-[8%] -top-28 md:-top-32 w-40 h-40 md:w-56 md:h-56 rounded-full overflow-hidden shadow-2xl parallax-img border-4 border-white/30" data-speed="-40">
+              <img
+                src="https://picsum.photos/seed/bjportrait/400/400"
+                alt="BJ The Artist"
+                className="w-full h-full object-cover"
+              />
            </div>
         </div>
 
         {/* Marquee Ticker - Dark Section */}
-        <section className="py-12 md:py-24 border-y border-white/5 overflow-hidden bg-black text-white relative z-10">
+        <section className="py-4 md:py-8 border-y border-white/10 overflow-hidden bg-black text-white relative z-10">
           <div className="marquee-content animate-marquee">
-             <span className="text-4xl sm:text-6xl md:text-[10vw] font-black uppercase tracking-tighter opacity-20 px-4 md:px-8">DESIGN & PHOTOGRAPHY</span>
-             <span className="text-4xl sm:text-6xl md:text-[10vw] font-black uppercase tracking-tighter opacity-20 px-4 md:px-8">DESIGN & PHOTOGRAPHY</span>
+             <span className="text-4xl sm:text-6xl md:text-[10vw] font-black uppercase tracking-tighter opacity-30 px-4 md:px-8">DESIGN & PHOTOGRAPHY</span>
+             <span className="text-4xl sm:text-6xl md:text-[10vw] font-black uppercase tracking-tighter opacity-30 px-4 md:px-8">DESIGN & PHOTOGRAPHY</span>
           </div>
         </section>
 
         {/* About Staggered Layout - Dark Section */}
-        <section className="about-section py-32 md:py-48 px-6 md:px-12 bg-black border-b border-white/5 overflow-hidden relative z-10">
+        <section className="about-section py-16 md:py-24 px-6 md:px-12 bg-black border-b border-white/5 overflow-hidden relative z-10">
            {/* Roadmap Parallax Line */}
            <div className="absolute top-0 right-[10%] w-px h-[150%] bg-gradient-to-b from-white/20 via-white/5 to-transparent z-0 roadmap-line" data-speed="0.5"></div>
 
@@ -168,7 +201,7 @@ const AppContent: React.FC = () => {
                 <h2 className="text-6xl md:text-8xl lg:text-9xl font-black tracking-tighter mb-8 md:mb-10 leading-[0.85] uppercase">
                   DESIGN.<br/>CAPTURE.<br/>CREATE.
                 </h2>
-                <p className="text-zinc-400 text-lg md:text-xl mb-10 md:mb-12 max-w-md font-medium leading-relaxed">
+                <p className="text-zinc-300 text-lg md:text-xl mb-10 md:mb-12 max-w-md font-medium leading-relaxed">
                   Blending product design and photography to craft compelling visual experiences. From intuitive interfaces to striking imagery.
                 </p>
                 <button className="flex items-center gap-4 font-black text-sm group w-fit">
@@ -215,25 +248,34 @@ const AppContent: React.FC = () => {
 
         <Services />
 
-        {/* Floating Roadmap Element - Bridge 3 */}
-        <div className="relative z-[15] h-0 pointer-events-none">
-           <div className="absolute left-[20%] -top-10 w-px h-64 bg-black parallax-img" data-speed="20"></div>
-           <div className="absolute left-[20%] top-40 w-4 h-4 rounded-full bg-black parallax-img" data-speed="25"></div>
+        {/* Floating Roadmap Element - Bridge 3 - Scroll Progress Indicator */}
+        <div className="scroll-progress-container relative z-[15] h-0 pointer-events-none">
+           <div className="scroll-progress-line absolute left-[20%] -top-10 w-px h-64 bg-black"></div>
+           <div className="scroll-progress-circle absolute left-[20%] -top-10 w-4 h-4 rounded-full bg-black -ml-[7px]"></div>
         </div>
 
         {/* Bento Grid Stats - Light Section */}
-        <section className="py-32 md:py-48 px-6 md:px-12 bg-white text-black relative overflow-hidden z-10">
+        <section className="py-20 md:py-32 px-6 md:px-12 bg-white text-black relative overflow-hidden z-10">
            {/* Roadmap Parallax Line */}
            <div className="absolute top-[-20%] left-[15%] w-px h-[140%] bg-gradient-to-b from-black/20 via-black/5 to-transparent z-0 roadmap-line" data-speed="0.8"></div>
 
           <div className="max-w-7xl mx-auto relative z-10">
+            {/* Section Header */}
+            <div className="mb-12 md:mb-16">
+              <div className="flex items-center gap-4 text-black mb-4">
+                <span className="w-12 h-px bg-black"></span>
+                <span className="text-[10px] font-black tracking-[0.4em] uppercase">Why Work With Me</span>
+              </div>
+              <h2 className="text-5xl md:text-7xl font-black uppercase tracking-tighter leading-none">The<br/>Approach</h2>
+            </div>
+
             <div className="grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-8 bento-grid">
                <div className="md:col-span-8 bg-zinc-100 border border-black/5 p-10 md:p-16 rounded-2xl bento-item shadow-sm">
                   <div className="mb-16 md:mb-24 opacity-30">
                     <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="black" strokeWidth="1.5"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="7.5 4.21 12 6.81 16.5 4.21"/><polyline points="7.5 19.79 7.5 14.6 3 12"/><polyline points="21 12 16.5 14.6 16.5 19.79"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
                   </div>
                   <h3 className="text-4xl md:text-5xl font-black mb-6 tracking-tight uppercase">Creative Vision</h3>
-                  <p className="text-zinc-600 text-base md:text-lg max-w-lg leading-relaxed">Every project starts with understanding your goals. I combine design thinking with visual storytelling to create work that resonates.</p>
+                  <p className="text-zinc-700 text-base md:text-lg max-w-lg leading-relaxed">Every project starts with understanding your goals. I combine design thinking with visual storytelling to create work that resonates.</p>
                </div>
                <div className="md:col-span-4 bg-zinc-100 border border-black/5 p-10 md:p-16 rounded-2xl bento-item flex flex-col justify-end min-h-[300px] md:min-h-[400px] shadow-sm">
                   <span className="text-7xl md:text-8xl font-black mb-4 tracking-tighter text-black">50+</span>
@@ -254,7 +296,7 @@ const AppContent: React.FC = () => {
                <div className="md:col-span-8 bg-black p-10 md:p-16 rounded-2xl bento-item flex flex-col md:flex-row items-start md:items-center justify-between gap-8 md:gap-12 overflow-hidden relative shadow-2xl min-h-[300px]">
                   <div className="relative z-10">
                     <h3 className="text-3xl md:text-4xl font-black mb-4 text-white uppercase tracking-tight">User-Centered Design</h3>
-                    <p className="text-white/70 text-base md:text-lg max-w-md leading-relaxed">I design with purpose. Every pixel and every frame is crafted to connect with your audience and drive results.</p>
+                    <p className="text-white/80 text-base md:text-lg max-w-md leading-relaxed">I design with purpose. Every pixel and every frame is crafted to connect with your audience and drive results.</p>
                   </div>
                   <div className="hidden md:block w-64 h-64 bg-white/5 rounded-full blur-3xl absolute -right-20 -bottom-20"></div>
                </div>

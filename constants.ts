@@ -22,6 +22,41 @@ export const PROJECTS: Project[] = [
     category: 'PRODUCT DESIGN',
     imageUrl: 'https://picsum.photos/seed/mobile/800/1200',
     description: 'End-to-end redesign improving user engagement by 40% through intuitive UX.'
+  },
+  {
+    id: '4',
+    title: 'E-Commerce Platform',
+    category: 'WEB DESIGN',
+    imageUrl: 'https://picsum.photos/seed/ecommerce/800/1200',
+    description: 'Modern e-commerce experience with seamless checkout and product discovery.'
+  },
+  {
+    id: '5',
+    title: 'Urban Architecture',
+    category: 'PHOTOGRAPHY',
+    imageUrl: 'https://picsum.photos/seed/urban/800/1200',
+    description: 'Capturing the raw beauty of urban landscapes and architectural details.'
+  },
+  {
+    id: '6',
+    title: 'SaaS Dashboard',
+    category: 'PRODUCT DESIGN',
+    imageUrl: 'https://picsum.photos/seed/dashboard/800/1200',
+    description: 'Data-driven dashboard design with intuitive analytics and reporting.'
+  },
+  {
+    id: '7',
+    title: 'Lifestyle Campaign',
+    category: 'BRAND IDENTITY',
+    imageUrl: 'https://picsum.photos/seed/lifestyle/800/1200',
+    description: 'Full brand campaign including photography, copy, and visual direction.'
+  },
+  {
+    id: '8',
+    title: 'Portrait Series',
+    category: 'PHOTOGRAPHY',
+    imageUrl: 'https://picsum.photos/seed/portrait/800/1200',
+    description: 'Intimate portrait photography capturing authentic human moments.'
   }
 ];
 
