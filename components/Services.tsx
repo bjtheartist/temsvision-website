@@ -46,28 +46,52 @@ const Services: React.FC = () => {
     const ScrollTrigger = window.ScrollTrigger;
     
     if (gsap && ScrollTrigger) {
-      gsap.fromTo('.services-header',
-        { opacity: 0, y: 40 },
-        {
+      // Split and animate header text
+      const headerTitle = document.querySelector('.services-header h2');
+      if (headerTitle) {
+        const text = headerTitle.textContent || '';
+        headerTitle.innerHTML = text.split('').map(char => 
+          `<span class="char inline-block" style="opacity: 0; transform: translateY(60px) rotateX(45deg);">${char === ' ' ? '&nbsp;' : char}</span>`
+        ).join('');
+        
+        gsap.to('.services-header .char', {
           opacity: 1,
           y: 0,
-          duration: 0.8,
-          ease: 'power2.out',
+          rotateX: 0,
+          duration: 0.6,
+          stagger: 0.03,
+          ease: 'power3.out',
           scrollTrigger: {
             trigger: '#services',
+            start: 'top 80%',
+          }
+        });
+      }
+
+      // Animate service items with line drawing effect
+      gsap.fromTo('.service-item',
+        { opacity: 0, x: -30 },
+        {
+          opacity: 1,
+          x: 0,
+          duration: 0.8,
+          stagger: 0.15,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: '.services-list',
             start: 'top 80%',
           }
         }
       );
 
-      gsap.fromTo('.service-item',
-        { opacity: 0, y: 30 },
+      // Animate the border lines
+      gsap.fromTo('.service-line',
+        { scaleX: 0, transformOrigin: 'left center' },
         {
-          opacity: 1,
-          y: 0,
-          duration: 0.6,
+          scaleX: 1,
+          duration: 1,
           stagger: 0.1,
-          ease: 'power2.out',
+          ease: 'power3.inOut',
           scrollTrigger: {
             trigger: '.services-list',
             start: 'top 80%',
@@ -83,12 +107,12 @@ const Services: React.FC = () => {
     }`}>
       <div className="px-6 md:px-12 lg:px-24 max-w-[1800px] mx-auto">
         {/* Header */}
-        <div className="services-header mb-16 md:mb-20">
+        <div className="services-header mb-16 md:mb-20" style={{ perspective: '1000px' }}>
           <h2 
             className={`text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight ${
               theme === 'dark' ? 'text-white' : 'text-black'
             }`}
-            style={{ fontFamily: "'Syne', sans-serif" }}
+            style={{ fontFamily: "'Syne', sans-serif", transformStyle: 'preserve-3d' }}
           >
             Services
           </h2>
@@ -99,16 +123,22 @@ const Services: React.FC = () => {
           {SERVICES_DATA.map((service) => (
             <div
               key={service.id}
-              className={`service-item border-t transition-colors duration-300 ${
-                theme === 'dark' ? 'border-white/10' : 'border-black/10'
-              }`}
+              data-cursor="link"
+              className="service-item group cursor-pointer"
               onMouseEnter={() => setActiveService(service.id)}
             >
+              {/* Animated border */}
+              <div className={`service-line h-px ${
+                theme === 'dark' ? 'bg-white/10' : 'bg-black/10'
+              }`} />
+              
               <div className="py-8 md:py-10 grid grid-cols-12 gap-4 items-start">
                 {/* Number */}
                 <div className="col-span-2 md:col-span-1">
-                  <span className={`text-[11px] font-medium tracking-wider ${
-                    theme === 'dark' ? 'text-zinc-600' : 'text-zinc-400'
+                  <span className={`text-[11px] font-medium tracking-wider transition-all duration-500 ${
+                    activeService === service.id
+                      ? theme === 'dark' ? 'text-white' : 'text-black'
+                      : theme === 'dark' ? 'text-zinc-600' : 'text-zinc-400'
                   }`}>
                     {service.number}
                   </span>
@@ -117,9 +147,9 @@ const Services: React.FC = () => {
                 {/* Title */}
                 <div className="col-span-10 md:col-span-4">
                   <h3 
-                    className={`text-xl md:text-2xl font-bold tracking-tight transition-colors duration-300 ${
+                    className={`text-xl md:text-2xl font-bold tracking-tight transition-all duration-500 ${
                       activeService === service.id
-                        ? theme === 'dark' ? 'text-white' : 'text-black'
+                        ? theme === 'dark' ? 'text-white translate-x-2' : 'text-black translate-x-2'
                         : theme === 'dark' ? 'text-zinc-500' : 'text-zinc-400'
                     }`}
                     style={{ fontFamily: "'Syne', sans-serif" }}
@@ -130,21 +160,38 @@ const Services: React.FC = () => {
 
                 {/* Description */}
                 <div className="col-span-12 md:col-span-7 md:pl-8">
-                  <p className={`text-sm md:text-base leading-relaxed max-w-lg transition-colors duration-300 ${
+                  <p className={`text-sm md:text-base leading-relaxed max-w-lg transition-all duration-500 ${
                     activeService === service.id
-                      ? theme === 'dark' ? 'text-zinc-400' : 'text-zinc-600'
-                      : theme === 'dark' ? 'text-zinc-600' : 'text-zinc-400'
+                      ? theme === 'dark' ? 'text-zinc-400 opacity-100' : 'text-zinc-600 opacity-100'
+                      : theme === 'dark' ? 'text-zinc-600 opacity-60' : 'text-zinc-400 opacity-60'
                   }`}>
                     {service.description}
                   </p>
+                </div>
+
+                {/* Arrow indicator */}
+                <div className={`hidden md:flex col-span-12 md:col-span-1 justify-end items-center transition-all duration-300 ${
+                  activeService === service.id ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-4'
+                }`}>
+                  <svg 
+                    width="20" 
+                    height="20" 
+                    viewBox="0 0 24 24" 
+                    fill="none" 
+                    stroke="currentColor" 
+                    strokeWidth="2"
+                    className={theme === 'dark' ? 'text-white' : 'text-black'}
+                  >
+                    <path d="M7 17L17 7M17 7H7M17 7V17"/>
+                  </svg>
                 </div>
               </div>
             </div>
           ))}
           
           {/* Bottom border */}
-          <div className={`border-t ${
-            theme === 'dark' ? 'border-white/10' : 'border-black/10'
+          <div className={`service-line h-px ${
+            theme === 'dark' ? 'bg-white/10' : 'bg-black/10'
           }`} />
         </div>
       </div>

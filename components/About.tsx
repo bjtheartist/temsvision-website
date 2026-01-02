@@ -11,16 +11,72 @@ const About: React.FC = () => {
     const ScrollTrigger = window.ScrollTrigger;
     
     if (gsap && ScrollTrigger) {
-      gsap.fromTo('.about-content',
-        { opacity: 0, y: 50 },
+      // Animate the label
+      gsap.fromTo('.about-label',
+        { opacity: 0, x: -20 },
         {
           opacity: 1,
-          y: 0,
-          duration: 1,
+          x: 0,
+          duration: 0.8,
           ease: 'power2.out',
           scrollTrigger: {
             trigger: '#about',
-            start: 'top 70%',
+            start: 'top 75%',
+          }
+        }
+      );
+
+      // Split and animate the main headline
+      const headline = document.querySelector('.about-headline');
+      if (headline) {
+        const words = headline.textContent?.split(' ') || [];
+        headline.innerHTML = words.map(word => 
+          `<span class="word-wrap inline-block overflow-hidden mr-[0.3em]"><span class="word inline-block" style="transform: translateY(100%); opacity: 0;">${word}</span></span>`
+        ).join('');
+        
+        gsap.to('.about-headline .word', {
+          y: '0%',
+          opacity: 1,
+          duration: 0.8,
+          stagger: 0.05,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: '.about-headline',
+            start: 'top 80%',
+          }
+        });
+      }
+
+      // Animate paragraphs with stagger
+      gsap.fromTo('.about-paragraph',
+        { opacity: 0, y: 40, filter: 'blur(5px)' },
+        {
+          opacity: 1,
+          y: 0,
+          filter: 'blur(0px)',
+          duration: 1,
+          stagger: 0.2,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: '.about-paragraphs',
+            start: 'top 80%',
+          }
+        }
+      );
+
+      // Animate background tags
+      gsap.fromTo('.about-tag',
+        { opacity: 0, scale: 0.8, y: 20 },
+        {
+          opacity: 1,
+          scale: 1,
+          y: 0,
+          duration: 0.6,
+          stagger: 0.1,
+          ease: 'back.out(1.7)',
+          scrollTrigger: {
+            trigger: '.about-tags',
+            start: 'top 85%',
           }
         }
       );
@@ -32,10 +88,10 @@ const About: React.FC = () => {
       theme === 'dark' ? 'bg-black' : 'bg-white'
     }`}>
       <div className="px-6 md:px-12 lg:px-24 max-w-[1800px] mx-auto">
-        <div className="about-content grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20">
           {/* Left Column - Label */}
           <div className="lg:col-span-3">
-            <p className={`text-[10px] font-medium tracking-[0.3em] uppercase ${
+            <p className={`about-label text-[10px] font-medium tracking-[0.3em] uppercase ${
               theme === 'dark' ? 'text-zinc-500' : 'text-zinc-400'
             }`}>
               About
@@ -46,51 +102,53 @@ const About: React.FC = () => {
           <div className="lg:col-span-9">
             <div className="max-w-3xl">
               <p 
-                className={`text-2xl md:text-3xl lg:text-4xl font-medium leading-[1.4] tracking-tight mb-12 ${
+                className={`about-headline text-2xl md:text-3xl lg:text-4xl font-medium leading-[1.4] tracking-tight mb-12 ${
                   theme === 'dark' ? 'text-white' : 'text-black'
                 }`}
               >
                 I'm Billy Ndizeye—a builder based in Chicago who bridges the worlds of economic development, technology, and design.
               </p>
 
-              <p className={`text-base md:text-lg leading-relaxed mb-8 ${
-                theme === 'dark' ? 'text-zinc-400' : 'text-zinc-600'
-              }`}>
-                My background is unconventional. I came from economic development, worked at a tech innovation hub helping founders build their visions, and somewhere along the way, I taught myself to build. It started with no-code platforms like Bolt and Lovable—tools that let me bring ideas to life without waiting for permission.
-              </p>
+              <div className="about-paragraphs">
+                <p className={`about-paragraph text-base md:text-lg leading-relaxed mb-8 ${
+                  theme === 'dark' ? 'text-zinc-400' : 'text-zinc-600'
+                }`}>
+                  My background is unconventional. I came from economic development, worked at a tech innovation hub helping founders build their visions, and somewhere along the way, I taught myself to build. It started with no-code platforms like Bolt and Lovable—tools that let me bring ideas to life without waiting for permission.
+                </p>
 
-              <p className={`text-base md:text-lg leading-relaxed mb-8 ${
-                theme === 'dark' ? 'text-zinc-400' : 'text-zinc-600'
-              }`}>
-                From there, I dove deeper: React, Next.js, TypeScript, Tailwind CSS. I've built over 30 projects learning by doing—each one teaching me something new about how to solve real problems for real people.
-              </p>
+                <p className={`about-paragraph text-base md:text-lg leading-relaxed mb-8 ${
+                  theme === 'dark' ? 'text-zinc-400' : 'text-zinc-600'
+                }`}>
+                  From there, I dove deeper: React, Next.js, TypeScript, Tailwind CSS. I've built over 30 projects learning by doing—each one teaching me something new about how to solve real problems for real people.
+                </p>
 
-              <p className={`text-base md:text-lg leading-relaxed mb-8 ${
-                theme === 'dark' ? 'text-zinc-400' : 'text-zinc-600'
-              }`}>
-                I've also spent years behind a camera, which shaped how I see composition, light, and storytelling. Photography taught me that the best work comes from paying attention to details others overlook.
-              </p>
+                <p className={`about-paragraph text-base md:text-lg leading-relaxed mb-8 ${
+                  theme === 'dark' ? 'text-zinc-400' : 'text-zinc-600'
+                }`}>
+                  I've also spent years behind a camera, which shaped how I see composition, light, and storytelling. Photography taught me that the best work comes from paying attention to details others overlook.
+                </p>
 
-              <p className={`text-base md:text-lg leading-relaxed mb-12 ${
-                theme === 'dark' ? 'text-zinc-400' : 'text-zinc-600'
-              }`}>
-                I'm drawn to data—not just collecting it, but understanding what it reveals about people and systems. Whether I'm designing an interface or analyzing community impact, I believe the best solutions come from listening to what the numbers and the people are telling us.
-              </p>
+                <p className={`about-paragraph text-base md:text-lg leading-relaxed mb-12 ${
+                  theme === 'dark' ? 'text-zinc-400' : 'text-zinc-600'
+                }`}>
+                  I'm drawn to data—not just collecting it, but understanding what it reveals about people and systems. Whether I'm designing an interface or analyzing community impact, I believe the best solutions come from listening to what the numbers and the people are telling us.
+                </p>
+              </div>
 
               {/* Journey highlights instead of fake stats */}
               <div className={`pt-12 border-t ${
                 theme === 'dark' ? 'border-white/10' : 'border-black/10'
               }`}>
-                <p className={`text-[10px] font-medium tracking-[0.3em] uppercase mb-6 ${
+                <p className={`about-label text-[10px] font-medium tracking-[0.3em] uppercase mb-6 ${
                   theme === 'dark' ? 'text-zinc-500' : 'text-zinc-400'
                 }`}>
                   Background
                 </p>
-                <div className="flex flex-wrap gap-3">
+                <div className="about-tags flex flex-wrap gap-3">
                   {['Economic Development', 'Tech Innovation Hub', 'No-Code → Code', 'Photography', 'Data & Analytics'].map((item) => (
                     <span 
                       key={item}
-                      className={`px-4 py-2 text-sm rounded-full ${
+                      className={`about-tag px-4 py-2 text-sm rounded-full ${
                         theme === 'dark' 
                           ? 'bg-white/5 text-zinc-300 border border-white/10' 
                           : 'bg-black/5 text-zinc-700 border border-black/10'

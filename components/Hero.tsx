@@ -13,37 +13,78 @@ const Hero: React.FC = () => {
     const ScrollTrigger = window.ScrollTrigger;
     if (!gsap) return;
 
-    // Entrance Animation - Elegant staggered reveal
-    const tl = gsap.timeline({ delay: 0.2 });
+    // Split text into characters for animation
+    const splitTextIntoChars = (element: Element) => {
+      const text = element.textContent || '';
+      element.innerHTML = text.split('').map(char => 
+        `<span class="char inline-block" style="opacity: 0; transform: translateY(100px) rotateX(90deg);">${char === ' ' ? '&nbsp;' : char}</span>`
+      ).join('');
+      return element.querySelectorAll('.char');
+    };
+
+    // Animate title characters
+    const titleLines = document.querySelectorAll('.hero-title-line');
+    const allChars: Element[] = [];
     
+    titleLines.forEach(line => {
+      const chars = splitTextIntoChars(line);
+      chars.forEach(char => allChars.push(char));
+    });
+
+    // Master timeline
+    const tl = gsap.timeline({ delay: 0.3 });
+    
+    // Decorative line
     tl.fromTo('.hero-line',
       { scaleX: 0 },
-      { scaleX: 1, duration: 1, ease: 'power3.inOut' }
-    )
-    .fromTo('.hero-title-line',
-      { y: '100%', opacity: 0 },
-      { y: '0%', opacity: 1, duration: 1.2, ease: 'power3.out', stagger: 0.15 },
-      '-=0.6'
-    )
-    .fromTo('.hero-tagline',
-      { opacity: 0, y: 20 },
-      { opacity: 1, y: 0, duration: 0.8, ease: 'power2.out' },
+      { scaleX: 1, duration: 1.2, ease: 'power3.inOut' }
+    );
+
+    // Character-by-character reveal with rotation
+    tl.to(allChars, {
+      opacity: 1,
+      y: 0,
+      rotateX: 0,
+      duration: 0.8,
+      stagger: 0.025,
+      ease: 'power3.out',
+    }, '-=0.8');
+
+    // Tagline words
+    const tagline = document.querySelector('.hero-tagline');
+    if (tagline) {
+      const words = tagline.textContent?.split(' ') || [];
+      tagline.innerHTML = words.map(word => 
+        `<span class="word-wrap inline-block overflow-hidden mr-[0.25em]"><span class="word inline-block" style="transform: translateY(100%);">${word}</span></span>`
+      ).join('');
+      
+      tl.to('.hero-tagline .word', {
+        y: '0%',
+        duration: 0.8,
+        stagger: 0.04,
+        ease: 'power3.out',
+      }, '-=0.3');
+    }
+
+    // Vision with blur effect
+    tl.fromTo('.hero-vision',
+      { opacity: 0, y: 30, filter: 'blur(10px)' },
+      { opacity: 1, y: 0, filter: 'blur(0px)', duration: 1, ease: 'power2.out' },
+      '-=0.5'
+    );
+
+    // CTAs slide in
+    tl.fromTo('.hero-cta',
+      { opacity: 0, x: -30 },
+      { opacity: 1, x: 0, duration: 0.6, ease: 'power2.out', stagger: 0.1 },
       '-=0.4'
-    )
-    .fromTo('.hero-vision',
-      { opacity: 0, y: 20 },
-      { opacity: 1, y: 0, duration: 0.8, ease: 'power2.out' },
-      '-=0.4'
-    )
-    .fromTo('.hero-cta',
-      { opacity: 0, y: 20 },
+    );
+
+    // Meta info
+    tl.fromTo('.hero-meta span',
+      { opacity: 0, y: 10 },
       { opacity: 1, y: 0, duration: 0.6, ease: 'power2.out', stagger: 0.1 },
       '-=0.3'
-    )
-    .fromTo('.hero-meta',
-      { opacity: 0 },
-      { opacity: 1, duration: 0.8, ease: 'power2.out' },
-      '-=0.2'
     );
 
     // Scroll-triggered parallax
@@ -55,8 +96,20 @@ const Hero: React.FC = () => {
           end: "bottom top",
           scrub: 1.5,
         },
-        y: -80,
+        y: -100,
         opacity: 0,
+      });
+
+      // Parallax on background
+      gsap.to('.hero-bg', {
+        scrollTrigger: {
+          trigger: heroRef.current,
+          start: "top top",
+          end: "bottom top",
+          scrub: true,
+        },
+        y: 150,
+        scale: 1.1,
       });
     }
   }, []);
@@ -82,7 +135,7 @@ const Hero: React.FC = () => {
     >
       {/* Chicago Background Image */}
       <div 
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+        className="hero-bg absolute inset-0 bg-cover bg-center bg-no-repeat"
         style={{ backgroundImage: 'url(/chicago-skyline.jpg)' }}
       />
       
@@ -108,13 +161,13 @@ const Hero: React.FC = () => {
         }`} />
 
         {/* Main Headline - Just the name, no label */}
-        <div className="mb-8 md:mb-10">
+        <div className="mb-8 md:mb-10" style={{ perspective: '1000px' }}>
           <div className="overflow-hidden mb-2">
             <h1 
               className={`hero-title-line text-[12vw] md:text-[9vw] lg:text-[7vw] font-black leading-[0.9] tracking-[-0.03em] ${
                 theme === 'dark' ? 'text-white' : 'text-black'
               }`}
-              style={{ fontFamily: "'Syne', sans-serif" }}
+              style={{ fontFamily: "'Syne', sans-serif", transformStyle: 'preserve-3d' }}
             >
               Billy
             </h1>
@@ -124,7 +177,7 @@ const Hero: React.FC = () => {
               className={`hero-title-line text-[12vw] md:text-[9vw] lg:text-[7vw] font-black leading-[0.9] tracking-[-0.03em] ${
                 theme === 'dark' ? 'text-white' : 'text-black'
               }`}
-              style={{ fontFamily: "'Syne', sans-serif" }}
+              style={{ fontFamily: "'Syne', sans-serif", transformStyle: 'preserve-3d' }}
             >
               Ndizeye
             </h1>
@@ -154,6 +207,8 @@ const Hero: React.FC = () => {
         <div className="flex flex-col sm:flex-row gap-4 sm:gap-6">
           <button
             onClick={scrollToWork}
+            data-magnetic
+            data-cursor="link"
             className={`hero-cta group inline-flex items-center gap-3 text-sm font-medium tracking-wide transition-all duration-300 ${
               theme === 'dark'
                 ? 'text-white hover:text-zinc-300'
@@ -167,6 +222,8 @@ const Hero: React.FC = () => {
           </button>
           <button
             onClick={scrollToContact}
+            data-magnetic
+            data-cursor="link"
             className={`hero-cta group inline-flex items-center gap-3 text-sm font-medium tracking-wide transition-all duration-300 ${
               theme === 'dark'
                 ? 'text-zinc-400 hover:text-white'

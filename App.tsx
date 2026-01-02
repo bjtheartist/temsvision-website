@@ -9,6 +9,7 @@ import About from './components/About';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
 import ThemeToggle from './components/ThemeToggle';
+import MagneticCursor from './components/MagneticCursor';
 
 const AppContent: React.FC = () => {
   const { theme } = useTheme();
@@ -86,6 +87,9 @@ const AppContent: React.FC = () => {
   return (
     <>
       {isLoading && <Preloader onComplete={handlePreloaderComplete} />}
+      
+      {/* Custom Magnetic Cursor - only on desktop */}
+      {showContent && <MagneticCursor />}
       
       <main className={`relative min-h-screen overflow-x-hidden transition-colors duration-700 ${
         theme === 'dark'
