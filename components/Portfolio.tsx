@@ -52,7 +52,7 @@ const Portfolio: React.FC = () => {
     }
   }, [filter]);
 
-  // Close modal on escape key
+  // Close modal on escape key and prevent body scroll when modal is open
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === 'Escape') setSelectedProject(null);
@@ -60,6 +60,18 @@ const Portfolio: React.FC = () => {
     window.addEventListener('keydown', handleEscape);
     return () => window.removeEventListener('keydown', handleEscape);
   }, []);
+
+  // Prevent body scroll when modal is open
+  useEffect(() => {
+    if (selectedProject) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [selectedProject]);
 
   return (
     <>
@@ -196,11 +208,16 @@ const Portfolio: React.FC = () => {
           
           {/* Modal Content */}
           <div 
-            className={`relative w-full max-w-5xl max-h-[90vh] overflow-y-auto rounded-lg ${
+            className={`relative w-full max-w-5xl max-h-[90vh] rounded-lg ${
               theme === 'dark' ? 'bg-zinc-900' : 'bg-white'
-            } shadow-2xl`}
+            } shadow-2xl overflow-hidden`}
             onClick={(e) => e.stopPropagation()}
           >
+            {/* Scrollable inner container */}
+            <div 
+              className="overflow-y-auto max-h-[90vh] overscroll-contain"
+              style={{ WebkitOverflowScrolling: 'touch' }}
+            >
             {/* Close button */}
             <button
               onClick={() => setSelectedProject(null)}
@@ -342,6 +359,7 @@ const Portfolio: React.FC = () => {
                 )}
               </div>
             </div>
+            </div>{/* End scrollable inner container */}
           </div>
         </div>
       )}

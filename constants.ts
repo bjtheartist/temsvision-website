@@ -12,7 +12,7 @@ export const PROJECTS: Project[] = [
     solution: 'Built a neighborhood intelligence platform covering all 77 Chicago community areas with 112K+ data points. Users can explore interactive maps, generate PDF reports, and extract strategic insights—turning raw civic data into funding-ready documentation.',
     tools: ['React', 'TypeScript', 'Tailwind CSS', 'Data Visualization', 'PDF Generation'],
     githubUrl: 'https://github.com/Dunosis/CommuniData',
-    year: '2024'
+    year: '2025'
   },
   {
     id: '1',
@@ -25,7 +25,7 @@ export const PROJECTS: Project[] = [
     solution: 'Built a centralized hub that aggregates Chicago startup resources, showcases success stories from real exits, and provides actionable blueprints for founders at every stage.',
     tools: ['React', 'TypeScript', 'Tailwind CSS', 'Base44'],
     githubUrl: 'https://github.com/bjtheartist/chistartuphub',
-    year: '2024'
+    year: '2025'
   },
   {
     id: '2',
@@ -50,7 +50,7 @@ export const PROJECTS: Project[] = [
     problem: 'Home cooks struggle to organize recipes from different sources, plan weekly meals, and generate shopping lists. Existing apps are either too complex or lack key features.',
     solution: 'Created an intuitive recipe vault with smart search by ingredients/cuisine/dietary preferences, a drag-and-drop meal planning calendar, custom collections, and personalized recommendations based on cooking history.',
     tools: ['React', 'TypeScript', 'Tailwind CSS', 'shadcn/ui'],
-    year: '2024'
+    year: '2025'
   },
   {
     id: '4',
@@ -63,7 +63,7 @@ export const PROJECTS: Project[] = [
     solution: 'Built a clean, appetizing website that showcases the menu with beautiful food photography and integrates directly with WhatsApp for ordering—meeting customers where they already are.',
     tools: ['React', 'TypeScript', 'Tailwind CSS', 'Lovable', 'WhatsApp API'],
     githubUrl: 'https://github.com/bjtheartist/fontis-food',
-    year: '2024'
+    year: '2025'
   },
   {
     id: '5',
@@ -75,7 +75,7 @@ export const PROJECTS: Project[] = [
     problem: 'A boutique tax preparation practice needed to differentiate from big-box tax services and communicate their personalized, human-centered approach to financial guidance.',
     solution: 'Designed a sophisticated, trust-building website that emphasizes the boutique nature of the practice, highlights their dedication to understanding each client\'s unique story, and makes booking consultations frictionless.',
     tools: ['React', 'TypeScript', 'Tailwind CSS'],
-    year: '2024'
+    year: '2025'
   },
   {
     id: '6',
@@ -87,7 +87,7 @@ export const PROJECTS: Project[] = [
     problem: 'Families searching for adult foster care face an emotional, high-stakes decision. Most care facility websites feel clinical and impersonal, failing to convey the warmth and compassion families are looking for.',
     solution: 'Created a warm, welcoming website that leads with compassion and respect. The design uses soft colors, genuine photography, and clear information architecture to help families feel confident in their choice.',
     tools: ['React', 'TypeScript', 'Tailwind CSS'],
-    year: '2024'
+    year: '2025'
   }
 ];
 
