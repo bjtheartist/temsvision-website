@@ -1,10 +1,18 @@
-
 import React, { useEffect, useRef, useState } from 'react';
 import { PROJECTS } from '../constants';
+import { useTheme } from '../context/ThemeContext';
 
 const Portfolio: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [flippedCards, setFlippedCards] = useState<Set<string>>(new Set());
+  const [filter, setFilter] = useState<string>('ALL');
+  const { theme } = useTheme();
+
+  const categories = ['ALL', ...new Set(PROJECTS.map(p => p.category))];
+
+  const filteredProjects = filter === 'ALL' 
+    ? PROJECTS 
+    : PROJECTS.filter(p => p.category === filter);
 
   const toggleFlip = (id: string) => {
     setFlippedCards(prev => {
@@ -25,10 +33,9 @@ const Portfolio: React.FC = () => {
     const ScrollTrigger = window.ScrollTrigger;
     if (!gsap || !ScrollTrigger) return;
 
-    // Make sure all projects are visible first
+    // Reset and animate projects
     gsap.set('.bento-project', { opacity: 1, y: 0 });
 
-    // Staggered entrance animation for bento items
     gsap.fromTo('.bento-project',
       { y: 60, opacity: 0 },
       {
@@ -38,35 +45,33 @@ const Portfolio: React.FC = () => {
         },
         y: 0,
         opacity: 1,
-        stagger: 0.08,
+        stagger: 0.1,
+        duration: 0.8,
+        ease: 'power3.out'
+      }
+    );
+
+    // Animate section header
+    gsap.fromTo('.portfolio-header',
+      { y: 40, opacity: 0 },
+      {
+        scrollTrigger: {
+          trigger: '#portfolio',
+          start: 'top 80%',
+        },
+        y: 0,
+        opacity: 1,
         duration: 1,
         ease: 'power3.out'
       }
     );
 
-    // Parallax effect on project images
-    const projectImages = document.querySelectorAll('.project-image');
-    projectImages.forEach((img: any, index) => {
-      const speed = (index % 2 === 0) ? 20 : -20;
-      gsap.to(img, {
-        y: speed,
-        ease: "none",
-        scrollTrigger: {
-          trigger: img,
-          start: "top bottom",
-          end: "bottom top",
-          scrub: true
-        }
-      });
-    });
-
-    // Refresh ScrollTrigger after a short delay
     const timer = setTimeout(() => {
       ScrollTrigger.refresh();
     }, 500);
 
     return () => clearTimeout(timer);
-  }, []);
+  }, [filter]);
 
   // Define bento grid layout sizes
   const getBentoClass = (index: number) => {
@@ -84,37 +89,56 @@ const Portfolio: React.FC = () => {
   };
 
   return (
-    <section ref={containerRef} className="py-20 md:py-32 px-6 md:px-12 bg-white text-black relative overflow-hidden">
-      {/* Roadmap Parallax Line */}
-      <div className="absolute top-0 left-[50%] w-px h-[120%] bg-gradient-to-b from-black/10 via-black/5 to-transparent z-0 roadmap-line" data-speed="1.2"></div>
-
+    <section 
+      id="portfolio" 
+      ref={containerRef} 
+      className={`py-24 md:py-32 px-6 md:px-12 relative overflow-hidden transition-colors duration-500 ${
+        theme === 'dark' ? 'bg-zinc-950 text-white' : 'bg-zinc-50 text-black'
+      }`}
+    >
       <div className="max-w-7xl mx-auto relative z-10">
         {/* Header */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 md:mb-20 gap-8">
+        <div className="portfolio-header flex flex-col md:flex-row justify-between items-start md:items-end mb-12 md:mb-16 gap-8">
           <div className="space-y-4">
-             <div className="flex items-center gap-4 text-black">
-               <span className="w-12 h-px bg-black"></span>
-               <span className="text-[10px] font-black tracking-[0.4em] uppercase">The Portfolio</span>
-             </div>
-             <h2 className="text-5xl md:text-7xl lg:text-8xl font-black uppercase tracking-tighter leading-none">Selected<br/>Work</h2>
+            <div className={`flex items-center gap-4 ${theme === 'dark' ? 'text-white' : 'text-black'}`}>
+              <span className={`w-12 h-px ${theme === 'dark' ? 'bg-white/30' : 'bg-black/30'}`}></span>
+              <span className="text-[10px] font-bold tracking-[0.4em] uppercase opacity-60">Selected Work</span>
+            </div>
+            <h2 className="text-5xl md:text-6xl lg:text-7xl font-black uppercase tracking-tighter leading-[0.9]">
+              Featured<br/>Projects
+            </h2>
           </div>
           <div className="max-w-sm md:text-right">
-            <p className="text-zinc-600 text-base font-medium leading-relaxed">
-              A curated collection of projects spanning product design, photography, and brand identity.
+            <p className={`text-base font-medium leading-relaxed ${theme === 'dark' ? 'text-zinc-400' : 'text-zinc-600'}`}>
+              A curated collection of product design, web design, and brand identity projects.
             </p>
-            <p className="text-zinc-400 text-sm mt-2 italic">Click cards to flip and see details</p>
-            <button className="mt-6 flex items-center gap-3 text-xs font-black tracking-widest md:ml-auto group uppercase">
-              VIEW ALL
-              <span className="w-10 h-10 rounded-full bg-black text-white flex items-center justify-center transition-all group-hover:bg-zinc-800 group-hover:scale-110">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-              </span>
-            </button>
           </div>
         </div>
 
+        {/* Filter Tabs */}
+        <div className="flex flex-wrap gap-2 mb-10">
+          {categories.map((cat) => (
+            <button
+              key={cat}
+              onClick={() => setFilter(cat)}
+              className={`px-4 py-2 text-[10px] font-bold tracking-[0.15em] uppercase rounded-full transition-all duration-300 ${
+                filter === cat
+                  ? theme === 'dark'
+                    ? 'bg-white text-black'
+                    : 'bg-black text-white'
+                  : theme === 'dark'
+                    ? 'bg-white/5 text-white/60 hover:bg-white/10 hover:text-white'
+                    : 'bg-black/5 text-black/60 hover:bg-black/10 hover:text-black'
+              }`}
+            >
+              {cat}
+            </button>
+          ))}
+        </div>
+
         {/* Bento Grid */}
-        <div className="portfolio-grid grid grid-cols-1 md:grid-cols-4 gap-4 md:gap-5 auto-rows-[200px] md:auto-rows-[220px]">
-          {PROJECTS.map((project, index) => {
+        <div className="portfolio-grid grid grid-cols-1 md:grid-cols-4 gap-4 md:gap-5 auto-rows-[220px] md:auto-rows-[240px]">
+          {filteredProjects.map((project, index) => {
             const isFlipped = flippedCards.has(project.id);
             return (
               <div
@@ -124,7 +148,7 @@ const Portfolio: React.FC = () => {
                 style={{ perspective: '1000px' }}
               >
                 <div
-                  className={`flip-card-inner relative w-full h-full transition-transform duration-700 ease-out`}
+                  className="flip-card-inner relative w-full h-full transition-transform duration-700 ease-out"
                   style={{
                     transformStyle: 'preserve-3d',
                     transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)'
@@ -132,7 +156,9 @@ const Portfolio: React.FC = () => {
                 >
                   {/* Front of Card */}
                   <div
-                    className="flip-card-front absolute inset-0 rounded-2xl overflow-hidden bg-zinc-100 shadow-lg hover:shadow-2xl transition-shadow duration-300"
+                    className={`flip-card-front absolute inset-0 rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 group ${
+                      theme === 'dark' ? 'bg-zinc-900' : 'bg-white'
+                    }`}
                     style={{ backfaceVisibility: 'hidden' }}
                   >
                     {/* Image */}
@@ -141,27 +167,39 @@ const Portfolio: React.FC = () => {
                         src={project.imageUrl}
                         alt={project.title}
                         loading="lazy"
-                        className="project-image w-full h-full object-cover transition-all duration-700 hover:scale-110"
+                        className="project-image w-full h-full object-cover transition-all duration-700 group-hover:scale-110"
                       />
-                      {/* Overlay */}
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-60"></div>
+                      <div className={`absolute inset-0 transition-opacity duration-500 ${
+                        theme === 'dark' 
+                          ? 'bg-gradient-to-t from-black/90 via-black/40 to-transparent' 
+                          : 'bg-gradient-to-t from-black/80 via-black/30 to-transparent'
+                      }`}></div>
                     </div>
 
                     {/* Category Badge */}
                     <div className="absolute top-4 left-4 z-10">
-                      <span className="bg-white/90 backdrop-blur-sm px-3 py-1.5 text-[8px] font-black tracking-[0.2em] uppercase rounded-full text-black border border-black/5">
+                      <span className="bg-white/95 backdrop-blur-sm px-3 py-1.5 text-[9px] font-bold tracking-[0.15em] uppercase rounded-full text-black">
                         {project.category}
                       </span>
                     </div>
 
                     {/* Content */}
                     <div className="absolute bottom-0 left-0 right-0 p-5 z-10">
-                      <h3 className="text-white text-lg md:text-xl font-black tracking-tight mb-2 uppercase drop-shadow-lg">{project.title}</h3>
+                      <h3 className="text-white text-lg md:text-xl font-bold tracking-tight mb-2">{project.title}</h3>
+                      {project.tags && (
+                        <div className="flex flex-wrap gap-1.5">
+                          {project.tags.slice(0, 3).map((tag, i) => (
+                            <span key={i} className="text-[9px] font-medium text-white/60 bg-white/10 px-2 py-0.5 rounded-full">
+                              {tag}
+                            </span>
+                          ))}
+                        </div>
+                      )}
                     </div>
 
                     {/* Flip Indicator */}
-                    <div className="absolute top-4 right-4 z-10 w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center">
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
+                    <div className="absolute top-4 right-4 z-10 w-9 h-9 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
                         <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
                         <path d="M3 3v5h5"/>
                       </svg>
@@ -170,31 +208,39 @@ const Portfolio: React.FC = () => {
 
                   {/* Back of Card */}
                   <div
-                    className="flip-card-back absolute inset-0 rounded-2xl overflow-hidden bg-black text-white p-6 md:p-8 flex flex-col justify-between shadow-2xl"
+                    className={`flip-card-back absolute inset-0 rounded-2xl overflow-hidden p-6 md:p-8 flex flex-col justify-between shadow-2xl ${
+                      theme === 'dark' ? 'bg-white text-black' : 'bg-black text-white'
+                    }`}
                     style={{
                       backfaceVisibility: 'hidden',
                       transform: 'rotateY(180deg)'
                     }}
                   >
-                    {/* Category */}
                     <div>
-                      <span className="inline-block bg-white text-black px-3 py-1.5 text-[8px] font-black tracking-[0.2em] uppercase rounded-full mb-4">
+                      <span className={`inline-block px-3 py-1.5 text-[9px] font-bold tracking-[0.15em] uppercase rounded-full mb-4 ${
+                        theme === 'dark' ? 'bg-black text-white' : 'bg-white text-black'
+                      }`}>
                         {project.category}
                       </span>
-                      <h3 className="text-2xl md:text-3xl font-black tracking-tight mb-4 uppercase">{project.title}</h3>
-                      <p className="text-white/70 text-sm md:text-base leading-relaxed">{project.description}</p>
+                      <h3 className="text-xl md:text-2xl font-bold tracking-tight mb-3">{project.title}</h3>
+                      <p className={`text-sm leading-relaxed ${theme === 'dark' ? 'text-black/70' : 'text-white/70'}`}>
+                        {project.description}
+                      </p>
                     </div>
 
-                    {/* Bottom Actions */}
                     <div className="flex items-center justify-between mt-4">
-                      <button className="flex items-center gap-2 text-xs font-black tracking-widest uppercase text-white/60 hover:text-white transition-colors">
+                      <button className={`flex items-center gap-2 text-xs font-bold tracking-wider uppercase transition-colors ${
+                        theme === 'dark' ? 'text-black/60 hover:text-black' : 'text-white/60 hover:text-white'
+                      }`}>
                         View Project
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                           <path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>
                         </svg>
                       </button>
-                      <span className="text-[10px] font-black tracking-widest uppercase text-white/40">
-                        Tap to flip back
+                      <span className={`text-[9px] font-bold tracking-wider uppercase ${
+                        theme === 'dark' ? 'text-black/40' : 'text-white/40'
+                      }`}>
+                        Tap to flip
                       </span>
                     </div>
                   </div>
@@ -202,6 +248,20 @@ const Portfolio: React.FC = () => {
               </div>
             );
           })}
+        </div>
+
+        {/* View All Button */}
+        <div className="mt-12 flex justify-center">
+          <button className={`group flex items-center gap-3 px-8 py-4 rounded-full font-bold text-sm tracking-wide uppercase transition-all duration-300 border-2 ${
+            theme === 'dark'
+              ? 'border-white/20 text-white hover:bg-white hover:text-black'
+              : 'border-black/20 text-black hover:bg-black hover:text-white'
+          }`}>
+            View All Projects
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="transition-transform group-hover:translate-x-1">
+              <path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>
+            </svg>
+          </button>
         </div>
       </div>
     </section>

@@ -1,11 +1,12 @@
 import React, { useEffect, useRef } from 'react';
+import { useTheme } from '../context/ThemeContext';
 
 const Hero: React.FC = () => {
   const heroRef = useRef<HTMLDivElement>(null);
   const textRef = useRef<HTMLHeadingElement>(null);
   const bgImageRef = useRef<HTMLDivElement>(null);
-  const particlesRef = useRef<HTMLDivElement>(null);
-  const shapesRef = useRef<HTMLDivElement>(null);
+  const subtitleRef = useRef<HTMLParagraphElement>(null);
+  const { theme } = useTheme();
 
   useEffect(() => {
     // @ts-ignore
@@ -14,114 +15,59 @@ const Hero: React.FC = () => {
     const ScrollTrigger = window.ScrollTrigger;
     if (!gsap) return;
 
-    // Create floating particles
-    const particlesContainer = particlesRef.current;
-    if (particlesContainer) {
-      for (let i = 0; i < 30; i++) {
-        const particle = document.createElement('div');
-        particle.className = 'particle';
-        particle.style.left = `${Math.random() * 100}%`;
-        particle.style.top = `${Math.random() * 100}%`;
-        particle.style.width = `${Math.random() * 3 + 1}px`;
-        particle.style.height = particle.style.width;
-        particle.style.opacity = `${Math.random() * 0.4 + 0.1}`;
-        particlesContainer.appendChild(particle);
-
-        // Animate each particle floating up
-        gsap.to(particle, {
-          y: `${Math.random() * -200 - 100}`,
-          x: `${Math.random() * 100 - 50}`,
-          opacity: 0,
-          duration: Math.random() * 4 + 3,
-          repeat: -1,
-          ease: "none",
-          delay: Math.random() * 2,
-        });
-      }
-    }
+    // Entrance Animation - Staggered reveal
+    const tl = gsap.timeline({ delay: 0.3 });
     
-    // Create floating geometric shapes
-    const shapesContainer = shapesRef.current;
-    if (shapesContainer) {
-      const shapeTypes = ['circle', 'square', 'triangle', 'plus'];
-      for (let i = 0; i < 12; i++) {
-        const shapeType = shapeTypes[Math.floor(Math.random() * shapeTypes.length)];
-        const shape = document.createElement('div');
-        shape.className = `absolute opacity-30 pointer-events-none`;
-        
-        const size = Math.random() * 80 + 40;
-        shape.style.width = `${size}px`;
-        shape.style.height = `${size}px`;
-        shape.style.left = `${Math.random() * 100}%`;
-        shape.style.top = `${Math.random() * 100}%`;
-        
-        let svg = '';
-        if (shapeType === 'circle') {
-          svg = `<svg width="${size}" height="${size}" viewBox="0 0 100 100"><circle cx="50" cy="50" r="48" fill="none" stroke="white" stroke-width="1" stroke-dasharray="4 4"/></svg>`;
-        } else if (shapeType === 'square') {
-          svg = `<svg width="${size}" height="${size}" viewBox="0 0 100 100"><rect x="2" y="2" width="96" height="96" fill="none" stroke="white" stroke-width="1"/></svg>`;
-        } else if (shapeType === 'triangle') {
-          svg = `<svg width="${size}" height="${size}" viewBox="0 0 100 100"><path d="M50 5 L95 95 L5 95 Z" fill="none" stroke="white" stroke-width="1" stroke-dasharray="2 2"/></svg>`;
-        } else if (shapeType === 'plus') {
-          svg = `<svg width="${size}" height="${size}" viewBox="0 0 100 100"><line x1="50" y1="0" x2="50" y2="100" stroke="white" stroke-width="1"/><line x1="0" y1="50" x2="100" y2="50" stroke="white" stroke-width="1"/></svg>`;
-        }
-        
-        shape.innerHTML = svg;
-        shapesContainer.appendChild(shape);
-
-        // Animate shapes
-        gsap.to(shape, {
-          x: `random(-300, 300)`,
-          y: `random(-300, 300)`,
-          rotation: `random(-360, 360)`,
-          duration: `random(20, 40)`,
-          repeat: -1,
-          yoyo: true,
-          ease: "power1.inOut",
-        });
-      }
-    }
-
-    // Entrance Animation
-    gsap.fromTo(textRef.current,
-      { opacity: 0, scale: 1.1, y: 100, filter: 'blur(10px)' },
-      { opacity: 1, scale: 1, y: 0, filter: 'blur(0px)', duration: 2, ease: 'expo.out', delay: 0.2 }
+    tl.fromTo('.hero-badge',
+      { opacity: 0, y: -20 },
+      { opacity: 1, y: 0, duration: 1, ease: 'expo.out' }
+    )
+    .fromTo('.hero-title-line',
+      { opacity: 0, y: 80, skewY: 3 },
+      { opacity: 1, y: 0, skewY: 0, duration: 1.2, ease: 'expo.out', stagger: 0.1 },
+      '-=0.5'
+    )
+    .fromTo(subtitleRef.current,
+      { opacity: 0, y: 30 },
+      { opacity: 1, y: 0, duration: 1, ease: 'expo.out' },
+      '-=0.6'
+    )
+    .fromTo('.hero-cta',
+      { opacity: 0, y: 20 },
+      { opacity: 1, y: 0, duration: 0.8, ease: 'expo.out' },
+      '-=0.4'
+    )
+    .fromTo('.scroll-indicator',
+      { opacity: 0 },
+      { opacity: 0.4, duration: 1, ease: 'power2.out' },
+      '-=0.2'
     );
 
-    // Animate the badge
-    gsap.fromTo('.hero-badge',
-      { opacity: 0, y: -30 },
-      { opacity: 1, y: 0, duration: 1.5, ease: 'expo.out', delay: 0.5 }
-    );
-
-    // Scroll-triggered Scrub Animation - starts from current state, returns to it when scrolling back
-    gsap.fromTo(textRef.current,
-      { y: 0, scale: 1, opacity: 1, filter: 'blur(0px)' },
-      {
+    // Scroll-triggered parallax
+    if (ScrollTrigger) {
+      gsap.to(textRef.current, {
         scrollTrigger: {
           trigger: heroRef.current,
           start: "top top",
           end: "bottom top",
           scrub: 1,
         },
-        y: -80,
-        scale: 0.95,
-        opacity: 0.4,
-        filter: 'blur(4px)',
-      }
-    );
+        y: -100,
+        opacity: 0.3,
+      });
 
-    // Parallax background
-    gsap.to(bgImageRef.current, {
-      scrollTrigger: {
-        trigger: heroRef.current,
-        start: 'top top',
-        end: 'bottom top',
-        scrub: true
-      },
-      y: 100,
-      scale: 1.05,
-    });
+      // Parallax background
+      gsap.to(bgImageRef.current, {
+        scrollTrigger: {
+          trigger: heroRef.current,
+          start: 'top top',
+          end: 'bottom top',
+          scrub: true
+        },
+        y: 150,
+        scale: 1.1,
+      });
+    }
 
     // Magnetic effect on hover
     const headline = textRef.current;
@@ -132,8 +78,8 @@ const Hero: React.FC = () => {
         const y = e.clientY - rect.top - rect.height / 2;
 
         gsap.to(headline, {
-          x: x * 0.1,
-          y: y * 0.1,
+          x: x * 0.05,
+          y: y * 0.05,
           duration: 0.3,
           ease: "power2.out"
         });
@@ -154,92 +100,145 @@ const Hero: React.FC = () => {
       return () => {
         headline.removeEventListener('mousemove', onMove);
         headline.removeEventListener('mouseleave', onLeave);
-        if (particlesContainer) {
-          particlesContainer.innerHTML = '';
-        }
-        if (shapesContainer) {
-          shapesContainer.innerHTML = '';
-        }
       };
     }
   }, []);
 
-  return (
-    <section ref={heroRef} className="relative h-screen w-full flex flex-col justify-center items-center overflow-hidden bg-black">
-      {/* Floating Particles */}
-      <div ref={particlesRef} className="absolute inset-0 z-[5] pointer-events-none overflow-hidden" />
-      
-      {/* Animated Background Shapes */}
-      <div ref={shapesRef} className="absolute inset-0 z-[2] pointer-events-none overflow-hidden" />
+  const scrollToWork = () => {
+    const element = document.getElementById('portfolio');
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
 
+  return (
+    <section ref={heroRef} className={`relative min-h-screen w-full flex flex-col justify-center items-center overflow-hidden ${
+      theme === 'dark' ? 'bg-black' : 'bg-white'
+    }`}>
       {/* Background Image Container */}
       <div ref={bgImageRef} className="absolute inset-0 z-0">
         <img
-          src="https://picsum.photos/seed/hero/1920/1080"
-          alt="Urban Background"
+          src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1920&q=80"
+          alt="Abstract Background"
           loading="eager"
-          className="w-full h-full object-cover brightness-[0.45] contrast-[1.05] transition-all duration-1000"
+          className={`w-full h-full object-cover transition-all duration-1000 ${
+            theme === 'dark' ? 'brightness-[0.3] contrast-[1.1]' : 'brightness-[0.9] contrast-[1.05]'
+          }`}
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-transparent to-black/80"></div>
+        <div className={`absolute inset-0 ${
+          theme === 'dark' 
+            ? 'bg-gradient-to-b from-black/60 via-black/40 to-black' 
+            : 'bg-gradient-to-b from-white/70 via-white/50 to-white'
+        }`}></div>
       </div>
 
-      <div className="relative z-10 text-center px-6 pointer-events-none">
-        <div className="mb-14 flex justify-center pointer-events-auto">
-           <span className="hero-badge px-8 py-3 border border-white/20 rounded-full text-[10px] font-black tracking-[0.6em] uppercase backdrop-blur-xl bg-white/5 cursor-default hover:bg-white/10 transition-all duration-500">
-             EST. 2018 | VISIONARY STUDIO
-           </span>
+      {/* Decorative Elements */}
+      <div className={`absolute top-1/4 left-[10%] w-64 h-64 rounded-full blur-[120px] pointer-events-none ${
+        theme === 'dark' ? 'bg-white/5' : 'bg-black/5'
+      }`} />
+      <div className={`absolute bottom-1/4 right-[10%] w-96 h-96 rounded-full blur-[150px] pointer-events-none ${
+        theme === 'dark' ? 'bg-white/5' : 'bg-black/5'
+      }`} />
+
+      <div ref={textRef} className="relative z-10 text-center px-6 max-w-6xl mx-auto">
+        {/* Badge */}
+        <div className="mb-8 md:mb-12 flex justify-center">
+          <span className={`hero-badge px-6 py-2.5 border rounded-full text-[10px] font-bold tracking-[0.4em] uppercase backdrop-blur-sm transition-all duration-500 ${
+            theme === 'dark' 
+              ? 'border-white/20 bg-white/5 text-white/80 hover:bg-white/10' 
+              : 'border-black/20 bg-black/5 text-black/80 hover:bg-black/10'
+          }`}>
+            Product Designer & Creative
+          </span>
         </div>
 
-        <h1
-          ref={textRef}
-          className="text-[13vw] md:text-[12vw] font-black leading-[0.75] tracking-tighter uppercase select-none flex flex-col cursor-pointer pointer-events-auto transition-colors duration-500 stylistic-headline"
-          style={{ 
-            fontFamily: "'Syne', sans-serif",
-            textShadow: '0 0 80px rgba(255,255,255,0.3), 0 0 40px rgba(255,255,255,0.2)' 
-          }}
-        >
-          <span className="text-white drop-shadow-[0_0_30px_rgba(255,255,255,0.5)]">BJTHE</span>
-          <span className="outline-text font-black -mt-2">ARTIST</span>
+        {/* Main Headline */}
+        <h1 className="mb-6 md:mb-8 overflow-hidden">
+          <span 
+            className={`hero-title-line block text-[14vw] md:text-[11vw] lg:text-[9vw] font-black leading-[0.85] tracking-tighter uppercase ${
+              theme === 'dark' ? 'text-white' : 'text-black'
+            }`}
+            style={{ fontFamily: "'Syne', sans-serif" }}
+          >
+            Billy
+          </span>
+          <span 
+            className={`hero-title-line block text-[14vw] md:text-[11vw] lg:text-[9vw] font-black leading-[0.85] tracking-tighter uppercase ${
+              theme === 'dark' ? 'text-white' : 'text-black'
+            }`}
+            style={{ fontFamily: "'Syne', sans-serif" }}
+          >
+            Ndizeye
+          </span>
         </h1>
+
+        {/* Subtitle */}
+        <p 
+          ref={subtitleRef}
+          className={`text-base md:text-lg lg:text-xl max-w-xl mx-auto mb-10 md:mb-12 font-medium leading-relaxed ${
+            theme === 'dark' ? 'text-zinc-400' : 'text-zinc-600'
+          }`}
+        >
+          Crafting digital experiences through thoughtful product design, 
+          where every pixel serves a purpose and every interaction tells a story.
+        </p>
+
+        {/* CTA Buttons */}
+        <div className="hero-cta flex flex-col sm:flex-row gap-4 justify-center items-center">
+          <button
+            onClick={scrollToWork}
+            className={`group flex items-center gap-3 px-8 py-4 rounded-full font-bold text-sm tracking-wide uppercase transition-all duration-300 ${
+              theme === 'dark'
+                ? 'bg-white text-black hover:bg-zinc-200'
+                : 'bg-black text-white hover:bg-zinc-800'
+            }`}
+          >
+            View My Work
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="transition-transform group-hover:translate-x-1">
+              <path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>
+            </svg>
+          </button>
+          <button
+            onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
+            className={`group flex items-center gap-3 px-8 py-4 rounded-full font-bold text-sm tracking-wide uppercase border-2 transition-all duration-300 ${
+              theme === 'dark'
+                ? 'border-white/30 text-white hover:bg-white/10'
+                : 'border-black/30 text-black hover:bg-black/10'
+            }`}
+          >
+            Get In Touch
+          </button>
+        </div>
       </div>
 
       {/* Scroll indicator */}
-      <div className="absolute bottom-16 left-1/2 -translate-x-1/2 flex flex-col items-center gap-6 opacity-40 pointer-events-none">
-        <p className="text-[10px] font-black tracking-[1em] uppercase ml-[1em]">Scroll</p>
-        <div className="w-px h-20 bg-gradient-to-b from-white to-transparent relative overflow-hidden">
-           <div className="absolute top-0 left-0 w-full h-1/2 bg-white animate-scroll-line"></div>
+      <div className={`scroll-indicator absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-4 pointer-events-none ${
+        theme === 'dark' ? 'text-white' : 'text-black'
+      }`}>
+        <p className="text-[10px] font-bold tracking-[0.5em] uppercase">Scroll</p>
+        <div className={`w-px h-16 relative overflow-hidden ${
+          theme === 'dark' ? 'bg-white/20' : 'bg-black/20'
+        }`}>
+          <div className={`absolute top-0 left-0 w-full h-8 animate-scroll-line ${
+            theme === 'dark' ? 'bg-white' : 'bg-black'
+          }`}></div>
         </div>
       </div>
 
-      {/* Ambient glow orbs - subtle white */}
-      <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-white/10 rounded-full blur-[100px] pointer-events-none" />
-      <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-white/10 rounded-full blur-[100px] pointer-events-none" />
+      {/* Side Text */}
+      <div className={`hidden lg:block absolute left-8 top-1/2 -translate-y-1/2 -rotate-90 origin-center ${
+        theme === 'dark' ? 'text-white/30' : 'text-black/30'
+      }`}>
+        <span className="text-[10px] font-bold tracking-[0.5em] uppercase">Chicago, IL — 2025</span>
+      </div>
 
       <style>{`
         @keyframes scroll-line {
           0% { transform: translateY(-100%); }
-          100% { transform: translateY(200%); }
+          100% { transform: translateY(300%); }
         }
         .animate-scroll-line {
-          animation: scroll-line 3s cubic-bezier(0.7, 0, 0.3, 1) infinite;
-        }
-        .stylistic-headline span:nth-child(2) {
-          position: relative;
-        }
-        .stylistic-headline span:nth-child(2)::after {
-          content: "";
-          position: absolute;
-          left: 0;
-          bottom: 20%;
-          width: 100%;
-          height: 2px;
-          background: rgba(255,255,255,0.2);
-          transform: scaleX(0);
-          transform-origin: left;
-          transition: transform 0.6s cubic-bezier(0.19, 1, 0.22, 1);
-        }
-        .stylistic-headline:hover span:nth-child(2)::after {
-          transform: scaleX(1);
+          animation: scroll-line 2s cubic-bezier(0.7, 0, 0.3, 1) infinite;
         }
       `}</style>
     </section>
