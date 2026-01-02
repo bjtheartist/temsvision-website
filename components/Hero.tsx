@@ -55,7 +55,7 @@ const Hero: React.FC = () => {
     if (tagline) {
       const words = tagline.textContent?.split(' ') || [];
       tagline.innerHTML = words.map(word => 
-        `<span class="word-wrap inline-block overflow-hidden mr-[0.25em]"><span class="word inline-block" style="transform: translateY(100%);">${word}</span></span>`
+        `<span class="word-wrap inline-block overflow-hidden"><span class="word inline-block" style="transform: translateY(100%);">${word}</span></span> `
       ).join('');
       
       tl.to('.hero-tagline .word', {

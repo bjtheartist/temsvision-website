@@ -31,7 +31,7 @@ const About: React.FC = () => {
       if (headline) {
         const words = headline.textContent?.split(' ') || [];
         headline.innerHTML = words.map(word => 
-          `<span class="word-wrap inline-block overflow-hidden mr-[0.3em]"><span class="word inline-block" style="transform: translateY(100%); opacity: 0;">${word}</span></span>`
+          `<span class="word-wrap inline-block overflow-hidden"><span class="word inline-block" style="transform: translateY(100%); opacity: 0;">${word}</span></span> `
         ).join('');
         
         gsap.to('.about-headline .word', {
