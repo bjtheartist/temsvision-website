@@ -7,22 +7,20 @@ const ThemeToggle: React.FC = () => {
   return (
     <button
       onClick={toggleTheme}
-      className={`fixed bottom-8 right-8 z-[100] w-14 h-14 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110 shadow-xl backdrop-blur-sm ${
+      className={`fixed bottom-6 right-6 z-[100] w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-105 ${
         theme === 'dark' 
-          ? 'bg-white/10 text-white border border-white/20 hover:bg-white/20' 
-          : 'bg-black/10 text-black border border-black/20 hover:bg-black/20'
+          ? 'bg-zinc-900 text-zinc-400 hover:text-white border border-white/10' 
+          : 'bg-zinc-100 text-zinc-500 hover:text-black border border-black/10'
       }`}
       aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
     >
       {theme === 'dark' ? (
-        // Sun icon for light mode
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
           <circle cx="12" cy="12" r="5"/>
           <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
         </svg>
       ) : (
-        // Moon icon for dark mode
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
           <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
         </svg>
       )}
