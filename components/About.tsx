@@ -50,69 +50,49 @@ const About: React.FC = () => {
                   theme === 'dark' ? 'text-white' : 'text-black'
                 }`}
               >
-                I'm Billy Ndizeye, a product designer based in Chicago with a passion for creating digital experiences that are both beautiful and functional.
+                I'm Billy Ndizeye—a builder based in Chicago who bridges the worlds of economic development, technology, and design.
               </p>
 
               <p className={`text-base md:text-lg leading-relaxed mb-8 ${
                 theme === 'dark' ? 'text-zinc-400' : 'text-zinc-600'
               }`}>
-                With over 7 years of experience, I've helped startups and established brands bring their visions to life. My approach combines strategic thinking with meticulous attention to detail.
+                My background is unconventional. I came from economic development, worked at an incubator helping founders build their visions, and somewhere along the way, I taught myself to code. React, Next.js, HTML, CSS—I've built over 30 projects learning by doing.
+              </p>
+
+              <p className={`text-base md:text-lg leading-relaxed mb-8 ${
+                theme === 'dark' ? 'text-zinc-400' : 'text-zinc-600'
+              }`}>
+                I've also spent years behind a camera, which shaped how I see composition, light, and storytelling. Photography taught me that the best work comes from paying attention to details others overlook.
               </p>
 
               <p className={`text-base md:text-lg leading-relaxed mb-12 ${
                 theme === 'dark' ? 'text-zinc-400' : 'text-zinc-600'
               }`}>
-                I believe that great design isn't just about aesthetics—it's about solving real problems and creating meaningful connections between products and people.
+                I'm drawn to data—not just collecting it, but understanding what it reveals about people and systems. Whether I'm designing an interface or analyzing community impact, I believe the best solutions come from listening to what the numbers and the people are telling us.
               </p>
 
-              {/* Stats */}
-              <div className={`flex flex-wrap gap-12 md:gap-16 pt-12 border-t ${
+              {/* Journey highlights instead of fake stats */}
+              <div className={`pt-12 border-t ${
                 theme === 'dark' ? 'border-white/10' : 'border-black/10'
               }`}>
-                <div>
-                  <p 
-                    className={`text-4xl md:text-5xl font-bold tracking-tight mb-2 ${
-                      theme === 'dark' ? 'text-white' : 'text-black'
-                    }`}
-                    style={{ fontFamily: "'Syne', sans-serif" }}
-                  >
-                    7+
-                  </p>
-                  <p className={`text-sm ${
-                    theme === 'dark' ? 'text-zinc-500' : 'text-zinc-400'
-                  }`}>
-                    Years Experience
-                  </p>
-                </div>
-                <div>
-                  <p 
-                    className={`text-4xl md:text-5xl font-bold tracking-tight mb-2 ${
-                      theme === 'dark' ? 'text-white' : 'text-black'
-                    }`}
-                    style={{ fontFamily: "'Syne', sans-serif" }}
-                  >
-                    50+
-                  </p>
-                  <p className={`text-sm ${
-                    theme === 'dark' ? 'text-zinc-500' : 'text-zinc-400'
-                  }`}>
-                    Projects Completed
-                  </p>
-                </div>
-                <div>
-                  <p 
-                    className={`text-4xl md:text-5xl font-bold tracking-tight mb-2 ${
-                      theme === 'dark' ? 'text-white' : 'text-black'
-                    }`}
-                    style={{ fontFamily: "'Syne', sans-serif" }}
-                  >
-                    30+
-                  </p>
-                  <p className={`text-sm ${
-                    theme === 'dark' ? 'text-zinc-500' : 'text-zinc-400'
-                  }`}>
-                    Happy Clients
-                  </p>
+                <p className={`text-[10px] font-medium tracking-[0.3em] uppercase mb-6 ${
+                  theme === 'dark' ? 'text-zinc-500' : 'text-zinc-400'
+                }`}>
+                  Background
+                </p>
+                <div className="flex flex-wrap gap-3">
+                  {['Economic Development', 'Startup Incubator', 'Self-Taught Developer', 'Photography', 'Data & Analytics'].map((item) => (
+                    <span 
+                      key={item}
+                      className={`px-4 py-2 text-sm rounded-full ${
+                        theme === 'dark' 
+                          ? 'bg-white/5 text-zinc-300 border border-white/10' 
+                          : 'bg-black/5 text-zinc-700 border border-black/10'
+                      }`}
+                    >
+                      {item}
+                    </span>
+                  ))}
                 </div>
               </div>
             </div>

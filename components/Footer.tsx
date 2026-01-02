@@ -9,6 +9,12 @@ const Footer: React.FC = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const socialLinks = [
+    { name: 'LinkedIn', url: 'https://linkedin.com/in/bjtheartist' },
+    { name: 'GitHub', url: 'https://github.com/bjtheartist' },
+    { name: 'Instagram', url: 'https://instagram.com/bjtheartist' },
+  ];
+
   return (
     <footer className={`py-8 transition-colors duration-500 ${
       theme === 'dark' ? 'bg-black border-t border-white/5' : 'bg-white border-t border-black/5'
@@ -24,17 +30,19 @@ const Footer: React.FC = () => {
 
           {/* Social Links */}
           <div className="flex items-center gap-6">
-            {['Twitter', 'LinkedIn', 'Dribbble'].map((platform) => (
+            {socialLinks.map((link) => (
               <a
-                key={platform}
-                href="#"
+                key={link.name}
+                href={link.url}
+                target="_blank"
+                rel="noopener noreferrer"
                 className={`text-[11px] font-medium tracking-wide transition-colors ${
                   theme === 'dark' 
                     ? 'text-zinc-500 hover:text-white' 
                     : 'text-zinc-400 hover:text-black'
                 }`}
               >
-                {platform}
+                {link.name}
               </a>
             ))}
           </div>

@@ -77,7 +77,7 @@ const Preloader: React.FC<{ onComplete: () => void }> = ({ onComplete }) => {
       }
     );
     
-    gsap.fromTo('.preloader-title',
+    gsap.fromTo('.preloader-tagline',
       { opacity: 0 },
       { opacity: 1, duration: 0.6, delay: 0.8 }
     );
@@ -126,11 +126,11 @@ const Preloader: React.FC<{ onComplete: () => void }> = ({ onComplete }) => {
           }`}
         />
         
-        {/* Title */}
-        <p className={`preloader-title text-[10px] md:text-xs font-medium tracking-[0.3em] uppercase mb-8 ${
+        {/* Tagline - no label */}
+        <p className={`preloader-tagline text-[10px] md:text-xs font-medium tracking-[0.3em] uppercase mb-8 ${
           theme === 'dark' ? 'text-white/50' : 'text-black/50'
         }`}>
-          Product Designer
+          Chicago, IL
         </p>
         
         {/* Progress */}
