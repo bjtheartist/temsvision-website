@@ -51,12 +51,9 @@ const Hero: React.FC = () => {
           }`}
         >
           <img 
-            src="/temsvision-logo-transparent.png" 
+            src="/temsvision-logo-white-blue.png" 
             alt="TemsVision Logo"
             className="w-40 sm:w-48 md:w-56 lg:w-64 h-auto"
-            style={{ 
-              filter: 'invert(1) brightness(1.5)'
-            }}
           />
         </div>
 

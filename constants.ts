@@ -1,3 +1,4 @@
+
 import { Project, Service } from './types';
 
 // Blue color palette from TemsVision logo
@@ -152,11 +153,11 @@ export const SOCIAL_LINKS = {
 };
 
 export const ABOUT_BIO = {
-  intro: "I am Temilade Amire Quadri, a professional photographer and visual storyteller.",
-  background: "Born in New Jersey and raised in Nigeria, I bring a unique cultural perspective to my work. Now based in Kalamazoo, Michigan, I capture stories for clients worldwide.",
-  story: "What started as a creative outlet during the 2020 lockdown has evolved into TemsVision, a full-fledged photography business. The name itself is a fusion of my Yoruba heritage and my passion. 'Temilade' (teh-meh-la-day) means 'The crown is mine,' and 'Temi' (Tee-meeh) means 'Mine.' TemsVision is, quite literally, My Vision.",
-  philosophy: "A vision without action is just a dream. Let's collaborate and turn your ideas into tangible, breathtaking realities.",
-  approach: "I thrive on challenges and the 'seemingly' impossible. My commitment is to continuous learning and pushing creative boundaries to deliver exceptional results. I am a professional dedicated to my craft, and I invite you to bring your boldest ideas to the table.",
+  intro: "My name is Temilade Amire Quadri, and I am a professional photographer.",
+  background: "I was born in New Jersey, raised in Nigeria, and currently live in Kalamazoo, Michigan. I started TemsVision during the 2020 Covid lockdown as a creative outlet, and it has since grown into a full-fledged business.",
+  story: "The name TemsVision is a fusion of my Yoruba name and my passion. My full name, Temilade (teh-meh-la-day), means \"The crown is mine.\" My nickname, Temi (Tee-meeh), means \"Mine.\" So, TemsVision is, quite literally, My Vision.",
+  philosophy: "A vision without action is just a dream. I believe in turning ideas into tangible, breathtaking realities.",
+  approach: "I love a good challenge and enjoy tackling projects that seem impossible. I am always learning and pushing my creative boundaries to deliver the best possible results for my clients.",
   nameMeaning: {
     temilade: "The crown is mine",
     temi: "Mine",
