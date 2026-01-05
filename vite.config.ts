@@ -17,13 +17,8 @@ export default defineConfig({
   build: {
     // Performance optimizations
     target: 'es2020',
-    minify: 'terser',
-    terserOptions: {
-      compress: {
-        drop_console: true,
-        drop_debugger: true,
-      },
-    },
+    // Use esbuild for minification (default, faster, no extra dependency)
+    minify: 'esbuild',
     rollupOptions: {
       output: {
         // Code splitting for better caching
@@ -40,5 +35,9 @@ export default defineConfig({
   // Optimize dependencies
   optimizeDeps: {
     include: ['react', 'react-dom'],
+  },
+  // Drop console logs in production
+  esbuild: {
+    drop: ['console', 'debugger'],
   },
 });
