@@ -23,7 +23,7 @@ const Footer: React.FC = () => {
               alt="TemsVision"
               className="w-8 sm:w-10 h-auto"
               style={{ 
-                filter: isDark ? 'invert(1) brightness(2)' : 'none'
+                filter: 'invert(1) brightness(2)'
               }}
             />
             <span 

@@ -32,7 +32,7 @@ const Services: React.FC = () => {
           <p className={`text-sm mt-3 sm:mt-4 max-w-md ${
             isDark ? 'text-white/40' : 'text-black/40'
           }`}>
-            Professional photography services tailored to capture your special moments.
+            From intimate portraits to high-energy sports, I bring your vision to life with precision and artistry.
           </p>
         </div>
 

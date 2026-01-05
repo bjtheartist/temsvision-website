@@ -55,7 +55,7 @@ const Hero: React.FC = () => {
             alt="TemsVision Logo"
             className="w-40 sm:w-48 md:w-56 lg:w-64 h-auto"
             style={{ 
-              filter: isDark ? 'invert(1) brightness(2)' : 'none'
+              filter: 'invert(1) brightness(2)'
             }}
           />
         </div>
@@ -83,7 +83,7 @@ const Hero: React.FC = () => {
           }`}
         >
           <p className={`text-sm sm:text-base ${isDark ? 'text-white/40' : 'text-black/40'}`}>
-            Capturing moments, creating memories
+            Where vision meets artistry. Every frame tells a story.
           </p>
         </div>
       </div>

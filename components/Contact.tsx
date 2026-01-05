@@ -100,8 +100,8 @@ const Contact: React.FC = () => {
             <p className={`text-lg sm:text-xl md:text-2xl leading-relaxed mb-8 sm:mb-12 ${
               isDark ? 'text-white/80' : 'text-black/80'
             }`}>
-              Ready to capture your special moments? Let's discuss your vision 
-              and create something beautiful together.
+              Your story deserves to be told with intention and artistry. 
+              Let's collaborate and transform your vision into unforgettable imagery.
             </p>
 
             {/* Contact Info */}

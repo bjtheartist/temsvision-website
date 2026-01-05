@@ -152,11 +152,11 @@ export const SOCIAL_LINKS = {
 };
 
 export const ABOUT_BIO = {
-  intro: "Hi, I am Temilade Amire Quadri.",
-  background: "I am a Nigerian American photographer born in New Jersey but raised in Nigeria. I currently live in Kalamazoo Michigan, U.S.",
-  story: "Photography for me started as a hobby. I started during the first Covid-19 pandemic lockdown in Michigan and this has evolved into a business called TemsVision. The name TemsVision came from my name Temilade pronounced (teh-meh-la-day) which in the Yoruba language of Western Nigeria means 'The crown is mine' and Temi pronounced (Tee-meeh) meaning 'Mine'. TemsVision basically means 'My Vision'.",
-  philosophy: "A vision without action is only a thought so contact me and let's make those ideas and imaginations a reality.",
-  approach: "I am no professional photographer because the learning curve in photography or life in general doesn't stop. I love challenges and those 'seemingly' impossible tasks, so I urge you to bring them on.",
+  intro: "I am Temilade Amire Quadri, a professional photographer and visual storyteller.",
+  background: "Born in New Jersey and raised in Nigeria, I bring a unique cultural perspective to my work. Now based in Kalamazoo, Michigan, I capture stories for clients worldwide.",
+  story: "What started as a creative outlet during the 2020 lockdown has evolved into TemsVision, a full-fledged photography business. The name itself is a fusion of my Yoruba heritage and my passion. 'Temilade' (teh-meh-la-day) means 'The crown is mine,' and 'Temi' (Tee-meeh) means 'Mine.' TemsVision is, quite literally, My Vision.",
+  philosophy: "A vision without action is just a dream. Let's collaborate and turn your ideas into tangible, breathtaking realities.",
+  approach: "I thrive on challenges and the 'seemingly' impossible. My commitment is to continuous learning and pushing creative boundaries to deliver exceptional results. I am a professional dedicated to my craft, and I invite you to bring your boldest ideas to the table.",
   nameMeaning: {
     temilade: "The crown is mine",
     temi: "Mine",

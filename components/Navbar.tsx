@@ -73,9 +73,7 @@ const Navbar: React.FC = () => {
                 style={{ 
                   filter: isMenuOpen 
                     ? 'none' 
-                    : isDark 
-                      ? 'invert(1) brightness(2)' 
-                      : 'none'
+                    : 'invert(1) brightness(2)'
                 }}
               />
             </a>
