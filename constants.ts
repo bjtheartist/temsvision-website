@@ -23,26 +23,33 @@ export const SITE_CONFIG = {
   fullName: 'Temilade Amire Quadri',
 };
 
+// Hero background images
+export const HERO_IMAGES = [
+  '/gallery/hero-1.jpg',
+  '/gallery/hero-2.jpg',
+  '/gallery/hero-3.jpg',
+];
+
 export const PROJECTS: Project[] = [
   {
     id: '0',
-    title: 'Golden Hour Portraits',
+    title: 'Urban Style',
     category: 'PORTRAITS',
-    imageUrl: '/project-portraits-1.jpg',
-    description: 'Vibrant portrait sessions capturing personality and style during the magical golden hour.',
-    tags: ['Portraits', 'Fashion', 'Golden Hour'],
+    imageUrl: '/gallery/portrait-1.jpg',
+    description: 'Vibrant portrait sessions capturing personality and style with vintage vibes.',
+    tags: ['Portraits', 'Fashion', 'Urban'],
     problem: '',
     solution: '',
-    tools: ['Canon', 'Natural Light', 'Adobe Lightroom'],
+    tools: ['Sony', 'Natural Light', 'Adobe Lightroom'],
     year: '2024'
   },
   {
     id: '1',
-    title: 'Soccer Action Series',
+    title: 'Night Soccer',
     category: 'SPORTS',
-    imageUrl: '/project-sports-1.jpg',
-    description: 'Dynamic sports photography capturing athletes in motion with dramatic skies.',
-    tags: ['Sports', 'Action', 'Athletes'],
+    imageUrl: '/gallery/sports-1.jpg',
+    description: 'Dynamic sports photography capturing athletes in motion under the lights.',
+    tags: ['Sports', 'Soccer', 'Night'],
     problem: '',
     solution: '',
     tools: ['High-Speed Photography', 'Adobe Photoshop'],
@@ -50,23 +57,23 @@ export const PROJECTS: Project[] = [
   },
   {
     id: '2',
-    title: 'Engagement Sessions',
-    category: 'LOVE STORIES',
-    imageUrl: '/project-love-1.jpg',
-    description: 'Intimate moments captured with artistic film-style processing.',
-    tags: ['Couples', 'Engagement', 'Romance'],
+    title: 'Maternity Sessions',
+    category: 'FAMILY',
+    imageUrl: '/gallery/maternity-1.jpg',
+    description: 'Beautiful maternity photography celebrating new beginnings.',
+    tags: ['Maternity', 'Family', 'Studio'],
     problem: '',
     solution: '',
-    tools: ['Film Emulation', 'Adobe Lightroom'],
+    tools: ['Studio Lighting', 'Adobe Lightroom'],
     year: '2024'
   },
   {
     id: '3',
     title: 'Timeless Monochrome',
     category: 'B & W',
-    imageUrl: '/project-bw-1.jpg',
+    imageUrl: '/gallery/bw-1.jpg',
     description: 'Classic black and white portraits emphasizing emotion and form.',
-    tags: ['Black & White', 'Fine Art', 'Portraits'],
+    tags: ['Black & White', 'Fine Art', 'Group'],
     problem: '',
     solution: '',
     tools: ['Black & White Processing', 'Adobe Lightroom'],
@@ -74,23 +81,23 @@ export const PROJECTS: Project[] = [
   },
   {
     id: '4',
-    title: 'Cultural Fashion',
+    title: 'Garden Portraits',
     category: 'PORTRAITS',
-    imageUrl: '/project-portraits-2.jpg',
-    description: 'Celebrating African fashion and culture through vibrant portrait photography.',
-    tags: ['Fashion', 'Culture', 'Style'],
+    imageUrl: '/gallery/portrait-2.jpg',
+    description: 'Artistic portraits with natural elements and soft lighting.',
+    tags: ['Portraits', 'Nature', 'Creative'],
     problem: '',
     solution: '',
-    tools: ['Studio Lighting', 'Adobe Photoshop'],
+    tools: ['Natural Light', 'Adobe Photoshop'],
     year: '2024'
   },
   {
     id: '5',
-    title: 'Group Dynamics',
-    category: 'PORTRAITS',
-    imageUrl: '/project-portraits-3.jpg',
-    description: 'Group portraits capturing connections and relationships.',
-    tags: ['Groups', 'Friends', 'Connections'],
+    title: 'Beach Lifestyle',
+    category: 'LIFESTYLE',
+    imageUrl: '/gallery/lifestyle-1.jpg',
+    description: 'Vibrant lifestyle photography capturing joy and confidence.',
+    tags: ['Lifestyle', 'Beach', 'Summer'],
     problem: '',
     solution: '',
     tools: ['Natural Light', 'Adobe Lightroom'],
@@ -103,28 +110,28 @@ export const SERVICES: Service[] = [
     id: 'portraits',
     name: 'Portrait Sessions',
     description: 'Individual and group portrait sessions that capture your unique personality and style. From headshots to creative concepts.',
-    imageUrl: 'https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=800&q=80',
+    imageUrl: '/gallery/portrait-1.jpg',
     features: ['Individual Portraits', 'Group Sessions', 'Headshots', 'Creative Concepts', 'Golden Hour']
   },
   {
     id: 'sports',
     name: 'Sports Photography',
     description: 'Dynamic action shots that freeze the intensity and emotion of athletic performance.',
-    imageUrl: 'https://images.unsplash.com/photo-1461896836934-voices-of-the-game?w=800&q=80',
+    imageUrl: '/gallery/sports-1.jpg',
     features: ['Action Shots', 'Team Photos', 'Athletic Portraits', 'Event Coverage']
   },
   {
-    id: 'weddings',
-    name: 'Love Stories',
-    description: 'Engagement sessions, weddings, and couples photography that tells your unique love story.',
-    imageUrl: 'https://images.unsplash.com/photo-1519741497674-611481863552?w=800&q=80',
-    features: ['Engagement Sessions', 'Wedding Photography', 'Couples Portraits', 'Anniversary Sessions']
+    id: 'maternity',
+    name: 'Maternity & Family',
+    description: 'Beautiful maternity sessions and family portraits celebrating life\'s precious moments.',
+    imageUrl: '/gallery/maternity-1.jpg',
+    features: ['Maternity Sessions', 'Family Portraits', 'Newborn Photos', 'Milestone Sessions']
   },
   {
     id: 'events',
     name: 'Events & Special Occasions',
     description: 'Birthday parties, graduations, family gatherings, and milestone celebrations captured beautifully.',
-    imageUrl: 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=800&q=80',
+    imageUrl: '/gallery/lifestyle-1.jpg',
     features: ['Birthday Sessions', 'Graduation Photos', 'Family Sessions', 'Boudoir']
   }
 ];
@@ -132,7 +139,7 @@ export const SERVICES: Service[] = [
 export const SKILLS = [
   'Portrait Photography',
   'Sports Photography',
-  'Wedding Photography',
+  'Maternity Photography',
   'Event Photography',
   'Adobe Lightroom',
   'Adobe Photoshop',

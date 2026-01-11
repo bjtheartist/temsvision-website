@@ -1,14 +1,23 @@
 import React, { useEffect, useState, useCallback, memo } from 'react';
-import { SITE_CONFIG, SOCIAL_LINKS } from '../constants';
+import { SITE_CONFIG, SOCIAL_LINKS, HERO_IMAGES } from '../constants';
 import { useTheme } from '../context/ThemeContext';
 
 const Hero: React.FC = () => {
   const { isDark } = useTheme();
   const [isVisible, setIsVisible] = useState(false);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   useEffect(() => {
     const timer = setTimeout(() => setIsVisible(true), 100);
     return () => clearTimeout(timer);
+  }, []);
+
+  // Rotate background images
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentImageIndex((prev) => (prev + 1) % HERO_IMAGES.length);
+    }, 5000);
+    return () => clearInterval(interval);
   }, []);
 
   const scrollToWork = useCallback(() => {
@@ -22,11 +31,26 @@ const Hero: React.FC = () => {
     <section className={`relative min-h-screen w-full flex flex-col overflow-hidden ${
       isDark ? 'bg-black' : 'bg-white'
     }`}>
-      {/* Background gradient */}
+      {/* Background Images */}
+      {HERO_IMAGES.map((image, index) => (
+        <div
+          key={image}
+          className={`absolute inset-0 transition-opacity duration-1000 ${
+            index === currentImageIndex ? 'opacity-30' : 'opacity-0'
+          }`}
+          style={{
+            backgroundImage: `url(${image})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+          }}
+        />
+      ))}
+      
+      {/* Overlay gradient */}
       <div className={`absolute inset-0 ${
         isDark 
-          ? 'bg-gradient-to-br from-black via-slate-900 to-black' 
-          : 'bg-gradient-to-br from-white via-blue-50 to-white'
+          ? 'bg-gradient-to-br from-black/80 via-slate-900/70 to-black/80' 
+          : 'bg-gradient-to-br from-white/80 via-blue-50/70 to-white/80'
       }`} />
       
       {/* Subtle grid pattern */}
@@ -41,6 +65,19 @@ const Hero: React.FC = () => {
           backgroundSize: '50px 50px'
         }}
       />
+
+      {/* Image counter */}
+      <div 
+        className={`absolute top-24 right-4 sm:right-6 md:right-12 lg:right-24 transition-all duration-700 ${
+          isVisible ? 'opacity-100' : 'opacity-0'
+        }`}
+      >
+        <span className={`text-[10px] tracking-[0.2em] font-mono ${
+          isDark ? 'text-white/40' : 'text-black/40'
+        }`}>
+          {String(currentImageIndex + 1).padStart(2, '0')}/{String(HERO_IMAGES.length).padStart(2, '0')}
+        </span>
+      </div>
 
       {/* Main Content */}
       <div className="relative z-10 flex-1 flex flex-col justify-center items-center px-4 sm:px-6 pt-20 md:pt-0">
