@@ -9,7 +9,15 @@
     
     <title>TemsVision | Photographer, Creative Director & Visual Storyteller</title>
     <meta name="description" content="TemsVision - Professional photography by Temilade Amire Quadri. Portraits, Sports, Weddings, and Events in Kalamazoo, Michigan. My Vision, Your Story." />
-    
+    <link rel="canonical" href="https://temsvision.com" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+
     <!-- Performance hints -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -26,11 +34,20 @@
     <meta property="og:description" content="Professional photography by Temilade Amire Quadri. Capturing your vision, one frame at a time." />
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="en_US" />
-    
+    <meta property="og:url" content="https://temsvision.com" />
+    <meta property="og:image" content="https://temsvision.com/og-image.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="TemsVision Photography - Professional photography by Temilade Amire Quadri" />
+    <meta property="og:site_name" content="TemsVision Photography" />
+
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="TemsVision | Photographer, Creative Director & Visual Storyteller" />
     <meta name="twitter:description" content="Professional photography by Temilade Amire Quadri. Capturing your vision, one frame at a time." />
+    <meta name="twitter:image" content="https://temsvision.com/og-image.jpg" />
+    <meta name="twitter:site" content="@temsvision" />
+    <meta name="twitter:creator" content="@temsvision" />
     
     <!-- Security headers via meta tags -->
     <meta http-equiv="X-Content-Type-Options" content="nosniff" />
@@ -42,7 +59,54 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="apple-mobile-web-app-title" content="TemsVision" />
-    
+
+    <!-- Structured Data - JSON-LD -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "LocalBusiness",
+      "additionalType": "https://schema.org/Photographer",
+      "name": "TemsVision Photography",
+      "description": "Professional photography by Temilade Amire Quadri. Portraits, Sports, Weddings, and Events in Kalamazoo, Michigan.",
+      "url": "https://temsvision.com",
+      "logo": "https://temsvision.com/temsvision-logo.png",
+      "image": "https://temsvision.com/og-image.jpg",
+      "email": "hello@temsvision.com",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Kalamazoo",
+        "addressRegion": "MI",
+        "addressCountry": "US"
+      },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": 42.2917,
+        "longitude": -85.5872
+      },
+      "priceRange": "$$",
+      "sameAs": [
+        "https://www.instagram.com/temsvision/",
+        "https://www.facebook.com/temsvision",
+        "https://www.linkedin.com/in/temilade-quadri-bbb980a8/"
+      ],
+      "founder": {
+        "@type": "Person",
+        "name": "Temilade Amire Quadri",
+        "jobTitle": "Photographer & Creative Director"
+      },
+      "hasOfferCatalog": {
+        "@type": "OfferCatalog",
+        "name": "Photography Services",
+        "itemListElement": [
+          {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Portrait Photography"}},
+          {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Sports Photography"}},
+          {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Wedding Photography"}},
+          {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Event Photography"}}
+        ]
+      }
+    }
+    </script>
+
     <style>
       /* Base styles */
       * {

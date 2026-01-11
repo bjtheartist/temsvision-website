@@ -75,7 +75,7 @@ const Preloader: React.FC<PreloaderProps> = ({ onComplete }) => {
 
   return (
     <div 
-      className={`fixed inset-0 z-[9999] flex flex-col items-center justify-center transition-all duration-400 ${
+      className={`fixed inset-0 z-[9999] flex flex-col items-center justify-center transition-all duration-500 ${
         isExiting ? 'opacity-0 scale-105' : 'opacity-100 scale-100'
       } ${isDark ? 'bg-black' : 'bg-white'}`}
     >

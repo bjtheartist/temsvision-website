@@ -31,18 +31,24 @@ const Contact: React.FC = () => {
     setErrorMessage('');
 
     try {
-      const response = await fetch('/api/send-email', {
+      // Using Formsubmit.co - free, no signup required
+      const response = await fetch('https://formsubmit.co/ajax/hello@temsvision.com', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Accept': 'application/json',
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          sessionType: formData.sessionType || 'Not specified',
+          message: formData.message,
+          _subject: `New Photography Inquiry from ${formData.name}`,
+        }),
       });
 
-      const data = await response.json();
-
       if (!response.ok) {
-        throw new Error(data.error || 'Failed to send message');
+        throw new Error('Failed to send message');
       }
 
       setStatus('success');

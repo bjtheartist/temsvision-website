@@ -1,0 +1,6 @@
+# TemsVision Photography - robots.txt
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://temsvision.com/sitemap.xml

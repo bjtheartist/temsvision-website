@@ -41,10 +41,23 @@ const Services: React.FC = () => {
           {SERVICES.map((service, index) => (
             <div
               key={service.id}
-              className="service-item group cursor-pointer"
+              className={`service-item group cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 rounded ${
+                isDark ? 'focus-visible:ring-offset-slate-950' : 'focus-visible:ring-offset-slate-50'
+              }`}
               onMouseEnter={() => handleMouseEnter(service.id)}
+              onMouseLeave={() => setActiveService('')}
+              onFocus={() => handleMouseEnter(service.id)}
+              onBlur={() => setActiveService('')}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  // Scroll to contact section
+                  document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
+                }
+              }}
               role="button"
               tabIndex={0}
+              aria-label={`${service.name} - ${service.description}`}
             >
               {/* Animated border */}
               <div className={`h-px ${isDark ? 'bg-white/10' : 'bg-black/10'}`} />

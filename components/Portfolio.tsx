@@ -75,11 +75,19 @@ const Portfolio: React.FC = () => {
             return (
               <div
                 key={category.id}
-                className={`group relative aspect-[4/3] overflow-hidden cursor-pointer transition-all duration-500 ease-out rounded-lg sm:rounded-none ${
+                className={`group relative aspect-[4/3] overflow-hidden cursor-pointer transition-all duration-500 ease-out rounded-lg sm:rounded-none focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 ${
                   isHovered ? 'scale-[1.02] z-10' : 'scale-100 z-0'
-                }`}
+                } ${isDark ? 'focus-visible:ring-offset-black' : 'focus-visible:ring-offset-white'}`}
                 onMouseEnter={() => handleMouseEnter(category.id)}
                 onMouseLeave={handleMouseLeave}
+                onFocus={() => handleMouseEnter(category.id)}
+                onBlur={handleMouseLeave}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    // Future: navigate to gallery
+                  }
+                }}
                 role="button"
                 tabIndex={0}
                 aria-label={`View ${category.title} gallery`}
