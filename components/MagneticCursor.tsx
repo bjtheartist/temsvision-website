@@ -1,172 +1,168 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { useTheme } from '../context/ThemeContext';
+import React, { useEffect, useRef, useState, memo } from 'react';
+import { motion, useSpring, useMotionValue } from 'framer-motion';
 
-interface CursorState {
-  x: number;
-  y: number;
-  scale: number;
-  opacity: number;
-  text: string;
-  isHovering: boolean;
-  isProject: boolean;
-  isLink: boolean;
+interface MagneticCursorProps {
+  isVisible?: boolean;
 }
 
-const MagneticCursor: React.FC = () => {
-  const { theme } = useTheme();
+const MagneticCursor: React.FC<MagneticCursorProps> = ({ isVisible = true }) => {
   const cursorRef = useRef<HTMLDivElement>(null);
-  const cursorDotRef = useRef<HTMLDivElement>(null);
-  const [cursorState, setCursorState] = useState<CursorState>({
-    x: 0,
-    y: 0,
-    scale: 1,
-    opacity: 0,
-    text: '',
-    isHovering: false,
-    isProject: false,
-    isLink: false,
-  });
+  const [isHovering, setIsHovering] = useState(false);
+  const [isClicking, setIsClicking] = useState(false);
+  const [cursorText, setCursorText] = useState('');
+  const [isProject, setIsProject] = useState(false);
+  
+  // Motion values for smooth cursor movement
+  const cursorX = useMotionValue(0);
+  const cursorY = useMotionValue(0);
+  
+  // Spring config for smooth following
+  const springConfig = { damping: 25, stiffness: 400, mass: 0.5 };
+  const cursorXSpring = useSpring(cursorX, springConfig);
+  const cursorYSpring = useSpring(cursorY, springConfig);
 
   useEffect(() => {
     // Hide default cursor
     document.body.style.cursor = 'none';
-
-    let mouseX = 0;
-    let mouseY = 0;
-    let cursorX = 0;
-    let cursorY = 0;
-    let dotX = 0;
-    let dotY = 0;
-
+    
     const handleMouseMove = (e: MouseEvent) => {
-      mouseX = e.clientX;
-      mouseY = e.clientY;
+      cursorX.set(e.clientX);
+      cursorY.set(e.clientY);
 
       // Check what element we're hovering over
       const target = e.target as HTMLElement;
-      const isProject = target.closest('[data-cursor="project"]') !== null;
-      const isLink = target.closest('a, button, [data-cursor="link"]') !== null;
-      const isMagnetic = target.closest('[data-magnetic]') !== null;
+      const projectEl = target.closest('[data-cursor="project"]');
+      const linkEl = target.closest('a, button, [data-cursor="link"], .cursor-scale');
+      const magneticEl = target.closest('[data-magnetic]') as HTMLElement;
 
       // Magnetic effect
-      if (isMagnetic) {
-        const magneticEl = target.closest('[data-magnetic]') as HTMLElement;
+      if (magneticEl) {
         const rect = magneticEl.getBoundingClientRect();
         const centerX = rect.left + rect.width / 2;
         const centerY = rect.top + rect.height / 2;
-        
-        // Calculate magnetic pull (subtle)
         const pullStrength = 0.3;
-        const deltaX = (centerX - mouseX) * pullStrength;
-        const deltaY = (centerY - mouseY) * pullStrength;
-        
-        mouseX += deltaX;
-        mouseY += deltaY;
+        const deltaX = (centerX - e.clientX) * pullStrength;
+        const deltaY = (centerY - e.clientY) * pullStrength;
+        cursorX.set(e.clientX + deltaX);
+        cursorY.set(e.clientY + deltaY);
       }
 
-      setCursorState(prev => ({
-        ...prev,
-        opacity: 1,
-        isProject,
-        isLink: isLink && !isProject,
-        text: isProject ? 'View' : '',
-        scale: isProject ? 3 : isLink ? 1.5 : 1,
-        isHovering: isProject || isLink,
-      }));
+      if (projectEl) {
+        setIsHovering(true);
+        setIsProject(true);
+        setCursorText('View');
+      } else if (linkEl) {
+        setIsHovering(true);
+        setIsProject(false);
+        const text = linkEl.getAttribute('data-cursor-text');
+        setCursorText(text || '');
+      } else {
+        setIsHovering(false);
+        setIsProject(false);
+        setCursorText('');
+      }
     };
 
+    const handleMouseDown = () => setIsClicking(true);
+    const handleMouseUp = () => setIsClicking(false);
     const handleMouseLeave = () => {
-      setCursorState(prev => ({ ...prev, opacity: 0 }));
+      setIsHovering(false);
+      setIsProject(false);
+      setCursorText('');
     };
 
-    const handleMouseEnter = () => {
-      setCursorState(prev => ({ ...prev, opacity: 1 }));
-    };
-
-    // Animation loop for smooth cursor movement
-    const animate = () => {
-      // Smooth follow for main cursor (slower)
-      const ease = 0.15;
-      cursorX += (mouseX - cursorX) * ease;
-      cursorY += (mouseY - cursorY) * ease;
-
-      // Faster follow for dot
-      const dotEase = 0.35;
-      dotX += (mouseX - dotX) * dotEase;
-      dotY += (mouseY - dotY) * dotEase;
-
-      if (cursorRef.current) {
-        cursorRef.current.style.transform = `translate(${cursorX}px, ${cursorY}px) translate(-50%, -50%) scale(${cursorState.scale})`;
-      }
-
-      if (cursorDotRef.current) {
-        cursorDotRef.current.style.transform = `translate(${dotX}px, ${dotY}px) translate(-50%, -50%)`;
-      }
-
-      requestAnimationFrame(animate);
-    };
-
-    document.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('mousedown', handleMouseDown);
+    window.addEventListener('mouseup', handleMouseUp);
     document.addEventListener('mouseleave', handleMouseLeave);
-    document.addEventListener('mouseenter', handleMouseEnter);
-    
-    const animationId = requestAnimationFrame(animate);
 
     return () => {
-      document.body.style.cursor = '';
-      document.removeEventListener('mousemove', handleMouseMove);
+      document.body.style.cursor = 'auto';
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mousedown', handleMouseDown);
+      window.removeEventListener('mouseup', handleMouseUp);
       document.removeEventListener('mouseleave', handleMouseLeave);
-      document.removeEventListener('mouseenter', handleMouseEnter);
-      cancelAnimationFrame(animationId);
     };
-  }, [cursorState.scale]);
+  }, [cursorX, cursorY]);
 
   // Don't render on touch devices
   if (typeof window !== 'undefined' && 'ontouchstart' in window) {
     return null;
   }
 
+  if (!isVisible) return null;
+
   return (
     <>
-      {/* Main cursor circle */}
-      <div
+      {/* Main cursor ring */}
+      <motion.div
         ref={cursorRef}
         className="fixed top-0 left-0 pointer-events-none z-[9999] mix-blend-difference"
         style={{
-          opacity: cursorState.opacity,
-          transition: 'opacity 0.3s ease, width 0.3s ease, height 0.3s ease',
+          x: cursorXSpring,
+          y: cursorYSpring,
         }}
       >
-        <div
-          className={`flex items-center justify-center rounded-full transition-all duration-300 ${
-            cursorState.isProject 
-              ? 'w-20 h-20 bg-white' 
-              : cursorState.isLink 
-                ? 'w-12 h-12 bg-white/80' 
-                : 'w-8 h-8 border-2 border-white bg-transparent'
-          }`}
+        <motion.div
+          className="relative flex items-center justify-center"
+          animate={{
+            width: isProject ? 80 : isHovering ? 60 : 40,
+            height: isProject ? 80 : isHovering ? 60 : 40,
+            x: isProject ? -40 : isHovering ? -30 : -20,
+            y: isProject ? -40 : isHovering ? -30 : -20,
+          }}
+          transition={{ type: 'spring', damping: 20, stiffness: 300 }}
         >
-          {cursorState.text && (
-            <span className="text-black text-xs font-bold tracking-wider uppercase">
-              {cursorState.text}
-            </span>
+          <motion.div
+            className={`absolute inset-0 rounded-full ${
+              isProject ? 'bg-white' : 'border-2 border-white bg-transparent'
+            }`}
+            animate={{
+              scale: isClicking ? 0.8 : 1,
+              opacity: isHovering ? 1 : 0.6,
+            }}
+            transition={{ type: 'spring', damping: 20, stiffness: 400 }}
+          />
+          
+          {/* Cursor text */}
+          {cursorText && (
+            <motion.span
+              className={`text-xs font-bold tracking-wider uppercase ${
+                isProject ? 'text-black' : 'text-white'
+              }`}
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.8 }}
+            >
+              {cursorText}
+            </motion.span>
           )}
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
 
-      {/* Cursor dot (faster follow) */}
-      <div
-        ref={cursorDotRef}
+      {/* Center dot */}
+      <motion.div
         className="fixed top-0 left-0 pointer-events-none z-[9999]"
         style={{
-          opacity: cursorState.isHovering ? 0 : cursorState.opacity,
-          transition: 'opacity 0.2s ease',
+          x: cursorX,
+          y: cursorY,
         }}
       >
-        <div className="w-2 h-2 bg-white rounded-full mix-blend-difference" />
-      </div>
+        <motion.div
+          className="w-2 h-2 bg-white rounded-full mix-blend-difference"
+          style={{
+            x: -4,
+            y: -4,
+          }}
+          animate={{
+            scale: isHovering ? 0 : isClicking ? 0.5 : 1,
+            opacity: isHovering ? 0 : 1,
+          }}
+          transition={{ type: 'spring', damping: 20, stiffness: 400 }}
+        />
+      </motion.div>
     </>
   );
 };
 
-export default MagneticCursor;
+export default memo(MagneticCursor);

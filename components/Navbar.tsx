@@ -1,20 +1,17 @@
-import React, { useState, useEffect, useCallback, memo } from 'react';
-import { useTheme } from '../context/ThemeContext';
-import { SITE_CONFIG, SOCIAL_LINKS, NAV_ITEMS } from '../constants';
-import ThemeToggle from './ThemeToggle';
+import React, { useState, useEffect, memo } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Plus, X } from 'lucide-react';
+import { SOCIAL_LINKS, SITE_CONFIG, NAV_ITEMS } from '../constants';
+
+const socialLinks = [
+  { name: 'Instagram', href: SOCIAL_LINKS.instagram },
+  { name: 'Facebook', href: SOCIAL_LINKS.facebook },
+  { name: 'LinkedIn', href: SOCIAL_LINKS.linkedin },
+  { name: 'Pinterest', href: SOCIAL_LINKS.pinterest },
+].filter(link => link.href);
 
 const Navbar: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);
-  const { isDark } = useTheme();
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
-    };
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
 
   // Prevent body scroll when menu is open
   useEffect(() => {
@@ -28,185 +25,130 @@ const Navbar: React.FC = () => {
     };
   }, [isMenuOpen]);
 
-  const scrollToSection = useCallback((id: string) => {
+  const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
+
+  const handleNavClick = (href: string) => {
     setIsMenuOpen(false);
-    // Small delay to let menu close animation start
     setTimeout(() => {
-      const element = document.getElementById(id);
+      const element = document.querySelector(href);
       if (element) {
         element.scrollIntoView({ behavior: 'smooth' });
       }
     }, 100);
-  }, []);
+  };
 
   return (
     <>
-      {/* Fixed Header */}
-      <header 
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-          isScrolled && !isMenuOpen
-            ? isDark 
-              ? 'bg-black/90 backdrop-blur-md' 
-              : 'bg-white/90 backdrop-blur-md shadow-sm'
-            : 'bg-transparent'
-        }`}
-      >
-        <div className="px-4 sm:px-6 md:px-12 lg:px-24">
-          <div className="flex items-center justify-between h-16 md:h-20 lg:h-24">
-            {/* Logo */}
-            <a 
-              href="#" 
-              onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
-              className="relative z-[60]"
-            >
-              <img 
-                src="/temsvision-logo-white-blue.png" 
-                alt="TemsVision"
-                className="w-10 md:w-12 h-auto"
-                style={{ 
-                  filter: isMenuOpen 
-                    ? 'invert(1)' 
-                    : 'none'
-                }}
-              />
-            </a>
+      {/* Fixed Header - Mix blend difference for visibility on any background */}
+      <header className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 md:px-12 py-6 mix-blend-difference text-white pointer-events-none">
+        {/* Logo */}
+        <a 
+          href="#" 
+          className="flex items-center gap-2 text-xl md:text-2xl font-bold tracking-tighter pointer-events-auto cursor-scale"
+          onClick={(e) => {
+            e.preventDefault();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }}
+          style={{ fontFamily: "'Bebas Neue', sans-serif" }}
+        >
+          <span>TEMS</span>
+          <span className="text-blue-400">VISION</span>
+        </a>
 
-            {/* Center Tagline - Desktop Only */}
-            <div className={`hidden lg:block absolute left-1/2 -translate-x-1/2 transition-opacity duration-200 ${
-              isScrolled || isMenuOpen ? 'opacity-0' : 'opacity-100'
-            }`}>
-              <span className={`text-[10px] tracking-[0.2em] uppercase ${
-                isDark ? 'text-white/60' : 'text-black/60'
-              }`}>
-                [{SITE_CONFIG.tagline}]
-              </span>
-            </div>
-
-            {/* Right Controls */}
-            <div className="flex items-center gap-2 sm:gap-4">
-              {/* Theme Toggle - Desktop */}
-              <div className={`hidden sm:block transition-opacity duration-200 ${
-                isMenuOpen ? 'opacity-0' : 'opacity-100'
-              }`}>
-                <ThemeToggle variant="inline" />
-              </div>
-
-              {/* Menu Toggle */}
-              <button
-                onClick={() => setIsMenuOpen(!isMenuOpen)}
-                className={`relative z-[60] text-xs font-medium tracking-[0.2em] uppercase transition-colors duration-200 px-2 py-1 ${
-                  isMenuOpen 
-                    ? 'text-black' 
-                    : isDark 
-                      ? 'text-white' 
-                      : 'text-black'
-                }`}
-                aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
-                aria-expanded={isMenuOpen}
-              >
-                [{isMenuOpen ? 'Close' : 'Menu'}]
-              </button>
-            </div>
-          </div>
-        </div>
+        {/* Menu Toggle */}
+        <button 
+          className="p-2 hover:opacity-70 transition-opacity pointer-events-auto cursor-scale"
+          onClick={toggleMenu}
+          aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
+        >
+          {isMenuOpen ? <X size={28} strokeWidth={1.5} /> : <Plus size={28} strokeWidth={1.5} />}
+        </button>
       </header>
 
-      {/* Full Screen Menu Overlay - Blue gradient theme */}
-      <div 
-        className={`fixed inset-0 z-[55] transition-all duration-300 ease-out ${
-          isMenuOpen 
-            ? 'opacity-100 pointer-events-auto' 
-            : 'opacity-0 pointer-events-none'
-        }`}
-        style={{
-          background: 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 40%, #1e3a5f 100%)'
-        }}
-      >
-        {/* Menu Content */}
-        <div className="relative z-10 h-full flex flex-col justify-center px-4 sm:px-6 md:px-12 lg:px-24 pt-16 md:pt-0">
-          <nav className="max-w-4xl">
-            {NAV_ITEMS.map((item, index) => (
-              <div 
-                key={item.id}
-                className={`transition-all duration-300 ease-out ${
-                  isMenuOpen ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
-                }`}
-                style={{ transitionDelay: isMenuOpen ? `${index * 50 + 100}ms` : '0ms' }}
-              >
-                <button
-                  onClick={() => scrollToSection(item.id)}
-                  className="group flex items-center gap-3 sm:gap-4 py-2 sm:py-3 md:py-4"
-                >
-                  <span className="text-white/30 text-xs sm:text-sm font-mono">
-                    {String(index + 1).padStart(2, '0')}
-                  </span>
-                  <span 
-                    className="text-3xl sm:text-5xl md:text-7xl lg:text-8xl font-black text-white hover:text-cyan-300 transition-colors duration-150"
-                    style={{ fontFamily: "'Bebas Neue', sans-serif" }}
-                  >
-                    {item.label}
-                  </span>
-                </button>
-              </div>
-            ))}
-          </nav>
-
-          {/* Footer Info */}
-          <div 
-            className={`absolute bottom-8 sm:bottom-12 left-4 sm:left-6 md:left-12 lg:left-24 right-4 sm:right-6 md:right-12 lg:right-24 flex flex-col md:flex-row justify-between gap-4 sm:gap-8 transition-all duration-300 ease-out ${
-              isMenuOpen ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
-            }`}
-            style={{ transitionDelay: isMenuOpen ? '300ms' : '0ms' }}
+      {/* Full Screen Menu */}
+      <AnimatePresence>
+        {isMenuOpen && (
+          <motion.div
+            className="fixed inset-0 z-40 bg-neutral-950 text-white flex flex-col justify-between p-6 md:p-12"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.4 }}
           >
-            {/* Social Links */}
-            <div className="flex flex-wrap gap-4 sm:gap-6">
-              {SOCIAL_LINKS.instagram && (
-                <a 
-                  href={SOCIAL_LINKS.instagram} 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="text-xs tracking-[0.1em] uppercase text-white/60 hover:text-cyan-300 transition-colors duration-150"
-                >
-                  Instagram
-                </a>
-              )}
-              {SOCIAL_LINKS.facebook && (
-                <a 
-                  href={SOCIAL_LINKS.facebook} 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="text-xs tracking-[0.1em] uppercase text-white/60 hover:text-cyan-300 transition-colors duration-150"
-                >
-                  Facebook
-                </a>
-              )}
-              {SOCIAL_LINKS.linkedin && (
-                <a 
-                  href={SOCIAL_LINKS.linkedin} 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="text-xs tracking-[0.1em] uppercase text-white/60 hover:text-cyan-300 transition-colors duration-150"
-                >
-                  LinkedIn
-                </a>
-              )}
-            </div>
+            {/* Close button area - to maintain header position */}
+            <div className="h-16" />
 
-            {/* Theme Toggle - Mobile (in menu) */}
-            <div className="flex items-center gap-4 sm:hidden">
-              <span className="text-xs tracking-[0.1em] uppercase text-white/40">Theme</span>
-              <ThemeToggle variant="inline" />
-            </div>
+            {/* Navigation Links */}
+            <nav className="flex-1 flex flex-col justify-center">
+              <ul className="space-y-4 md:space-y-6">
+                {NAV_ITEMS.map((item, index) => (
+                  <motion.li
+                    key={item.id}
+                    initial={{ opacity: 0, x: -40 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -40 }}
+                    transition={{ delay: index * 0.08, duration: 0.4 }}
+                  >
+                    <button
+                      onClick={() => handleNavClick(item.href)}
+                      className="group flex items-center gap-4 text-5xl md:text-7xl lg:text-8xl font-bold tracking-tighter hover:text-neutral-400 transition-colors cursor-scale"
+                      style={{ fontFamily: "'Bebas Neue', sans-serif" }}
+                    >
+                      <span className="text-sm font-mono text-neutral-600 w-8">
+                        {String(index + 1).padStart(2, '0')}
+                      </span>
+                      <span>{item.label}</span>
+                      <motion.span 
+                        className="opacity-0 group-hover:opacity-100 transition-opacity text-2xl text-blue-400"
+                        initial={{ x: -10 }}
+                        whileHover={{ x: 0 }}
+                      >
+                        →
+                      </motion.span>
+                    </button>
+                  </motion.li>
+                ))}
+              </ul>
+            </nav>
 
-            {/* Location */}
-            <div className="hidden md:block">
-              <span className="text-xs tracking-[0.1em] uppercase text-white/40">
-                {SITE_CONFIG.location}
-              </span>
-            </div>
-          </div>
-        </div>
-      </div>
+            {/* Footer */}
+            <motion.div
+              className="flex flex-col md:flex-row justify-between items-start md:items-end gap-8 pt-8 border-t border-white/10"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 20 }}
+              transition={{ delay: 0.4, duration: 0.4 }}
+            >
+              {/* Social Links */}
+              <div className="flex flex-wrap gap-4 md:gap-6">
+                {socialLinks.map((link) => (
+                  <a
+                    key={link.name}
+                    href={link.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-sm tracking-wider uppercase text-neutral-400 hover:text-white transition-colors cursor-scale"
+                  >
+                    {link.name}
+                  </a>
+                ))}
+              </div>
+
+              {/* Contact */}
+              <div className="text-left md:text-right">
+                <p className="text-sm text-neutral-500 mb-1">Get in touch</p>
+                <a 
+                  href={`mailto:${SITE_CONFIG.email}`}
+                  className="text-lg md:text-xl hover:text-blue-400 transition-colors cursor-scale"
+                >
+                  {SITE_CONFIG.email}
+                </a>
+                <p className="text-sm text-neutral-500 mt-2">{SITE_CONFIG.location}</p>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </>
   );
 };

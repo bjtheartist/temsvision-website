@@ -1,36 +1,40 @@
-import React, { useEffect, useState, useCallback, Suspense, lazy } from 'react';
-import { ThemeProvider, useTheme } from './context/ThemeContext';
+import React, { useEffect, useState, useCallback, Suspense, lazy, memo } from 'react';
 import Preloader from './components/Preloader';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
-import ThemeToggle from './components/ThemeToggle';
+import MagneticCursor from './components/MagneticCursor';
 
 // Lazy load below-the-fold components for better performance
-const About = lazy(() => import('./components/About'));
+const MarqueeSlider = lazy(() => import('./components/MarqueeSlider'));
 const Portfolio = lazy(() => import('./components/Portfolio'));
+const About = lazy(() => import('./components/About'));
 const Services = lazy(() => import('./components/Services'));
-const Contact = lazy(() => import('./components/Contact'));
 const Footer = lazy(() => import('./components/Footer'));
 
 // Loading fallback component
-const SectionLoader: React.FC = () => {
-  const { isDark } = useTheme();
-  return (
-    <div className={`py-32 flex items-center justify-center ${
-      isDark ? 'bg-black' : 'bg-white'
-    }`}>
-      <div className="w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
-    </div>
-  );
-};
+const SectionLoader: React.FC = memo(() => (
+  <div className="py-32 flex items-center justify-center bg-neutral-950">
+    <div className="w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
+  </div>
+));
 
-const AppContent: React.FC = () => {
-  const { isDark } = useTheme();
+const App: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [showContent, setShowContent] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
+  // Check for mobile/touch device
   useEffect(() => {
-    // Prevent scrolling during preloader
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768 || 'ontouchstart' in window);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  // Prevent scrolling during preloader
+  useEffect(() => {
     if (isLoading) {
       document.body.style.overflow = 'hidden';
     } else {
@@ -41,9 +45,9 @@ const AppContent: React.FC = () => {
     };
   }, [isLoading]);
 
+  // Show content after preloader
   useEffect(() => {
     if (!isLoading) {
-      // Small delay before showing content for smooth transition
       const timer = setTimeout(() => setShowContent(true), 50);
       return () => clearTimeout(timer);
     }
@@ -55,54 +59,53 @@ const AppContent: React.FC = () => {
 
   return (
     <>
+      {/* Custom Cursor - Desktop only */}
+      {!isMobile && <MagneticCursor isVisible={!isLoading} />}
+
+      {/* Preloader */}
       {isLoading && <Preloader onComplete={handlePreloaderComplete} />}
       
+      {/* Main Content */}
       <main 
-        className={`relative min-h-screen overflow-x-hidden transition-all duration-300 ease-out ${
-          isDark 
-            ? 'bg-black text-white selection:bg-blue-500 selection:text-white' 
-            : 'bg-white text-black selection:bg-blue-500 selection:text-white'
-        } ${showContent ? 'opacity-100' : 'opacity-0'}`}
+        className={`relative min-h-screen overflow-x-hidden bg-neutral-950 text-white selection:bg-blue-500 selection:text-white transition-opacity duration-500 ${
+          showContent ? 'opacity-100' : 'opacity-0'
+        }`}
       >
+        {/* Navigation */}
         <Navbar />
 
+        {/* Page Sections */}
         <div className="relative z-10">
+          {/* Hero Section */}
           <Hero />
           
-          {/* Section order: About, Gallery, Services, Contact */}
+          {/* Featured Work Marquee */}
           <Suspense fallback={<SectionLoader />}>
-            <About />
+            <MarqueeSlider />
           </Suspense>
           
+          {/* Gallery/Portfolio */}
           <Suspense fallback={<SectionLoader />}>
             <Portfolio />
           </Suspense>
           
+          {/* About Section */}
+          <Suspense fallback={<SectionLoader />}>
+            <About />
+          </Suspense>
+          
+          {/* Services */}
           <Suspense fallback={<SectionLoader />}>
             <Services />
           </Suspense>
           
-          <Suspense fallback={<SectionLoader />}>
-            <Contact />
-          </Suspense>
-          
+          {/* Footer with Contact */}
           <Suspense fallback={<SectionLoader />}>
             <Footer />
           </Suspense>
         </div>
-
-        {/* Fixed Theme Toggle Button */}
-        <ThemeToggle variant="fixed" />
       </main>
     </>
-  );
-};
-
-const App: React.FC = () => {
-  return (
-    <ThemeProvider>
-      <AppContent />
-    </ThemeProvider>
   );
 };
 

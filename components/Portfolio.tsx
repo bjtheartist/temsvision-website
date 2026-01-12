@@ -1,236 +1,274 @@
-import React, { useState, useCallback, memo } from 'react';
-import { useTheme } from '../context/ThemeContext';
+import React, { memo, useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { PROJECTS } from '../constants';
 
-const Portfolio: React.FC = () => {
-  const { isDark } = useTheme();
-  const [hoveredCategory, setHoveredCategory] = useState<string | null>(null);
+// All gallery images organized by category
+const GALLERY_IMAGES: Record<string, string[]> = {
+  portraits: [
+    '/gallery/portrait-1.jpg',
+    '/gallery/portrait-2.jpg',
+    '/gallery/portrait-3.jpg',
+    '/gallery/portrait-4.jpg',
+    '/gallery/portrait-5.jpg',
+    '/gallery/portrait-6.jpg',
+  ],
+  sports: [
+    '/gallery/sports-1.jpg',
+    '/gallery/sports-2.jpg',
+    '/gallery/sports-3.jpg',
+    '/gallery/sports-4.jpg',
+  ],
+  lifestyle: [
+    '/gallery/lifestyle-1.jpg',
+    '/gallery/lifestyle-2.jpg',
+  ],
+  family: [
+    '/gallery/maternity-1.jpg',
+    '/gallery/maternity-2.jpg',
+  ],
+  'b & w': [
+    '/gallery/bw-1.jpg',
+  ],
+};
 
-  // Photography categories with actual images
-  const categories = [
-    { 
-      id: 'PORTRAITS', 
-      title: 'Portrait Sessions', 
-      subtitle: 'Capturing personality & style',
-      image: '/gallery/portrait-1.jpg',
-      tags: ['CREATIVE', 'EDITORIAL']
-    },
-    { 
-      id: 'SPORTS', 
-      title: 'Sports Action', 
-      subtitle: 'Dynamic athletic moments',
-      image: '/gallery/sports-1.jpg',
-      tags: ['ACTION', 'EVENTS']
-    },
-    { 
-      id: 'FAMILY', 
-      title: 'Maternity & Family', 
-      subtitle: 'Celebrating new beginnings',
-      image: '/gallery/maternity-1.jpg',
-      tags: ['LIFESTYLE', 'INTIMATE']
-    },
-    { 
-      id: 'B & W', 
-      title: 'Black & White', 
-      subtitle: 'Timeless monochrome',
-      image: '/gallery/bw-1.jpg',
-      tags: ['CLASSIC', 'ARTISTIC']
-    },
-  ];
+interface ProjectCardProps {
+  project: typeof PROJECTS[0];
+  index: number;
+  onSelect: (project: typeof PROJECTS[0]) => void;
+}
 
-  const handleMouseEnter = useCallback((id: string) => {
-    setHoveredCategory(id);
-  }, []);
-
-  const handleMouseLeave = useCallback(() => {
-    setHoveredCategory(null);
-  }, []);
+const ProjectCard: React.FC<ProjectCardProps> = ({ project, index, onSelect }) => {
+  const [isHovered, setIsHovered] = useState(false);
 
   return (
-    <section id="gallery" className={`relative py-20 md:py-32 lg:py-40 ${
-      isDark ? 'bg-black' : 'bg-[#f8f7f4]'
-    }`}>
-      {/* Section Header - Area 17 style */}
-      <div className="px-6 md:px-12 lg:px-24 mb-16 md:mb-24">
-        <div className="flex items-center gap-4 mb-6">
-          <span className={`text-xs md:text-sm font-mono tracking-wider ${
-            isDark ? 'text-blue-400' : 'text-blue-600'
-          }`}>02</span>
-          <div className={`flex-1 h-px ${isDark ? 'bg-white/10' : 'bg-black/10'}`} />
-        </div>
+    <motion.div
+      className="relative cursor-scale group"
+      data-cursor="project"
+      initial={{ opacity: 0, y: 50 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: '-100px' }}
+      transition={{ duration: 0.6, delay: index * 0.1 }}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      onClick={() => onSelect(project)}
+    >
+      {/* Image container */}
+      <div className="relative aspect-[4/5] overflow-hidden bg-neutral-900">
+        <motion.img
+          src={project.imageUrl}
+          alt={project.title}
+          className="w-full h-full object-cover"
+          initial={{ filter: 'grayscale(100%)' }}
+          animate={{ 
+            filter: isHovered ? 'grayscale(0%)' : 'grayscale(100%)',
+            scale: isHovered ? 1.08 : 1,
+          }}
+          transition={{ duration: 0.7, ease: [0.33, 1, 0.68, 1] }}
+        />
         
-        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6">
-          <div>
-            <h2 
-              className={`text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-black tracking-tight ${
-                isDark ? 'text-white' : 'text-black'
-              }`}
+        {/* Gradient overlay */}
+        <motion.div
+          className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"
+          animate={{ opacity: isHovered ? 1 : 0.6 }}
+          transition={{ duration: 0.4 }}
+        />
+
+        {/* Index number */}
+        <div className="absolute top-4 left-4">
+          <span className="text-xs font-mono text-white/40">
+            {String(index + 1).padStart(2, '0')}
+          </span>
+        </div>
+
+        {/* View indicator */}
+        <motion.div
+          className="absolute top-4 right-4 w-10 h-10 rounded-full border border-white/30 flex items-center justify-center"
+          animate={{ 
+            scale: isHovered ? 1 : 0.8,
+            opacity: isHovered ? 1 : 0,
+          }}
+          transition={{ duration: 0.3 }}
+        >
+          <span className="text-white text-lg">+</span>
+        </motion.div>
+
+        {/* Content */}
+        <div className="absolute bottom-0 left-0 right-0 p-6">
+          <motion.div
+            animate={{ y: isHovered ? 0 : 10, opacity: isHovered ? 1 : 0.8 }}
+            transition={{ duration: 0.3 }}
+          >
+            <span className="text-xs tracking-[0.2em] uppercase text-blue-400 mb-2 block">
+              {project.category}
+            </span>
+            <h3 className="text-2xl md:text-3xl font-bold text-white tracking-tight">
+              {project.title}
+            </h3>
+          </motion.div>
+          
+          <motion.p
+            className="text-sm text-white/60 mt-3 line-clamp-2"
+            animate={{ y: isHovered ? 0 : 20, opacity: isHovered ? 1 : 0 }}
+            transition={{ duration: 0.3, delay: 0.1 }}
+          >
+            {project.description}
+          </motion.p>
+        </div>
+      </div>
+    </motion.div>
+  );
+};
+
+// Lightbox Modal
+interface LightboxProps {
+  project: typeof PROJECTS[0] | null;
+  onClose: () => void;
+}
+
+const Lightbox: React.FC<LightboxProps> = ({ project, onClose }) => {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  
+  if (!project) return null;
+
+  // Get images for this category
+  const categoryKey = project.category.toLowerCase();
+  const images = GALLERY_IMAGES[categoryKey] || [project.imageUrl];
+
+  const nextImage = () => setCurrentIndex((prev) => (prev + 1) % images.length);
+  const prevImage = () => setCurrentIndex((prev) => (prev - 1 + images.length) % images.length);
+
+  return (
+    <motion.div
+      className="fixed inset-0 z-[100] bg-black/95 flex items-center justify-center"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      onClick={onClose}
+    >
+      {/* Close button */}
+      <button
+        className="absolute top-6 right-6 w-12 h-12 rounded-full border border-white/30 flex items-center justify-center text-white hover:bg-white/10 transition-colors cursor-scale z-10"
+        onClick={onClose}
+      >
+        ✕
+      </button>
+
+      {/* Navigation arrows */}
+      {images.length > 1 && (
+        <>
+          <button
+            className="absolute left-6 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full border border-white/30 flex items-center justify-center text-white hover:bg-white/10 transition-colors cursor-scale z-10"
+            onClick={(e) => { e.stopPropagation(); prevImage(); }}
+          >
+            ←
+          </button>
+          <button
+            className="absolute right-6 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full border border-white/30 flex items-center justify-center text-white hover:bg-white/10 transition-colors cursor-scale z-10"
+            onClick={(e) => { e.stopPropagation(); nextImage(); }}
+          >
+            →
+          </button>
+        </>
+      )}
+
+      {/* Image */}
+      <motion.div
+        className="relative max-w-[90vw] max-h-[85vh]"
+        onClick={(e) => e.stopPropagation()}
+        initial={{ scale: 0.9, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        exit={{ scale: 0.9, opacity: 0 }}
+        transition={{ duration: 0.3 }}
+      >
+        <AnimatePresence mode="wait">
+          <motion.img
+            key={currentIndex}
+            src={images[currentIndex]}
+            alt={project.title}
+            className="max-w-full max-h-[85vh] object-contain"
+            initial={{ opacity: 0, x: 50 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -50 }}
+            transition={{ duration: 0.3 }}
+          />
+        </AnimatePresence>
+      </motion.div>
+
+      {/* Info */}
+      <div className="absolute bottom-6 left-6 text-white">
+        <h3 className="text-2xl font-bold tracking-tight">{project.title}</h3>
+        <p className="text-sm text-white/60 mt-1">{project.category}</p>
+        {images.length > 1 && (
+          <p className="text-xs text-white/40 mt-2 font-mono">
+            {currentIndex + 1} / {images.length}
+          </p>
+        )}
+      </div>
+    </motion.div>
+  );
+};
+
+const Portfolio: React.FC = () => {
+  const [selectedProject, setSelectedProject] = useState<typeof PROJECTS[0] | null>(null);
+
+  return (
+    <section id="gallery" className="py-24 md:py-32 bg-neutral-950">
+      <div className="px-6 md:px-12 lg:px-24">
+        <div className="max-w-[1800px] mx-auto">
+          {/* Section header */}
+          <div className="mb-16 md:mb-24">
+            <motion.span
+              className="text-sm tracking-[0.3em] uppercase text-white/40"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+            >
+              Portfolio
+            </motion.span>
+            <motion.h2
+              className="text-4xl md:text-5xl lg:text-6xl font-bold text-white tracking-tighter mt-4"
               style={{ fontFamily: "'Bebas Neue', sans-serif" }}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.1 }}
             >
               Gallery
-            </h2>
-            <p className={`text-sm md:text-base mt-4 max-w-md font-light ${
-              isDark ? 'text-white/40' : 'text-black/40'
-            }`}>
-              A curated collection of moments. Each frame tells a unique story.
-            </p>
+            </motion.h2>
+            <motion.p
+              className="text-lg text-white/50 mt-4 max-w-xl"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.2 }}
+            >
+              Click on any category to explore the full collection
+            </motion.p>
           </div>
-          
-          {/* View all link - Area 17 style */}
-          <a 
-            href="#gallery" 
-            className={`group flex items-center gap-3 text-sm tracking-wider uppercase font-light transition-colors duration-300 ${
-              isDark ? 'text-white/60 hover:text-blue-400' : 'text-black/60 hover:text-blue-600'
-            }`}
-          >
-            <span>View All Work</span>
-            <span className="transition-transform duration-300 group-hover:translate-x-2">→</span>
-          </a>
+
+          {/* Project grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+            {PROJECTS.map((project, index) => (
+              <ProjectCard
+                key={project.id}
+                project={project}
+                index={index}
+                onSelect={setSelectedProject}
+              />
+            ))}
+          </div>
         </div>
       </div>
 
-      {/* Gallery Grid - Premium Beaucoup style */}
-      <div className="px-6 md:px-12 lg:px-24">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 lg:gap-8">
-          {categories.map((category, index) => {
-            const isHovered = hoveredCategory === category.id;
-            
-            return (
-              <div
-                key={category.id}
-                className={`group relative aspect-[4/3] md:aspect-[16/10] overflow-hidden cursor-pointer transition-all duration-700 ease-out ${
-                  isHovered ? 'z-10' : 'z-0'
-                }`}
-                onMouseEnter={() => handleMouseEnter(category.id)}
-                onMouseLeave={handleMouseLeave}
-                onFocus={() => handleMouseEnter(category.id)}
-                onBlur={handleMouseLeave}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                  }
-                }}
-                role="button"
-                tabIndex={0}
-                aria-label={`View ${category.title} gallery`}
-              >
-                {/* Background Image with premium zoom */}
-                <div 
-                  className={`absolute inset-0 transition-all duration-1000 ease-out ${
-                    isHovered ? 'scale-110' : 'scale-100'
-                  }`}
-                  style={{ 
-                    backgroundImage: `url(${category.image})`,
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'center'
-                  }}
-                />
-                
-                {/* Premium gradient overlay */}
-                <div className={`absolute inset-0 transition-all duration-700 ${
-                  isDark 
-                    ? 'bg-gradient-to-t from-black via-black/50 to-black/20'
-                    : 'bg-gradient-to-t from-black/80 via-black/40 to-transparent'
-                } ${isHovered ? 'opacity-90' : 'opacity-70'}`} />
-
-                {/* Large background number */}
-                <div className="absolute -top-4 -right-4 md:-top-8 md:-right-8 pointer-events-none">
-                  <span 
-                    className={`text-[120px] md:text-[180px] lg:text-[220px] font-black leading-none transition-all duration-700 ${
-                      isHovered ? 'text-white/10' : 'text-white/5'
-                    }`}
-                    style={{ fontFamily: "'Bebas Neue', sans-serif" }}
-                  >
-                    {String(index + 1).padStart(2, '0')}
-                  </span>
-                </div>
-
-                {/* Category tags - Beaucoup style */}
-                <div className={`absolute top-4 md:top-6 left-4 md:left-6 flex flex-wrap gap-2 transition-all duration-500 ${
-                  isHovered ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2'
-                }`}>
-                  {category.tags.map((tag) => (
-                    <span 
-                      key={tag}
-                      className="px-2 py-1 text-[9px] md:text-[10px] tracking-[0.2em] uppercase bg-white/10 backdrop-blur-sm text-white/80 border border-white/20"
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-
-                {/* Content */}
-                <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8">
-                  {/* Category ID */}
-                  <div className={`mb-2 md:mb-3 transition-all duration-500 ${
-                    isHovered ? 'translate-y-0 opacity-100' : 'translate-y-2 opacity-60'
-                  }`}>
-                    <span className="text-blue-400 text-[10px] md:text-xs tracking-[0.3em] uppercase font-medium">
-                      {category.id}
-                    </span>
-                  </div>
-                  
-                  {/* Title */}
-                  <h3 
-                    className={`text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-black text-white transition-all duration-500 ${
-                      isHovered ? 'translate-y-0' : 'translate-y-1'
-                    }`}
-                    style={{ fontFamily: "'Bebas Neue', sans-serif" }}
-                  >
-                    {category.title}
-                  </h3>
-
-                  {/* Subtitle */}
-                  <p className={`text-sm md:text-base mt-2 md:mt-3 text-white/60 font-light transition-all duration-700 ${
-                    isHovered ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
-                  }`}>
-                    {category.subtitle}
-                  </p>
-
-                  {/* View link with arrow */}
-                  <div className={`mt-4 md:mt-6 flex items-center gap-3 transition-all duration-700 ${
-                    isHovered ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-4'
-                  }`}>
-                    <span className="text-xs md:text-sm tracking-[0.2em] uppercase text-white font-light">
-                      Explore
-                    </span>
-                    <div className="w-8 md:w-12 h-px bg-gradient-to-r from-blue-400 to-cyan-400" />
-                    <span className="text-blue-400 text-lg">→</span>
-                  </div>
-                </div>
-
-                {/* Corner accents */}
-                <div className={`absolute top-4 right-4 md:top-6 md:right-6 transition-all duration-500 ${
-                  isHovered ? 'opacity-100' : 'opacity-0'
-                }`}>
-                  <div className="w-8 md:w-12 h-px bg-white/40" />
-                  <div className="w-px h-8 md:h-12 bg-white/40" />
-                </div>
-
-                {/* Bottom accent line */}
-                <div className={`absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 via-cyan-400 to-blue-600 transition-all duration-700 origin-left ${
-                  isHovered ? 'scale-x-100' : 'scale-x-0'
-                }`} />
-              </div>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* Bottom info bar */}
-      <div className="px-6 md:px-12 lg:px-24 mt-16 md:mt-24 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-        <div className="flex items-center gap-4">
-          <span className={`text-xs md:text-sm font-mono ${isDark ? 'text-white/30' : 'text-black/30'}`}>
-            {categories.length} Collections
-          </span>
-          <div className={`w-px h-4 ${isDark ? 'bg-white/20' : 'bg-black/20'}`} />
-          <span className={`text-xs md:text-sm font-light ${isDark ? 'text-white/30' : 'text-black/30'}`}>
-            Updated 2025
-          </span>
-        </div>
-        <span className={`text-xs tracking-[0.2em] uppercase font-light ${isDark ? 'text-white/30' : 'text-black/30'}`}>
-          Hover to preview
-        </span>
-      </div>
+      {/* Lightbox */}
+      <AnimatePresence>
+        {selectedProject && (
+          <Lightbox
+            project={selectedProject}
+            onClose={() => setSelectedProject(null)}
+          />
+        )}
+      </AnimatePresence>
     </section>
   );
 };
