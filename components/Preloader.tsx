@@ -1,146 +1,93 @@
-import React, { useEffect, useState, useMemo, memo } from 'react';
-import { SITE_CONFIG } from '../constants';
-import { useTheme } from '../context/ThemeContext';
+import React, { useEffect, useState, memo } from 'react';
 
 interface PreloaderProps {
   onComplete: () => void;
 }
 
-// Memoized digit component for performance
-const Digit = memo<{ value: number }>(({ value }) => (
-  <span 
-    className="inline-block w-8 text-center tabular-nums"
-    style={{ fontFamily: "'Bebas Neue', sans-serif" }}
-  >
-    {value}
-  </span>
-));
-
-Digit.displayName = 'Digit';
-
 const Preloader: React.FC<PreloaderProps> = ({ onComplete }) => {
-  const { isDark } = useTheme();
-  const [progress, setProgress] = useState(0);
   const [isExiting, setIsExiting] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
 
-  // Smooth eased progress animation using requestAnimationFrame
+  // Wait for the webp to load, then trigger exit
   useEffect(() => {
-    const duration = 2500; // Slightly longer to enjoy the animation
-    const startTime = performance.now();
-    let animationId: number;
-    
-    const easeOutQuart = (t: number): number => 1 - Math.pow(1 - t, 4);
-    
-    const animate = (currentTime: number) => {
-      const elapsed = currentTime - startTime;
-      const linearProgress = Math.min(elapsed / duration, 1);
-      const easedProgress = easeOutQuart(linearProgress) * 100;
-      
-      setProgress(easedProgress);
-      
-      if (linearProgress < 1) {
-        animationId = requestAnimationFrame(animate);
-      }
-    };
-    
-    animationId = requestAnimationFrame(animate);
-    
-    return () => {
-      if (animationId) {
-        cancelAnimationFrame(animationId);
-      }
-    };
-  }, []);
+    const minDisplayTime = 2500; // Minimum time to show the animation
+    const startTime = Date.now();
 
-  // Handle completion
-  useEffect(() => {
-    if (progress >= 99.9) {
-      const exitTimer = setTimeout(() => {
+    const img = new Image();
+    img.src = '/hero-animation.webp';
+    
+    img.onload = () => {
+      const elapsed = Date.now() - startTime;
+      const remainingTime = Math.max(0, minDisplayTime - elapsed);
+      
+      setTimeout(() => {
+        setIsLoaded(true);
+        setTimeout(() => {
+          setIsExiting(true);
+          setTimeout(onComplete, 600);
+        }, 300);
+      }, remainingTime);
+    };
+
+    // Fallback in case image doesn't load
+    const fallbackTimer = setTimeout(() => {
+      setIsLoaded(true);
+      setTimeout(() => {
         setIsExiting(true);
-        setTimeout(onComplete, 500);
-      }, 200);
-      
-      return () => clearTimeout(exitTimer);
-    }
-  }, [progress, onComplete]);
+        setTimeout(onComplete, 600);
+      }, 300);
+    }, 4000);
 
-  // Calculate display value
-  const displayValue = Math.min(Math.round(progress), 100);
-
-  // Memoize the formatted digits
-  const formattedDigits = useMemo(() => {
-    const str = displayValue.toString().padStart(3, '0');
-    return str.split('').map(Number);
-  }, [displayValue]);
+    return () => clearTimeout(fallbackTimer);
+  }, [onComplete]);
 
   return (
     <div 
-      className={`fixed inset-0 z-[9999] flex flex-col items-center justify-center transition-all duration-500 ${
-        isExiting ? 'opacity-0 scale-105' : 'opacity-100 scale-100'
-      } ${isDark ? 'bg-black' : 'bg-white'}`}
+      className={`fixed inset-0 z-[9999] flex items-center justify-center bg-black transition-opacity duration-600 ${
+        isExiting ? 'opacity-0' : 'opacity-100'
+      }`}
     >
-      {/* Animated WebP Logo - Main visual */}
+      {/* Full-screen animated webp */}
       <div 
-        className={`mb-6 transition-all duration-700 ${
-          isExiting ? 'scale-125 opacity-0' : 'scale-100 opacity-100'
+        className={`absolute inset-0 flex items-center justify-center transition-transform duration-700 ${
+          isExiting ? 'scale-110' : 'scale-100'
         }`}
-        style={{
-          transform: `scale(${1 + (progress / 100) * 0.1})`,
-        }}
       >
         <img 
           src="/hero-animation.webp" 
           alt="TemsVision"
-          className="w-64 sm:w-80 md:w-96 h-auto object-contain"
-          style={{ 
-            filter: isDark ? 'none' : 'invert(1)',
+          className="w-full h-full object-contain"
+          style={{
+            maxWidth: '100vw',
+            maxHeight: '100vh',
           }}
         />
       </div>
 
-      {/* Tagline */}
-      <p className={`text-[10px] tracking-[0.2em] uppercase mb-6 ${
-        isDark ? 'text-white/40' : 'text-black/40'
-      }`}>
-        [{SITE_CONFIG.tagline}]
-      </p>
-
-      {/* Counter Display - Simple and smooth */}
-      <div className="flex items-baseline justify-center">
-        <div 
-          className={`text-5xl md:text-6xl font-light tracking-tight ${
-            isDark ? 'text-white' : 'text-black'
-          }`}
-          style={{ fontFamily: "'Bebas Neue', sans-serif" }}
-        >
-          {formattedDigits.map((digit, index) => (
-            <Digit key={index} value={digit} />
-          ))}
+      {/* Subtle loading indicator at bottom */}
+      <div 
+        className={`absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 transition-opacity duration-500 ${
+          isLoaded ? 'opacity-0' : 'opacity-100'
+        }`}
+      >
+        <div className="w-32 h-0.5 bg-white/10 rounded-full overflow-hidden">
+          <div 
+            className="h-full bg-gradient-to-r from-blue-600 via-blue-500 to-cyan-400 rounded-full animate-pulse"
+            style={{ 
+              width: '100%',
+              animation: 'loading 2s ease-in-out infinite'
+            }}
+          />
         </div>
-        <span 
-          className="text-3xl md:text-4xl font-light text-blue-500 ml-1"
-          style={{ fontFamily: "'Bebas Neue', sans-serif" }}
-        >
-          %
-        </span>
       </div>
 
-      {/* Progress bar */}
-      <div className={`mt-6 w-48 h-0.5 overflow-hidden rounded-full ${
-        isDark ? 'bg-white/10' : 'bg-black/10'
-      }`}>
-        <div 
-          className="h-full bg-gradient-to-r from-blue-600 via-blue-500 to-cyan-400 rounded-full transition-all duration-75 ease-linear"
-          style={{ width: `${progress}%` }}
-        />
-      </div>
-
-      {/* Loading text */}
-      <p className={`mt-4 text-[10px] tracking-[0.3em] uppercase ${
-        isDark ? 'text-white/30' : 'text-black/30'
-      }`}>
-        Loading
-      </p>
+      <style>{`
+        @keyframes loading {
+          0% { transform: translateX(-100%); }
+          50% { transform: translateX(0%); }
+          100% { transform: translateX(100%); }
+        }
+      `}</style>
     </div>
   );
 };

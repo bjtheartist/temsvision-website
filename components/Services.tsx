@@ -4,156 +4,153 @@ import { useTheme } from '../context/ThemeContext';
 
 const Services: React.FC = () => {
   const { isDark } = useTheme();
-  const [activeService, setActiveService] = useState<string>(SERVICES[0]?.id || '');
+  const [activeService, setActiveService] = useState<string>('');
 
   const handleMouseEnter = useCallback((id: string) => {
     setActiveService(id);
   }, []);
 
   return (
-    <section id="services" className={`py-16 sm:py-24 md:py-32 ${
-      isDark ? 'bg-slate-950' : 'bg-slate-50'
+    <section id="services" className={`relative py-20 md:py-32 lg:py-40 ${
+      isDark ? 'bg-[#0a0a0a]' : 'bg-white'
     }`}>
-      <div className="px-4 sm:px-6 md:px-12 lg:px-24 max-w-[1800px] mx-auto">
-        {/* Header */}
-        <div className="mb-12 sm:mb-16 md:mb-20">
-          <div className="flex items-center gap-3 sm:gap-4 mb-3 sm:mb-4">
-            <span className="text-blue-500 text-xs font-mono">03</span>
-            <div className="w-8 sm:w-12 h-px bg-blue-500/50" />
+      <div className="px-6 md:px-12 lg:px-24">
+        {/* Section Header - Area 17 style */}
+        <div className="mb-16 md:mb-24">
+          <div className="flex items-center gap-4 mb-6">
+            <span className={`text-xs md:text-sm font-mono tracking-wider ${
+              isDark ? 'text-blue-400' : 'text-blue-600'
+            }`}>03</span>
+            <div className={`flex-1 h-px ${isDark ? 'bg-white/10' : 'bg-black/10'}`} />
           </div>
-          <h2 
-            className={`text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black leading-tight ${
-              isDark ? 'text-white' : 'text-black'
-            }`}
-            style={{ fontFamily: "'Bebas Neue', sans-serif" }}
-          >
-            Services
-          </h2>
-          <p className={`text-sm mt-3 sm:mt-4 max-w-md ${
-            isDark ? 'text-white/40' : 'text-black/40'
-          }`}>
-            From intimate portraits to high-energy sports, I bring your vision to life with precision and artistry.
-          </p>
+          
+          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6">
+            <div>
+              <h2 
+                className={`text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-black tracking-tight ${
+                  isDark ? 'text-white' : 'text-black'
+                }`}
+                style={{ fontFamily: "'Bebas Neue', sans-serif" }}
+              >
+                Services
+              </h2>
+              <p className={`text-sm md:text-base mt-4 max-w-md font-light ${
+                isDark ? 'text-white/40' : 'text-black/40'
+              }`}>
+                Professional photography services tailored to capture your unique story with intention and artistry.
+              </p>
+            </div>
+          </div>
         </div>
 
-        {/* Services List */}
-        <div className="services-list">
-          {SERVICES.map((service, index) => (
-            <div
-              key={service.id}
-              className={`service-item group cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 rounded ${
-                isDark ? 'focus-visible:ring-offset-slate-950' : 'focus-visible:ring-offset-slate-50'
-              }`}
-              onMouseEnter={() => handleMouseEnter(service.id)}
-              onMouseLeave={() => setActiveService('')}
-              onFocus={() => handleMouseEnter(service.id)}
-              onBlur={() => setActiveService('')}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                  e.preventDefault();
-                  // Scroll to contact section
-                  document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
-                }
-              }}
-              role="button"
-              tabIndex={0}
-              aria-label={`${service.name} - ${service.description}`}
-            >
-              {/* Animated border */}
-              <div className={`h-px ${isDark ? 'bg-white/10' : 'bg-black/10'}`} />
-              
-              <div className="py-6 sm:py-8 md:py-10 grid grid-cols-12 gap-2 sm:gap-4 items-start">
-                {/* Number */}
-                <div className="col-span-2 sm:col-span-1">
-                  <span className={`text-xs sm:text-sm font-mono transition-all duration-500 ${
-                    activeService === service.id
-                      ? 'text-blue-500'
-                      : isDark ? 'text-white/30' : 'text-black/30'
-                  }`}>
-                    {String(index + 1).padStart(2, '0')}
-                  </span>
-                </div>
-
-                {/* Title */}
-                <div className="col-span-10 sm:col-span-4">
-                  <h3 
-                    className={`text-xl sm:text-2xl md:text-3xl font-black tracking-tight transition-all duration-500 ${
-                      activeService === service.id
-                        ? isDark ? 'text-white translate-x-2' : 'text-black translate-x-2'
-                        : isDark ? 'text-white/50' : 'text-black/50'
-                    }`}
-                    style={{ fontFamily: "'Bebas Neue', sans-serif" }}
-                  >
-                    {service.name}
-                  </h3>
-                </div>
-
-                {/* Description */}
-                <div className="col-span-12 sm:col-span-6 sm:pl-4 md:pl-8 mt-2 sm:mt-0">
-                  <p className={`text-xs sm:text-sm md:text-base leading-relaxed max-w-lg transition-all duration-500 ${
-                    activeService === service.id
-                      ? isDark ? 'text-white/70 opacity-100' : 'text-black/70 opacity-100'
-                      : isDark ? 'text-white/40 opacity-60' : 'text-black/40 opacity-60'
-                  }`}>
-                    {service.description}
-                  </p>
+        {/* Services List - Premium hover effect */}
+        <div className="space-y-0">
+          {SERVICES.map((service, index) => {
+            const isActive = activeService === service.id;
+            
+            return (
+              <div
+                key={service.id}
+                className={`group relative border-t transition-all duration-500 ${
+                  isDark ? 'border-white/10' : 'border-black/10'
+                } ${index === SERVICES.length - 1 ? isDark ? 'border-b border-white/10' : 'border-b border-black/10' : ''}`}
+                onMouseEnter={() => handleMouseEnter(service.id)}
+                onMouseLeave={() => setActiveService('')}
+                onFocus={() => handleMouseEnter(service.id)}
+                onBlur={() => setActiveService('')}
+                role="button"
+                tabIndex={0}
+                aria-label={`${service.name} - ${service.description}`}
+              >
+                {/* Background highlight */}
+                <div className={`absolute inset-0 transition-all duration-500 ${
+                  isDark ? 'bg-white/5' : 'bg-blue-50'
+                } ${isActive ? 'opacity-100' : 'opacity-0'}`} />
+                
+                <div className="relative py-8 md:py-12 flex flex-col md:flex-row md:items-center justify-between gap-4 md:gap-8">
+                  {/* Left side */}
+                  <div className="flex items-start md:items-center gap-6 md:gap-8">
+                    {/* Number */}
+                    <span className={`text-xs md:text-sm font-mono transition-colors duration-300 ${
+                      isActive 
+                        ? isDark ? 'text-blue-400' : 'text-blue-600'
+                        : isDark ? 'text-white/30' : 'text-black/30'
+                    }`}>
+                      {String(index + 1).padStart(2, '0')}
+                    </span>
+                    
+                    {/* Title */}
+                    <h3 
+                      className={`text-2xl md:text-3xl lg:text-4xl font-black transition-all duration-300 ${
+                        isActive
+                          ? isDark ? 'text-white translate-x-2' : 'text-black translate-x-2'
+                          : isDark ? 'text-white/60' : 'text-black/60'
+                      }`}
+                      style={{ fontFamily: "'Bebas Neue', sans-serif" }}
+                    >
+                      {service.name}
+                    </h3>
+                  </div>
                   
-                  {/* Features */}
-                  <div className={`flex flex-wrap gap-1.5 sm:gap-2 mt-3 sm:mt-4 transition-all duration-500 ${
-                    activeService === service.id ? 'opacity-100' : 'opacity-0'
-                  }`}>
-                    {service.features.map((feature) => (
-                      <span 
-                        key={feature}
-                        className={`px-2 sm:px-3 py-1 text-[10px] sm:text-xs rounded ${
-                          isDark 
-                            ? 'text-blue-400/80 bg-blue-400/10 border border-blue-400/20' 
-                            : 'text-blue-600/80 bg-blue-600/10 border border-blue-600/20'
-                        }`}
-                      >
-                        {feature}
-                      </span>
-                    ))}
+                  {/* Right side */}
+                  <div className="flex flex-col md:flex-row items-start md:items-center gap-4 md:gap-12 pl-14 md:pl-0">
+                    {/* Description */}
+                    <p className={`text-sm md:text-base font-light max-w-sm transition-all duration-500 ${
+                      isDark ? 'text-white/50' : 'text-black/50'
+                    } ${isActive ? 'opacity-100 translate-x-0' : 'opacity-60 md:opacity-0 md:-translate-x-4'}`}>
+                      {service.description}
+                    </p>
+                    
+                    {/* Features - show on hover */}
+                    <div className={`flex flex-wrap gap-2 transition-all duration-500 ${
+                      isActive ? 'opacity-100' : 'opacity-0'
+                    }`}>
+                      {service.features.slice(0, 3).map((feature) => (
+                        <span 
+                          key={feature}
+                          className={`px-3 py-1 text-[10px] tracking-wider uppercase ${
+                            isDark 
+                              ? 'text-blue-400/80 bg-blue-400/10 border border-blue-400/20' 
+                              : 'text-blue-600/80 bg-blue-600/10 border border-blue-600/20'
+                          }`}
+                        >
+                          {feature}
+                        </span>
+                      ))}
+                    </div>
+                    
+                    {/* Arrow */}
+                    <div className={`hidden md:flex items-center gap-2 transition-all duration-500 ${
+                      isActive ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-4'
+                    }`}>
+                      <div className={`w-8 md:w-12 h-px ${isDark ? 'bg-blue-400' : 'bg-blue-600'}`} />
+                      <span className={`text-lg ${isDark ? 'text-blue-400' : 'text-blue-600'}`}>→</span>
+                    </div>
                   </div>
                 </div>
-
-                {/* Arrow indicator */}
-                <div className={`hidden sm:flex col-span-12 sm:col-span-1 justify-end items-center transition-all duration-300 ${
-                  activeService === service.id ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-4'
-                }`}>
-                  <svg 
-                    width="20" 
-                    height="20" 
-                    viewBox="0 0 24 24" 
-                    fill="none" 
-                    stroke="currentColor" 
-                    strokeWidth="2"
-                    className="text-blue-500"
-                  >
-                    <path d="M7 17L17 7M17 7H7M17 7V17"/>
-                  </svg>
-                </div>
               </div>
-            </div>
-          ))}
-          
-          {/* Bottom border */}
-          <div className={`h-px ${isDark ? 'bg-white/10' : 'bg-black/10'}`} />
+            );
+          })}
         </div>
 
-        {/* CTA */}
-        <div className="mt-12 sm:mt-16 text-center">
-          <p className={`text-sm mb-4 sm:mb-6 ${isDark ? 'text-white/40' : 'text-black/40'}`}>
-            Ready to capture your story?
+        {/* Bottom CTA */}
+        <div className="mt-16 md:mt-24 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+          <p className={`text-sm md:text-base font-light max-w-md ${
+            isDark ? 'text-white/40' : 'text-black/40'
+          }`}>
+            Have a specific project in mind? Let's discuss how we can bring your vision to life.
           </p>
+          
           <a 
             href="#contact"
-            className="inline-flex items-center gap-2 sm:gap-3 px-6 sm:px-8 py-3 sm:py-4 bg-blue-500 text-white font-bold text-xs sm:text-sm tracking-wider uppercase hover:bg-blue-400 transition-colors duration-300 rounded-lg"
+            className={`group flex items-center gap-3 px-6 py-3 text-sm tracking-[0.2em] uppercase font-light transition-all duration-300 ${
+              isDark 
+                ? 'bg-white text-black hover:bg-blue-400' 
+                : 'bg-black text-white hover:bg-blue-600'
+            }`}
           >
-            Book a Session
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-            </svg>
+            <span>Book a Session</span>
+            <span className="transition-transform duration-300 group-hover:translate-x-1">→</span>
           </a>
         </div>
       </div>
