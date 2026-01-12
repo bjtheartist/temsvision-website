@@ -48,23 +48,23 @@ const Preloader: React.FC<PreloaderProps> = ({ onComplete }) => {
   return (
     <AnimatePresence>
       {!isExiting && (
-        <motion.div 
-          className="fixed inset-0 z-[9999] flex items-center justify-center bg-black"
+        <motion.div
+          className="fixed inset-0 z-[9999] flex items-center justify-center bg-white"
           initial={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.8, ease: [0.76, 0, 0.24, 1] }}
         >
           {/* Full-screen animated webp */}
-          <motion.div 
+          <motion.div
             className="absolute inset-0 flex items-center justify-center"
             initial={{ scale: 1 }}
             exit={{ scale: 1.1 }}
             transition={{ duration: 0.8, ease: [0.76, 0, 0.24, 1] }}
           >
-            <img 
-              src="/hero-animation.webp" 
+            <img
+              src="/hero-animation.webp"
               alt="TemsVision"
-              className="w-full h-full object-contain"
+              className="w-full h-full object-contain md:object-contain object-cover"
               style={{
                 maxWidth: '100vw',
                 maxHeight: '100vh',
@@ -73,7 +73,7 @@ const Preloader: React.FC<PreloaderProps> = ({ onComplete }) => {
           </motion.div>
 
           {/* Progress counter in bottom right */}
-          <motion.div 
+          <motion.div
             className="absolute bottom-8 right-8 md:bottom-12 md:right-12"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -82,27 +82,27 @@ const Preloader: React.FC<PreloaderProps> = ({ onComplete }) => {
           >
             <div className="flex items-baseline gap-1">
               <motion.span
-                className="text-5xl md:text-7xl lg:text-8xl font-bold text-blue-500 tabular-nums tracking-tighter"
+                className="text-5xl md:text-7xl lg:text-8xl font-bold text-blue-600 tabular-nums tracking-tighter"
                 style={{ fontFamily: "'Bebas Neue', sans-serif" }}
               >
                 {Math.floor(progress)}
               </motion.span>
-              <span className="text-xl md:text-2xl text-blue-400/60 font-light">%</span>
+              <span className="text-xl md:text-2xl text-blue-500/60 font-light">%</span>
             </div>
-            
+
             {/* Progress bar */}
-            <div className="mt-4 w-32 md:w-48 h-[2px] bg-white/10 overflow-hidden">
-              <motion.div 
-                className="h-full bg-gradient-to-r from-blue-500 to-cyan-400"
+            <div className="mt-4 w-32 md:w-48 h-[2px] bg-black/10 overflow-hidden">
+              <motion.div
+                className="h-full bg-gradient-to-r from-blue-600 to-cyan-500"
                 initial={{ width: '0%' }}
                 animate={{ width: `${progress}%` }}
                 transition={{ duration: 0.1 }}
               />
             </div>
-            
+
             {/* Loading text */}
-            <motion.p 
-              className="mt-3 text-xs tracking-[0.3em] uppercase text-white/40"
+            <motion.p
+              className="mt-3 text-xs tracking-[0.3em] uppercase text-black/40"
               animate={{ opacity: [0.4, 1, 0.4] }}
               transition={{ duration: 1.5, repeat: Infinity }}
             >
@@ -111,18 +111,18 @@ const Preloader: React.FC<PreloaderProps> = ({ onComplete }) => {
           </motion.div>
 
           {/* TemsVision text at bottom left */}
-          <motion.div 
+          <motion.div
             className="absolute bottom-8 left-8 md:bottom-12 md:left-12"
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -20 }}
             transition={{ duration: 0.5, delay: 0.3 }}
           >
-            <span 
-              className="text-sm md:text-base tracking-[0.2em] uppercase text-white/60"
+            <span
+              className="text-sm md:text-base tracking-[0.2em] uppercase text-black/60"
               style={{ fontFamily: "'Bebas Neue', sans-serif" }}
             >
-              Tems<span className="text-blue-400">Vision</span>
+              Tems<span className="text-blue-600">Vision</span>
             </span>
           </motion.div>
         </motion.div>
