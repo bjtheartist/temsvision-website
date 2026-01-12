@@ -119,6 +119,28 @@ const About: React.FC = () => {
 
           {/* Right Column - Details */}
           <div className={`transition-all duration-700 delay-200 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+            {/* Headshot */}
+            <div className="mb-6 sm:mb-8">
+              <div className={`relative overflow-hidden rounded-lg aspect-[4/5] ${
+                isDark 
+                  ? 'ring-2 ring-white/10' 
+                  : 'ring-2 ring-blue-100'
+              }`}>
+                <img 
+                  src="/temi-headshot.jpg" 
+                  alt="Temilade Amire Quadri - TemsVision Photography"
+                  className="w-full h-full object-cover object-top"
+                  loading="lazy"
+                />
+                {/* Overlay gradient */}
+                <div className={`absolute inset-0 bg-gradient-to-t ${
+                  isDark 
+                    ? 'from-black/30 via-transparent to-transparent' 
+                    : 'from-blue-900/20 via-transparent to-transparent'
+                }`} />
+              </div>
+            </div>
+
             {/* Name Meaning Card */}
             <div className={`p-6 sm:p-8 mb-6 sm:mb-8 rounded-lg ${
               isDark 
