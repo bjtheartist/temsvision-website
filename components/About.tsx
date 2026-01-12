@@ -89,8 +89,8 @@ const About: React.FC = () => {
               The Story
             </span>
             
-            <h3 
-              className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tighter mb-8"
+            <h3
+              className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-wide mb-8"
               style={{ fontFamily: "'Bebas Neue', sans-serif" }}
             >
               {SITE_CONFIG.fullName}

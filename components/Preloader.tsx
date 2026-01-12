@@ -10,41 +10,34 @@ const Preloader: React.FC<PreloaderProps> = ({ onComplete }) => {
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
-    const duration = 2500; // Total loading time in ms
-    const interval = 30; // Update interval in ms
-    const increment = 100 / (duration / interval);
-    
+    const DURATION = 2500;
+    const INTERVAL = 30;
     const startTime = Date.now();
-    
-    // Preload the webp animation
-    const img = new Image();
-    img.src = '/hero-animation.webp';
 
-    // Animate progress counter
+    // Preload animation image
+    new Image().src = '/hero-animation.webp';
+
     const progressInterval = setInterval(() => {
       setProgress(prev => {
         const elapsed = Date.now() - startTime;
-        const targetProgress = Math.min((elapsed / duration) * 100, 100);
-        
-        // Smooth easing towards target
-        const newProgress = prev + (targetProgress - prev) * 0.1;
-        
-        if (newProgress >= 99.5) {
+        const target = Math.min((elapsed / DURATION) * 100, 100);
+        const next = prev + (target - prev) * 0.1;
+
+        if (next >= 99.5) {
           clearInterval(progressInterval);
           return 100;
         }
-        return newProgress;
+        return next;
       });
-    }, interval);
+    }, INTERVAL);
 
-    // Complete loading after duration
     const completeTimer = setTimeout(() => {
       setProgress(100);
       setTimeout(() => {
         setIsExiting(true);
         setTimeout(onComplete, 800);
       }, 400);
-    }, duration);
+    }, DURATION);
 
     return () => {
       clearInterval(progressInterval);
