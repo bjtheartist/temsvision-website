@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, memo } from 'react';
 import { useTheme } from '../context/ThemeContext';
-import { SITE_CONFIG, SOCIAL_LINKS } from '../constants';
+import { SITE_CONFIG, SOCIAL_LINKS, NAV_ITEMS } from '../constants';
 import ThemeToggle from './ThemeToggle';
 
 const Navbar: React.FC = () => {
@@ -38,13 +38,6 @@ const Navbar: React.FC = () => {
       }
     }, 100);
   }, []);
-
-  const menuItems = [
-    { label: 'Work', id: 'portfolio' },
-    { label: 'Services', id: 'services' },
-    { label: 'About', id: 'about' },
-    { label: 'Contact', id: 'contact' },
-  ];
 
   return (
     <>
@@ -132,7 +125,7 @@ const Navbar: React.FC = () => {
         {/* Menu Content */}
         <div className="relative z-10 h-full flex flex-col justify-center px-4 sm:px-6 md:px-12 lg:px-24 pt-16 md:pt-0">
           <nav className="max-w-4xl">
-            {menuItems.map((item, index) => (
+            {NAV_ITEMS.map((item, index) => (
               <div 
                 key={item.id}
                 className={`transition-all duration-300 ease-out ${

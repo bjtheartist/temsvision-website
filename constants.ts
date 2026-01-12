@@ -17,11 +17,19 @@ export const COLORS = {
 export const SITE_CONFIG = {
   name: 'TemsVision',
   tagline: 'PHOTOGRAPHER, CREATIVE DIRECTOR & VISUAL STORYTELLER',
-  location: 'Kalamazoo, Michigan',
+  location: 'Atlanta, Georgia',
   email: 'hello@temsvision.com',
   instagram: '@TEMS.VISION',
   fullName: 'Temilade Amire Quadri',
 };
+
+// Navigation items
+export const NAV_ITEMS = [
+  { id: 'about', label: 'About', href: '#about' },
+  { id: 'gallery', label: 'Gallery', href: '#gallery' },
+  { id: 'services', label: 'Services', href: '#services' },
+  { id: 'contact', label: 'Contact', href: '#contact' },
+];
 
 // Hero background images
 export const HERO_IMAGES = [
@@ -107,48 +115,46 @@ export const PROJECTS: Project[] = [
 
 export const SERVICES: Service[] = [
   {
-    id: 'portraits',
-    name: 'Portrait Sessions',
-    description: 'Individual and group portrait sessions that capture your unique personality and style. From headshots to creative concepts.',
+    id: 'creative',
+    name: 'Creative Sessions',
+    description: 'Conceptual and artistic photo sessions that push creative boundaries and bring unique visions to life.',
     imageUrl: '/gallery/portrait-1.jpg',
-    features: ['Individual Portraits', 'Group Sessions', 'Headshots', 'Creative Concepts', 'Golden Hour']
+    features: ['Concept Development', 'Artistic Direction', 'Creative Portraits', 'Themed Shoots']
   },
   {
-    id: 'sports',
-    name: 'Sports Photography',
-    description: 'Dynamic action shots that freeze the intensity and emotion of athletic performance.',
-    imageUrl: '/gallery/sports-1.jpg',
-    features: ['Action Shots', 'Team Photos', 'Athletic Portraits', 'Event Coverage']
-  },
-  {
-    id: 'maternity',
-    name: 'Maternity & Family',
-    description: 'Beautiful maternity sessions and family portraits celebrating life\'s precious moments.',
-    imageUrl: '/gallery/maternity-1.jpg',
-    features: ['Maternity Sessions', 'Family Portraits', 'Newborn Photos', 'Milestone Sessions']
+    id: 'editorial',
+    name: 'Editorial & Fashion',
+    description: 'High-end editorial and fashion photography with a refined visual style for magazines, brands, and portfolios.',
+    imageUrl: '/gallery/portrait-2.jpg',
+    features: ['Fashion Editorials', 'Lookbooks', 'Brand Campaigns', 'Model Portfolios']
   },
   {
     id: 'events',
-    name: 'Events & Special Occasions',
-    description: 'Birthday parties, graduations, family gatherings, and milestone celebrations captured beautifully.',
+    name: 'Events',
+    description: 'Comprehensive event coverage capturing authentic moments and the energy of your special occasions.',
     imageUrl: '/gallery/lifestyle-1.jpg',
-    features: ['Birthday Sessions', 'Graduation Photos', 'Family Sessions', 'Boudoir']
+    features: ['Corporate Events', 'Parties', 'Graduations', 'Celebrations']
+  },
+  {
+    id: 'weddings',
+    name: 'Weddings',
+    description: 'Timeless wedding photography that tells your love story with intention and artistry.',
+    imageUrl: '/gallery/maternity-1.jpg',
+    features: ['Full Day Coverage', 'Engagement Sessions', 'Bridal Portraits', 'Reception Coverage']
   }
 ];
 
 export const SKILLS = [
-  'Portrait Photography',
-  'Sports Photography',
-  'Maternity Photography',
+  'Creative Sessions',
+  'Editorial Photography',
+  'Fashion Photography',
   'Event Photography',
+  'Wedding Photography',
   'Adobe Lightroom',
   'Adobe Photoshop',
   'Natural Light',
   'Studio Lighting',
-  'Film Emulation',
-  'Black & White',
-  'Golden Hour',
-  'Action Shots'
+  'Visual Storytelling'
 ];
 
 export const SOCIAL_LINKS = {
@@ -160,11 +166,11 @@ export const SOCIAL_LINKS = {
 };
 
 export const ABOUT_BIO = {
-  intro: "My name is Temilade Amire Quadri, and I am a professional photographer.",
-  background: "I was born in New Jersey, raised in Nigeria, and currently live in Kalamazoo, Michigan. I started TemsVision during the 2020 Covid lockdown as a creative outlet, and it has since grown into a full-fledged business.",
-  story: "The name TemsVision is a fusion of my Yoruba name and my passion. My full name, Temilade (teh-meh-la-day), means \"The crown is mine.\" My nickname, Temi (Tee-meeh), means \"Mine.\" So, TemsVision is, quite literally, My Vision.",
-  philosophy: "A vision without action is just a dream. I believe in turning ideas into tangible, breathtaking realities.",
-  approach: "I love a good challenge and enjoy tackling projects that seem impossible. I am always learning and pushing my creative boundaries to deliver the best possible results for my clients.",
+  intro: "Hi, I'm Temilade Amire Quadri, a Nigerian-American photographer based in Atlanta, Georgia.",
+  background: "My multicultural background shapes my approach to photography, allowing me to create work that is intentional, expressive, and story-driven.",
+  story: "I began my photography journey during the COVID-19 lockdown in Michigan, and what started as a creative outlet has since evolved into TemsVision. The name comes from my own name—Temilade, a Yoruba name meaning \"the crown is mine,\" and Temi, meaning \"mine.\" TemsVision represents my vision, grounded in purpose and creativity.",
+  philosophy: "I specialize in creative sessions, editorial and fashion photography, events, and weddings, focusing on capturing authentic moments while elevating them through a refined visual style. I believe strong ideas deserve thoughtful execution, and I enjoy collaborating with clients to bring concepts, emotions, and stories to life.",
+  approach: "Photography is an ever-evolving craft, and I approach each project with professionalism, curiosity, and a willingness to push creative boundaries. If you have a vision, let's turn it into something memorable.",
   nameMeaning: {
     temilade: "The crown is mine",
     temi: "Mine",

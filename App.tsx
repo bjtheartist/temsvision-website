@@ -6,9 +6,9 @@ import Hero from './components/Hero';
 import ThemeToggle from './components/ThemeToggle';
 
 // Lazy load below-the-fold components for better performance
+const About = lazy(() => import('./components/About'));
 const Portfolio = lazy(() => import('./components/Portfolio'));
 const Services = lazy(() => import('./components/Services'));
-const About = lazy(() => import('./components/About'));
 const Contact = lazy(() => import('./components/Contact'));
 const Footer = lazy(() => import('./components/Footer'));
 
@@ -69,16 +69,17 @@ const AppContent: React.FC = () => {
         <div className="relative z-10">
           <Hero />
           
+          {/* Section order: About, Gallery, Services, Contact */}
+          <Suspense fallback={<SectionLoader />}>
+            <About />
+          </Suspense>
+          
           <Suspense fallback={<SectionLoader />}>
             <Portfolio />
           </Suspense>
           
           <Suspense fallback={<SectionLoader />}>
             <Services />
-          </Suspense>
-          
-          <Suspense fallback={<SectionLoader />}>
-            <About />
           </Suspense>
           
           <Suspense fallback={<SectionLoader />}>

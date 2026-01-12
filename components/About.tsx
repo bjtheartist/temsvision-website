@@ -37,7 +37,7 @@ const About: React.FC = () => {
         {/* Section Header */}
         <div className="mb-12 sm:mb-16">
           <div className="flex items-center gap-3 sm:gap-4 mb-3 sm:mb-4">
-            <span className="text-blue-500 text-xs font-mono">02</span>
+            <span className="text-blue-500 text-xs font-mono">01</span>
             <div className="w-8 sm:w-12 h-px bg-blue-500/50" />
           </div>
           <h2 
