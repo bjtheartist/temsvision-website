@@ -84,14 +84,14 @@ const App: React.FC = () => {
             <MarqueeSlider />
           </Suspense>
           
-          {/* Gallery/Portfolio */}
-          <Suspense fallback={<SectionLoader />}>
-            <Portfolio />
-          </Suspense>
-          
           {/* About Section */}
           <Suspense fallback={<SectionLoader />}>
             <About />
+          </Suspense>
+
+          {/* Gallery/Portfolio */}
+          <Suspense fallback={<SectionLoader />}>
+            <Portfolio />
           </Suspense>
           
           {/* Services */}

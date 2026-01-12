@@ -171,17 +171,17 @@ const Hero: React.FC = () => {
           )}
 
           {/* Main headline */}
-          <div className="space-y-2 md:space-y-4">
+          <div className="space-y-1 md:space-y-2 lg:space-y-3">
             {isLoaded && (
               <>
-                <h1 
-                  className="text-[12vw] md:text-[10vw] lg:text-[8vw] font-bold leading-[0.85] tracking-tighter text-white"
+                <h1
+                  className="text-[13vw] md:text-[11vw] lg:text-[9vw] font-bold leading-[0.95] tracking-tight text-white"
                   style={{ fontFamily: "'Bebas Neue', sans-serif" }}
                 >
                   <AnimatedText text="CAPTURING" delay={0.4} />
                 </h1>
-                <h1 
-                  className="text-[12vw] md:text-[10vw] lg:text-[8vw] font-bold leading-[0.85] tracking-tighter text-white"
+                <h1
+                  className="text-[13vw] md:text-[11vw] lg:text-[9vw] font-bold leading-[0.95] tracking-tight text-white"
                   style={{ fontFamily: "'Bebas Neue', sans-serif" }}
                 >
                   <AnimatedText text="MOMENTS" delay={0.6} />
@@ -189,8 +189,8 @@ const Hero: React.FC = () => {
                     <AnimatedText text=" THAT" delay={0.8} />
                   </span>
                 </h1>
-                <h1 
-                  className="text-[12vw] md:text-[10vw] lg:text-[8vw] font-bold leading-[0.85] tracking-tighter text-white"
+                <h1
+                  className="text-[13vw] md:text-[11vw] lg:text-[9vw] font-bold leading-[0.95] tracking-tight text-white"
                   style={{ fontFamily: "'Bebas Neue', sans-serif" }}
                 >
                   <AnimatedText text="TRANSCEND" delay={1.0} />

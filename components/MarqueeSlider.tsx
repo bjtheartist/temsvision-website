@@ -1,5 +1,5 @@
-import React, { memo, useState, useRef, useEffect } from 'react';
-import { motion, useAnimationControls } from 'framer-motion';
+import React, { memo, useState } from 'react';
+import { motion } from 'framer-motion';
 import { PROJECTS } from '../constants';
 
 interface MarqueeItemProps {
@@ -11,13 +11,13 @@ interface MarqueeItemProps {
   isHovered: boolean;
 }
 
-const MarqueeItem: React.FC<MarqueeItemProps> = ({ 
-  title, 
-  category, 
-  imageUrl, 
-  index, 
+const MarqueeItem: React.FC<MarqueeItemProps> = ({
+  title,
+  category,
+  imageUrl,
+  index,
   onHover,
-  isHovered 
+  isHovered
 }) => {
   return (
     <motion.div
@@ -33,13 +33,13 @@ const MarqueeItem: React.FC<MarqueeItemProps> = ({
           alt={title}
           className="w-full h-full object-cover"
           initial={{ filter: 'grayscale(100%)' }}
-          animate={{ 
+          animate={{
             filter: isHovered ? 'grayscale(0%)' : 'grayscale(100%)',
             scale: isHovered ? 1.05 : 1,
           }}
           transition={{ duration: 0.6, ease: [0.33, 1, 0.68, 1] }}
         />
-        
+
         {/* Overlay */}
         <motion.div
           className="absolute inset-0 bg-black/30"
@@ -51,7 +51,7 @@ const MarqueeItem: React.FC<MarqueeItemProps> = ({
       {/* Text content */}
       <div className="mt-4 flex justify-between items-start">
         <div>
-          <motion.h3 
+          <motion.h3
             className="text-xl md:text-2xl font-bold text-white tracking-tight"
             animate={{ x: isHovered ? 10 : 0 }}
             transition={{ duration: 0.3 }}
@@ -76,29 +76,9 @@ const MarqueeItem: React.FC<MarqueeItemProps> = ({
 const MarqueeSlider: React.FC = () => {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [isPaused, setIsPaused] = useState(false);
-  const containerRef = useRef<HTMLDivElement>(null);
-  const controls = useAnimationControls();
-  
+
   // Double the projects for seamless loop
   const duplicatedProjects = [...PROJECTS, ...PROJECTS];
-
-  useEffect(() => {
-    if (!isPaused) {
-      controls.start({
-        x: [0, -50 * PROJECTS.length + '%'],
-        transition: {
-          x: {
-            repeat: Infinity,
-            repeatType: 'loop',
-            duration: 30,
-            ease: 'linear',
-          },
-        },
-      });
-    } else {
-      controls.stop();
-    }
-  }, [isPaused, controls]);
 
   const handleHover = (index: number | null) => {
     setHoveredIndex(index);
@@ -107,6 +87,20 @@ const MarqueeSlider: React.FC = () => {
 
   return (
     <section id="work" className="py-24 md:py-32 bg-neutral-950 overflow-hidden">
+      {/* CSS Keyframes for marquee - pauses/resumes from current position */}
+      <style>{`
+        @keyframes marquee {
+          0% { transform: translateX(0); }
+          100% { transform: translateX(-50%); }
+        }
+        .marquee-track {
+          animation: marquee 60s linear infinite;
+        }
+        .marquee-track.paused {
+          animation-play-state: paused;
+        }
+      `}</style>
+
       {/* Section header */}
       <div className="px-6 md:px-12 lg:px-24 mb-12 md:mb-16">
         <div className="max-w-[1800px] mx-auto flex justify-between items-end">
@@ -130,7 +124,7 @@ const MarqueeSlider: React.FC = () => {
               Featured Projects
             </motion.h2>
           </div>
-          
+
           <motion.a
             href="#gallery"
             className="hidden md:flex items-center gap-2 text-white/60 hover:text-white transition-colors cursor-scale"
@@ -146,17 +140,15 @@ const MarqueeSlider: React.FC = () => {
       </div>
 
       {/* Marquee container */}
-      <div 
-        ref={containerRef}
+      <div
         className="relative"
         onMouseEnter={() => setIsPaused(true)}
         onMouseLeave={() => {
           if (hoveredIndex === null) setIsPaused(false);
         }}
       >
-        <motion.div
-          className="flex"
-          animate={controls}
+        <div
+          className={`flex marquee-track ${isPaused ? 'paused' : ''}`}
         >
           {duplicatedProjects.map((project, index) => (
             <MarqueeItem
@@ -169,7 +161,7 @@ const MarqueeSlider: React.FC = () => {
               isHovered={hoveredIndex === index % PROJECTS.length}
             />
           ))}
-        </motion.div>
+        </div>
       </div>
 
       {/* Progress indicator */}

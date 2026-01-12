@@ -9,17 +9,21 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
+    "sanity": "sanity dev",
+    "sanity:deploy": "sanity deploy",
     "audit": "npm audit",
     "audit:fix": "npm audit fix"
   },
   "dependencies": {
     "@sanity/client": "^7.14.0",
     "@sanity/image-url": "^2.0.2",
+    "@sanity/vision": "^5.2.0",
     "framer-motion": "^12.25.0",
     "lucide-react": "^0.562.0",
     "react": "^19.2.3",
     "react-dom": "^19.2.3",
-    "resend": "^6.6.0"
+    "resend": "^6.6.0",
+    "sanity": "^5.2.0"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.1.18",

@@ -88,13 +88,13 @@ const Preloader: React.FC<PreloaderProps> = ({ onComplete }) => {
             transition={{ duration: 0.5, delay: 0.2 }}
           >
             <div className="flex items-baseline gap-1">
-              <motion.span 
-                className="text-5xl md:text-7xl lg:text-8xl font-bold text-white tabular-nums tracking-tighter"
+              <motion.span
+                className="text-5xl md:text-7xl lg:text-8xl font-bold text-blue-500 tabular-nums tracking-tighter"
                 style={{ fontFamily: "'Bebas Neue', sans-serif" }}
               >
                 {Math.floor(progress)}
               </motion.span>
-              <span className="text-xl md:text-2xl text-white/60 font-light">%</span>
+              <span className="text-xl md:text-2xl text-blue-400/60 font-light">%</span>
             </div>
             
             {/* Progress bar */}
