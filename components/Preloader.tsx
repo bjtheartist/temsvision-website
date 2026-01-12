@@ -25,7 +25,7 @@ const Preloader: React.FC<PreloaderProps> = ({ onComplete }) => {
 
   // Smooth eased progress animation using requestAnimationFrame
   useEffect(() => {
-    const duration = 2000;
+    const duration = 2500; // Slightly longer to enjoy the animation
     const startTime = performance.now();
     let animationId: number;
     
@@ -57,8 +57,8 @@ const Preloader: React.FC<PreloaderProps> = ({ onComplete }) => {
     if (progress >= 99.9) {
       const exitTimer = setTimeout(() => {
         setIsExiting(true);
-        setTimeout(onComplete, 400);
-      }, 150);
+        setTimeout(onComplete, 500);
+      }, 200);
       
       return () => clearTimeout(exitTimer);
     }
@@ -79,24 +79,27 @@ const Preloader: React.FC<PreloaderProps> = ({ onComplete }) => {
         isExiting ? 'opacity-0 scale-105' : 'opacity-100 scale-100'
       } ${isDark ? 'bg-black' : 'bg-white'}`}
     >
-      {/* Logo - Using actual TemsVision logo image */}
+      {/* Animated WebP Logo - Main visual */}
       <div 
-        className={`mb-4 transition-all duration-500 ${
-          isExiting ? 'scale-110 opacity-0' : 'scale-100 opacity-100'
+        className={`mb-6 transition-all duration-700 ${
+          isExiting ? 'scale-125 opacity-0' : 'scale-100 opacity-100'
         }`}
+        style={{
+          transform: `scale(${1 + (progress / 100) * 0.1})`,
+        }}
       >
         <img 
-          src="/temsvision-logo.png" 
-          alt="TemsVision Logo"
-          className="w-32 h-auto object-contain"
+          src="/hero-animation.webp" 
+          alt="TemsVision"
+          className="w-64 sm:w-80 md:w-96 h-auto object-contain"
           style={{ 
-            filter: isDark ? 'invert(1) brightness(2)' : 'none'
+            filter: isDark ? 'none' : 'invert(1)',
           }}
         />
       </div>
 
       {/* Tagline */}
-      <p className={`text-[10px] tracking-[0.2em] uppercase mb-8 ${
+      <p className={`text-[10px] tracking-[0.2em] uppercase mb-6 ${
         isDark ? 'text-white/40' : 'text-black/40'
       }`}>
         [{SITE_CONFIG.tagline}]
@@ -123,7 +126,7 @@ const Preloader: React.FC<PreloaderProps> = ({ onComplete }) => {
       </div>
 
       {/* Progress bar */}
-      <div className={`mt-8 w-48 h-0.5 overflow-hidden rounded-full ${
+      <div className={`mt-6 w-48 h-0.5 overflow-hidden rounded-full ${
         isDark ? 'bg-white/10' : 'bg-black/10'
       }`}>
         <div 
@@ -133,7 +136,7 @@ const Preloader: React.FC<PreloaderProps> = ({ onComplete }) => {
       </div>
 
       {/* Loading text */}
-      <p className={`mt-6 text-[10px] tracking-[0.3em] uppercase ${
+      <p className={`mt-4 text-[10px] tracking-[0.3em] uppercase ${
         isDark ? 'text-white/30' : 'text-black/30'
       }`}>
         Loading

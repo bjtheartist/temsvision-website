@@ -6,8 +6,6 @@ const Hero: React.FC = () => {
   const { isDark } = useTheme();
   const [isVisible, setIsVisible] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const [scrollProgress, setScrollProgress] = useState(0);
-  const [showAnimation, setShowAnimation] = useState(false);
 
   useEffect(() => {
     const timer = setTimeout(() => setIsVisible(true), 100);
@@ -22,21 +20,6 @@ const Hero: React.FC = () => {
     return () => clearInterval(interval);
   }, []);
 
-  // Track scroll progress for animation reveal
-  useEffect(() => {
-    const handleScroll = () => {
-      const scrollY = window.scrollY;
-      const windowHeight = window.innerHeight;
-      // Start showing animation after scrolling 10% of viewport
-      const progress = Math.min(scrollY / (windowHeight * 0.5), 1);
-      setScrollProgress(progress);
-      setShowAnimation(scrollY > windowHeight * 0.1);
-    };
-    
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
   const scrollToWork = useCallback(() => {
     const element = document.getElementById('about');
     if (element) {
@@ -48,37 +31,20 @@ const Hero: React.FC = () => {
     <section className={`relative min-h-screen w-full flex flex-col overflow-hidden ${
       isDark ? 'bg-black' : 'bg-white'
     }`}>
-      {/* Background Images - Fades out on scroll */}
+      {/* Background Images */}
       {HERO_IMAGES.map((image, index) => (
         <div
           key={image}
-          className={`absolute inset-0 transition-opacity duration-1000`}
+          className={`absolute inset-0 transition-opacity duration-1000 ${
+            index === currentImageIndex ? 'opacity-30' : 'opacity-0'
+          }`}
           style={{
             backgroundImage: `url(${image})`,
             backgroundSize: 'cover',
             backgroundPosition: 'center',
-            opacity: index === currentImageIndex ? 0.3 * (1 - scrollProgress) : 0,
           }}
         />
       ))}
-
-      {/* Animated WebP Background - Appears on scroll */}
-      <div
-        className="absolute inset-0 transition-opacity duration-500"
-        style={{
-          opacity: showAnimation ? scrollProgress * 0.6 : 0,
-        }}
-      >
-        <img
-          src="/hero-animation.webp"
-          alt=""
-          className="w-full h-full object-contain"
-          style={{
-            transform: `scale(${1 + scrollProgress * 0.1})`,
-            transition: 'transform 0.3s ease-out',
-          }}
-        />
-      </div>
       
       {/* Overlay gradient */}
       <div className={`absolute inset-0 ${
@@ -105,7 +71,6 @@ const Hero: React.FC = () => {
         className={`absolute top-24 right-4 sm:right-6 md:right-12 lg:right-24 transition-all duration-700 ${
           isVisible ? 'opacity-100' : 'opacity-0'
         }`}
-        style={{ opacity: isVisible ? 1 - scrollProgress : 0 }}
       >
         <span className={`text-[10px] tracking-[0.2em] font-mono ${
           isDark ? 'text-white/40' : 'text-black/40'
@@ -121,10 +86,6 @@ const Hero: React.FC = () => {
           className={`mb-4 sm:mb-6 transition-all duration-700 ease-out ${
             isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
           }`}
-          style={{
-            transform: `translateY(${scrollProgress * -30}px)`,
-            opacity: 1 - scrollProgress * 0.5,
-          }}
         >
           <img 
             src="/temsvision-logo-white-blue.png" 
@@ -138,10 +99,6 @@ const Hero: React.FC = () => {
           className={`text-center transition-all duration-700 ease-out delay-150 ${
             isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
           }`}
-          style={{
-            transform: `translateY(${scrollProgress * -20}px)`,
-            opacity: 1 - scrollProgress * 0.7,
-          }}
         >
           <span 
             className={`text-[9px] sm:text-[10px] md:text-xs tracking-[0.2em] sm:tracking-[0.25em] uppercase ${
@@ -158,10 +115,6 @@ const Hero: React.FC = () => {
           className={`mt-6 sm:mt-8 text-center max-w-md transition-all duration-700 ease-out delay-200 ${
             isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
           }`}
-          style={{
-            transform: `translateY(${scrollProgress * -10}px)`,
-            opacity: 1 - scrollProgress * 0.8,
-          }}
         >
           <p className={`text-sm sm:text-base ${isDark ? 'text-white/40' : 'text-black/40'}`}>
             Where vision meets artistry. Every frame tells a story.
@@ -174,7 +127,6 @@ const Hero: React.FC = () => {
         className={`absolute bottom-20 sm:bottom-12 left-1/2 -translate-x-1/2 cursor-pointer group transition-all duration-700 ease-out delay-300 ${
           isVisible ? 'opacity-100' : 'opacity-0'
         }`}
-        style={{ opacity: isVisible ? 1 - scrollProgress * 2 : 0 }}
         onClick={scrollToWork}
         role="button"
         tabIndex={0}
@@ -202,7 +154,6 @@ const Hero: React.FC = () => {
         className={`absolute bottom-6 sm:bottom-12 left-4 sm:left-6 md:left-12 lg:left-24 transition-all duration-700 delay-400 hidden sm:block ${
           isVisible ? 'opacity-100' : 'opacity-0'
         }`}
-        style={{ opacity: isVisible ? 1 - scrollProgress * 2 : 0 }}
       >
         <span className={`text-[9px] sm:text-[10px] tracking-[0.2em] uppercase ${
           isDark ? 'text-white/40' : 'text-black/40'
@@ -216,7 +167,6 @@ const Hero: React.FC = () => {
         className={`absolute bottom-6 sm:bottom-12 right-4 sm:right-6 md:right-12 lg:right-24 transition-all duration-700 delay-400 hidden sm:block ${
           isVisible ? 'opacity-100' : 'opacity-0'
         }`}
-        style={{ opacity: isVisible ? 1 - scrollProgress * 2 : 0 }}
       >
         <a 
           href={SOCIAL_LINKS.instagram}
