@@ -123,19 +123,19 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, index, onSelect }) =
 interface LightboxProps {
   project: typeof PROJECTS[0] | null;
   onClose: () => void;
+  currentIndex: number;
+  onIndexChange: (index: number) => void;
 }
 
-const Lightbox: React.FC<LightboxProps> = ({ project, onClose }) => {
-  const [currentIndex, setCurrentIndex] = useState(0);
-  
+const Lightbox: React.FC<LightboxProps> = ({ project, onClose, currentIndex, onIndexChange }) => {
   if (!project) return null;
 
   // Get images for this category
   const categoryKey = project.category.toLowerCase();
   const images = GALLERY_IMAGES[categoryKey] || [project.imageUrl];
 
-  const nextImage = () => setCurrentIndex((prev) => (prev + 1) % images.length);
-  const prevImage = () => setCurrentIndex((prev) => (prev - 1 + images.length) % images.length);
+  const nextImage = () => onIndexChange((currentIndex + 1) % images.length);
+  const prevImage = () => onIndexChange((currentIndex - 1 + images.length) % images.length);
 
   return (
     <motion.div
@@ -210,6 +210,21 @@ const Lightbox: React.FC<LightboxProps> = ({ project, onClose }) => {
 
 const Portfolio: React.FC = () => {
   const [selectedProject, setSelectedProject] = useState<typeof PROJECTS[0] | null>(null);
+  // Track the last viewed index for each category
+  const [categoryIndices, setCategoryIndices] = useState<Record<string, number>>({});
+
+  const handleIndexChange = (newIndex: number) => {
+    if (selectedProject) {
+      const categoryKey = selectedProject.category.toLowerCase();
+      setCategoryIndices(prev => ({ ...prev, [categoryKey]: newIndex }));
+    }
+  };
+
+  const getCurrentIndex = () => {
+    if (!selectedProject) return 0;
+    const categoryKey = selectedProject.category.toLowerCase();
+    return categoryIndices[categoryKey] || 0;
+  };
 
   return (
     <section id="gallery" className="py-24 md:py-32 bg-neutral-950">
@@ -266,6 +281,8 @@ const Portfolio: React.FC = () => {
           <Lightbox
             project={selectedProject}
             onClose={() => setSelectedProject(null)}
+            currentIndex={getCurrentIndex()}
+            onIndexChange={handleIndexChange}
           />
         )}
       </AnimatePresence>

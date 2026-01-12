@@ -15,14 +15,19 @@ const About: React.FC = () => {
       {/* Main Statement */}
       <div className="px-6 md:px-12 lg:px-24 mb-24 md:mb-32">
         <div className="max-w-5xl mx-auto text-center">
-          <motion.span
-            className="text-sm tracking-[0.3em] uppercase text-neutral-400 mb-8 block"
+          {/* Section indicator */}
+          <motion.div
+            className="flex items-center justify-center gap-4 mb-8"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
           >
-            About
-          </motion.span>
+            <div className="w-12 h-px bg-blue-500/50" />
+            <span className="text-sm tracking-[0.3em] uppercase text-blue-600 font-mono">
+              01 — About
+            </span>
+            <div className="w-12 h-px bg-blue-500/50" />
+          </motion.div>
           <motion.h2 
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}

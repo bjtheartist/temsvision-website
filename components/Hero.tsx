@@ -1,5 +1,6 @@
-import React, { memo, useEffect, useState } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import React, { memo, useEffect, useState, useCallback } from 'react';
+import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
+import { HERO_IMAGES } from '../constants';
 
 // Letter animation component
 const AnimatedText: React.FC<{ text: string; delay?: number; className?: string }> = ({ 
@@ -56,11 +57,40 @@ const AnimatedLine: React.FC<{ children: React.ReactNode; delay?: number }> = ({
 
 const Hero: React.FC = () => {
   const [isLoaded, setIsLoaded] = useState(false);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [imagesPreloaded, setImagesPreloaded] = useState(false);
   const { scrollY } = useScroll();
-  
+
   // Parallax effects
   const heroOpacity = useTransform(scrollY, [0, 400], [1, 0]);
   const textY = useTransform(scrollY, [0, 500], [0, -50]);
+
+  // Preload images
+  useEffect(() => {
+    const preloadImages = () => {
+      const promises = HERO_IMAGES.map((src) => {
+        return new Promise<void>((resolve) => {
+          const img = new Image();
+          img.src = src;
+          img.onload = () => resolve();
+          img.onerror = () => resolve(); // Continue even if one fails
+        });
+      });
+      Promise.all(promises).then(() => setImagesPreloaded(true));
+    };
+    preloadImages();
+  }, []);
+
+  // Auto-rotate images every 5 seconds
+  useEffect(() => {
+    if (!imagesPreloaded || HERO_IMAGES.length <= 1) return;
+
+    const interval = setInterval(() => {
+      setCurrentImageIndex((prev) => (prev + 1) % HERO_IMAGES.length);
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, [imagesPreloaded]);
 
   useEffect(() => {
     // Trigger animations after preloader
@@ -68,14 +98,56 @@ const Hero: React.FC = () => {
     return () => clearTimeout(timer);
   }, []);
 
+  const handleDotClick = useCallback((index: number) => {
+    setCurrentImageIndex(index);
+  }, []);
+
   return (
     <section className="relative min-h-screen flex items-center justify-center bg-neutral-950 overflow-hidden">
-      {/* Background gradient */}
-      <div className="absolute inset-0 bg-gradient-to-b from-neutral-950 via-neutral-900 to-neutral-950" />
-      
-      {/* Subtle grid pattern */}
-      <div 
-        className="absolute inset-0 opacity-[0.03]"
+      {/* Background Image Slideshow */}
+      <div className="absolute inset-0">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={currentImageIndex}
+            className="absolute inset-0"
+            initial={{ opacity: 0, scale: 1.1 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 1.5, ease: [0.33, 1, 0.68, 1] }}
+          >
+            <div
+              className="absolute inset-0 bg-cover bg-center"
+              style={{ backgroundImage: `url(${HERO_IMAGES[currentImageIndex]})` }}
+            />
+          </motion.div>
+        </AnimatePresence>
+
+        {/* Dark gradient overlay for text readability */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/70" />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-transparent to-black/30" />
+      </div>
+
+      {/* Slideshow indicators */}
+      {HERO_IMAGES.length > 1 && (
+        <div className="absolute bottom-24 left-1/2 -translate-x-1/2 z-20 flex gap-2">
+          {HERO_IMAGES.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => handleDotClick(index)}
+              className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                index === currentImageIndex
+                  ? 'bg-white w-8'
+                  : 'bg-white/40 hover:bg-white/60'
+              }`}
+              aria-label={`Go to slide ${index + 1}`}
+            />
+          ))}
+        </div>
+      )}
+
+      {/* Subtle grid pattern overlay */}
+      <div
+        className="absolute inset-0 opacity-[0.02] pointer-events-none"
         style={{
           backgroundImage: `linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px),
                            linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)`,

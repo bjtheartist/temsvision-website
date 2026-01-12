@@ -139,13 +139,15 @@ const Services: React.FC = () => {
             viewport={{ once: true }}
           >
             <p className="text-white/50 mb-6">Have a project in mind?</p>
-            <a 
+            <motion.a
               href="#contact"
-              className="inline-flex items-center gap-3 px-8 py-4 bg-white text-black font-medium tracking-tight hover:bg-blue-500 hover:text-white transition-colors cursor-scale"
+              className="group inline-flex items-center gap-3 px-8 py-4 bg-white text-black font-medium tracking-tight hover:bg-blue-500 hover:text-white transition-all duration-300 cursor-scale shadow-lg hover:shadow-blue-500/25 hover:shadow-2xl"
+              whileHover={{ scale: 1.02, y: -2 }}
+              whileTap={{ scale: 0.98 }}
             >
               <span>Start a conversation</span>
-              <span>→</span>
-            </a>
+              <span className="transition-transform duration-300 group-hover:translate-x-1">→</span>
+            </motion.a>
           </motion.div>
         </div>
       </div>
