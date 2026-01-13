@@ -1,11 +1,13 @@
 import React, { memo, useState, useRef, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
-import { PROJECTS } from '../constants';
+import { CATEGORIES } from './Portfolio';
+import { GALLERY_IMAGES } from '../constants';
 
 interface MarqueeItemProps {
   title: string;
-  category: string;
+  description: string;
   imageUrl: string;
+  photoCount: number;
   index: number;
   onHover: (index: number | null) => void;
   isHovered: boolean;
@@ -16,8 +18,9 @@ const SWIPE_THRESHOLD = 10;
 
 const MarqueeItem: React.FC<MarqueeItemProps> = ({
   title,
-  category,
+  description,
   imageUrl,
+  photoCount,
   index,
   onHover,
   isHovered,
@@ -41,7 +44,7 @@ const MarqueeItem: React.FC<MarqueeItemProps> = ({
 
   return (
     <motion.div
-      className="relative flex-shrink-0 w-[260px] md:w-[400px] lg:w-[500px] mx-2 md:mx-4 cursor-pointer"
+      className="relative flex-shrink-0 w-[280px] md:w-[400px] lg:w-[500px] mx-2 md:mx-4 cursor-pointer"
       data-cursor="project"
       onMouseEnter={() => onHover(index)}
       onMouseLeave={() => onHover(null)}
@@ -67,39 +70,52 @@ const MarqueeItem: React.FC<MarqueeItemProps> = ({
 
         {/* Overlay */}
         <motion.div
-          className="absolute inset-0 bg-black/30"
-          animate={{ opacity: isHovered ? 0 : 1 }}
+          className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent"
+          animate={{ opacity: isHovered ? 0.8 : 1 }}
           transition={{ duration: 0.4 }}
         />
+
+        {/* Photo count badge */}
+        <div className="absolute top-4 left-4">
+          <span className="text-xs font-mono text-white/80 bg-black/40 backdrop-blur-sm px-3 py-1.5 rounded-full">
+            {photoCount} photos
+          </span>
+        </div>
+
+        {/* View arrow on hover */}
+        <motion.div
+          className="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center"
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{
+            opacity: isHovered ? 1 : 0,
+            scale: isHovered ? 1 : 0.8
+          }}
+          transition={{ duration: 0.3 }}
+        >
+          <span className="text-white">→</span>
+        </motion.div>
       </div>
 
       {/* Text content */}
-      <div className="mt-3 md:mt-4 flex justify-between items-start">
-        <div>
-          <motion.h3
-            className="text-base md:text-xl lg:text-2xl font-bold text-white tracking-tight"
-            animate={{ x: isHovered ? 10 : 0 }}
-            transition={{ duration: 0.3 }}
-          >
-            {title}
-          </motion.h3>
-          <p className="text-xs md:text-sm text-white/50 tracking-wider uppercase mt-1">
-            {category}
-          </p>
-        </div>
-        <motion.span
-          className="text-xs md:text-sm text-white/30 font-mono"
-          animate={{ opacity: isHovered ? 1 : 0.5 }}
+      <div className="mt-4 md:mt-5">
+        <motion.h3
+          className="text-2xl md:text-3xl lg:text-4xl font-bold text-white tracking-tight"
+          style={{ fontFamily: "'Bebas Neue', sans-serif" }}
+          animate={{ x: isHovered ? 10 : 0 }}
+          transition={{ duration: 0.3 }}
         >
-          {String(index + 1).padStart(2, '0')}
-        </motion.span>
+          {title}
+        </motion.h3>
+        <motion.p
+          className="text-sm md:text-base text-white/50 mt-2 line-clamp-2"
+          animate={{ opacity: isHovered ? 1 : 0.7 }}
+          transition={{ duration: 0.3 }}
+        >
+          {description}
+        </motion.p>
       </div>
     </motion.div>
   );
-};
-
-const scrollToGallery = () => {
-  window.location.href = '#gallery';
 };
 
 const MarqueeSlider: React.FC = () => {
@@ -113,17 +129,18 @@ const MarqueeSlider: React.FC = () => {
   const touchStartRef = useRef<{ x: number; y: number } | null>(null);
   const isDraggingRef = useRef(false);
 
-  const duplicatedProjects = [...PROJECTS, ...PROJECTS];
+  // Duplicate categories for seamless loop
+  const duplicatedCategories = [...CATEGORIES, ...CATEGORIES, ...CATEGORIES];
 
-  // Calculate track width (50% = one full set of projects)
+  // Calculate track width (33% = one full set of categories)
   const getTrackWidth = useCallback(() => {
     if (!trackRef.current) return 0;
-    return trackRef.current.scrollWidth / 2;
+    return trackRef.current.scrollWidth / 3;
   }, []);
 
   // Auto-scroll animation
   useEffect(() => {
-    const speed = 0.03; // pixels per ms (adjust for speed)
+    const speed = 0.025; // pixels per ms
 
     const animate = (timestamp: number) => {
       if (!lastTimeRef.current) lastTimeRef.current = timestamp;
@@ -196,8 +213,26 @@ const MarqueeSlider: React.FC = () => {
     setIsPaused(index !== null);
   };
 
-  const displayIndex = hoveredIndex !== null ? hoveredIndex + 1 : 1;
-  const progressWidth = (displayIndex / PROJECTS.length) * 100;
+  const handleCategoryClick = (categoryId: string) => {
+    // Scroll to gallery and open category
+    const gallerySection = document.getElementById('gallery');
+    if (gallerySection) {
+      gallerySection.scrollIntoView({ behavior: 'smooth' });
+      // Open the category lightbox after scroll
+      setTimeout(() => {
+        if ((window as any).openGalleryCategory) {
+          (window as any).openGalleryCategory(categoryId);
+        }
+      }, 500);
+    }
+  };
+
+  const getPhotoCount = (categoryId: string) => {
+    return GALLERY_IMAGES[categoryId]?.length || 0;
+  };
+
+  const displayIndex = hoveredIndex !== null ? (hoveredIndex % CATEGORIES.length) + 1 : 1;
+  const progressWidth = (displayIndex / CATEGORIES.length) * 100;
 
   return (
     <section id="work" className="py-16 md:py-24 lg:py-32 bg-neutral-950 overflow-hidden">
@@ -211,7 +246,7 @@ const MarqueeSlider: React.FC = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
             >
-              Selected Work
+              Explore
             </motion.span>
             <motion.h2
               className="text-3xl md:text-5xl lg:text-6xl font-bold text-white tracking-tighter mt-2 md:mt-4"
@@ -221,19 +256,19 @@ const MarqueeSlider: React.FC = () => {
               viewport={{ once: true }}
               transition={{ delay: 0.1 }}
             >
-              Featured Projects
+              Featured Categories
             </motion.h2>
           </div>
 
           <motion.a
             href="#gallery"
-            className="hidden md:flex items-center gap-2 text-white/60 hover:text-white transition-colors cursor-scale"
+            className="hidden md:flex items-center gap-2 text-white/60 hover:text-white transition-colors cursor-pointer"
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
             transition={{ delay: 0.2 }}
           >
-            <span className="text-sm tracking-wider uppercase">View All</span>
+            <span className="text-sm tracking-wider uppercase">View Gallery</span>
             <span>→</span>
           </motion.a>
         </div>
@@ -260,16 +295,17 @@ const MarqueeSlider: React.FC = () => {
           className="flex will-change-transform"
           style={{ transform: `translateX(${translateX}px)` }}
         >
-          {duplicatedProjects.map((project, index) => (
+          {duplicatedCategories.map((category, index) => (
             <MarqueeItem
-              key={`${project.id}-${index}`}
-              title={project.title}
-              category={project.category}
-              imageUrl={project.imageUrl}
-              index={index % PROJECTS.length}
+              key={`${category.id}-${index}`}
+              title={category.title}
+              description={category.description}
+              imageUrl={category.coverImage}
+              photoCount={getPhotoCount(category.id)}
+              index={index}
               onHover={handleHover}
-              isHovered={hoveredIndex === index % PROJECTS.length}
-              onClick={scrollToGallery}
+              isHovered={hoveredIndex === index}
+              onClick={() => handleCategoryClick(category.id)}
             />
           ))}
         </div>
@@ -289,7 +325,7 @@ const MarqueeSlider: React.FC = () => {
             />
           </div>
           <span className="text-xs md:text-sm text-white/30 font-mono">
-            {String(PROJECTS.length).padStart(2, '0')}
+            {String(CATEGORIES.length).padStart(2, '0')}
           </span>
         </div>
       </div>

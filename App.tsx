@@ -94,10 +94,10 @@ const App: React.FC = () => {
             <Portfolio />
           </Suspense>
           
-          {/* Services */}
-          <Suspense fallback={<SectionLoader />}>
+          {/* Services - Hidden for now */}
+          {/* <Suspense fallback={<SectionLoader />}>
             <Services />
-          </Suspense>
+          </Suspense> */}
           
           {/* Footer with Contact */}
           <Suspense fallback={<SectionLoader />}>

@@ -2,12 +2,6 @@ import React, { memo } from 'react';
 import { motion } from 'framer-motion';
 import { ABOUT_BIO, SITE_CONFIG, SOCIAL_LINKS } from '../constants';
 
-const services = [
-  { name: 'Creative Sessions', icon: '◆' },
-  { name: 'Editorial & Fashion', icon: '◇' },
-  { name: 'Events', icon: '○' },
-  { name: 'Weddings', icon: '□' },
-];
 
 const About: React.FC = () => {
   return (
@@ -40,24 +34,6 @@ const About: React.FC = () => {
         </div>
       </div>
 
-      {/* Services Pills */}
-      <div className="px-6 md:px-12 lg:px-24 mb-24">
-        <div className="flex flex-wrap justify-center gap-4 md:gap-6">
-          {services.map((service, i) => (
-            <motion.div 
-              key={i} 
-              className="flex items-center gap-3 px-6 py-3 border border-neutral-200 rounded-full text-neutral-500 hover:border-blue-400 hover:text-blue-600 transition-all duration-300 cursor-scale"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.1 }}
-            >
-              <span className="text-lg">{service.icon}</span>
-              <span className="text-sm md:text-base font-medium tracking-wide">{service.name}</span>
-            </motion.div>
-          ))}
-        </div>
-      </div>
 
       {/* Bio Section */}
       <div className="px-6 md:px-12 lg:px-24">
@@ -69,8 +45,8 @@ const About: React.FC = () => {
             viewport={{ once: true }}
             className="relative aspect-[3/4] overflow-hidden bg-neutral-100"
           >
-            <img 
-              src="/temi-headshot.jpg" 
+            <img
+              src="/temi-headshot-new.jpg"
               alt={SITE_CONFIG.fullName}
               className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700"
             />

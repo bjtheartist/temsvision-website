@@ -39,25 +39,24 @@ const Navbar: React.FC = () => {
 
   return (
     <>
-      {/* Fixed Header - Mix blend difference for visibility on any background */}
-      <header className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 md:px-12 py-6 mix-blend-difference text-white pointer-events-none">
+      {/* Fixed Header */}
+      <header className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 md:px-12 py-6 pointer-events-none">
         {/* Logo */}
-        <a 
-          href="#" 
-          className="flex items-center gap-2 text-xl md:text-2xl font-bold tracking-tighter pointer-events-auto cursor-scale"
+        <a
+          href="#"
+          className="flex items-center text-xl md:text-2xl font-bold tracking-tighter pointer-events-auto cursor-scale text-blue-400"
           onClick={(e) => {
             e.preventDefault();
             window.scrollTo({ top: 0, behavior: 'smooth' });
           }}
           style={{ fontFamily: "'Bebas Neue', sans-serif" }}
         >
-          <span>TEMS</span>
-          <span className="text-blue-400">VISION</span>
+          TEMSVISION
         </a>
 
         {/* Menu Toggle */}
-        <button 
-          className="p-2 hover:opacity-70 transition-opacity pointer-events-auto cursor-scale"
+        <button
+          className="p-2 hover:opacity-70 transition-opacity pointer-events-auto cursor-scale text-blue-400"
           onClick={toggleMenu}
           aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
         >

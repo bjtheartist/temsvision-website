@@ -18,8 +18,9 @@ export const SITE_CONFIG = {
   name: 'TemsVision',
   tagline: 'PHOTOGRAPHER, CREATIVE DIRECTOR & VISUAL STORYTELLER',
   location: 'Atlanta, Georgia',
-  email: 'hello@temsvision.com',
-  instagram: '@TEMS.VISION',
+  email: 'Temsvision@gmail.com',
+  phone: '(269) 808-7209',
+  instagram: '@tems.vision',
   fullName: 'Temilade Amire Quadri',
 };
 
@@ -31,116 +32,121 @@ export const NAV_ITEMS = [
   { id: 'contact', label: 'Contact', href: '#contact' },
 ];
 
-// Hero background images
+// Hero background images (best standout shots)
 export const HERO_IMAGES = [
   '/gallery/hero-1.jpg',
   '/gallery/hero-2.jpg',
   '/gallery/hero-3.jpg',
 ];
 
-export const PROJECTS: Project[] = [
-  {
-    id: '0',
-    title: 'Urban Style',
-    category: 'PORTRAITS',
-    imageUrl: '/gallery/portrait-1.jpg',
-    description: 'Vibrant portrait sessions capturing personality and style with vintage vibes.',
-    tags: ['Portraits', 'Fashion', 'Urban'],
-    problem: '',
-    solution: '',
+// Helper to generate image paths
+const generateImagePaths = (category: string, count: number): string[] =>
+  Array.from({ length: count }, (_, i) => `/gallery/${category}-${String(i + 1).padStart(2, '0')}.jpg`);
+
+// Gallery image counts by category
+const GALLERY_COUNTS = {
+  portraits: 46,
+  sports: 14,
+  lifestyle: 9,
+  fashion: 9,
+  maternity: 6,
+} as const;
+
+// All gallery images organized by category
+export const GALLERY_IMAGES: Record<string, string[]> = Object.fromEntries(
+  Object.entries(GALLERY_COUNTS).map(([category, count]) => [
+    category,
+    generateImagePaths(category === 'portraits' ? 'portrait' : category, count)
+  ])
+);
+
+// Category metadata for project generation
+const CATEGORY_META: Record<string, { description: string; tags: string[]; tools: string[] }> = {
+  portraits: {
+    description: 'Creative portrait photography capturing personality and emotion.',
+    tags: ['Portraits', 'Creative'],
     tools: ['Sony', 'Natural Light', 'Adobe Lightroom'],
-    year: '2024'
   },
-  {
-    id: '1',
-    title: 'Night Soccer',
-    category: 'SPORTS',
-    imageUrl: '/gallery/sports-1.jpg',
-    description: 'Dynamic sports photography capturing athletes in motion under the lights.',
-    tags: ['Sports', 'Soccer', 'Night'],
-    problem: '',
-    solution: '',
-    tools: ['High-Speed Photography', 'Adobe Photoshop'],
-    year: '2024'
+  sports: {
+    description: 'Professional event photography capturing celebrations and special moments.',
+    tags: ['Events', 'Celebrations'],
+    tools: ['Event Coverage', 'Adobe Lightroom'],
   },
-  {
-    id: '2',
-    title: 'Maternity Sessions',
-    category: 'FAMILY',
-    imageUrl: '/gallery/maternity-1.jpg',
-    description: 'Beautiful maternity photography celebrating new beginnings.',
-    tags: ['Maternity', 'Family', 'Studio'],
-    problem: '',
-    solution: '',
-    tools: ['Studio Lighting', 'Adobe Lightroom'],
-    year: '2024'
-  },
-  {
-    id: '3',
-    title: 'Timeless Monochrome',
-    category: 'B & W',
-    imageUrl: '/gallery/bw-1.jpg',
-    description: 'Classic black and white portraits emphasizing emotion and form.',
-    tags: ['Black & White', 'Fine Art', 'Group'],
-    problem: '',
-    solution: '',
-    tools: ['Black & White Processing', 'Adobe Lightroom'],
-    year: '2024'
-  },
-  {
-    id: '4',
-    title: 'Garden Portraits',
-    category: 'PORTRAITS',
-    imageUrl: '/gallery/portrait-2.jpg',
-    description: 'Artistic portraits with natural elements and soft lighting.',
-    tags: ['Portraits', 'Nature', 'Creative'],
-    problem: '',
-    solution: '',
-    tools: ['Natural Light', 'Adobe Photoshop'],
-    year: '2024'
-  },
-  {
-    id: '5',
-    title: 'Beach Lifestyle',
-    category: 'LIFESTYLE',
-    imageUrl: '/gallery/lifestyle-1.jpg',
-    description: 'Vibrant lifestyle photography capturing joy and confidence.',
-    tags: ['Lifestyle', 'Beach', 'Summer'],
-    problem: '',
-    solution: '',
+  lifestyle: {
+    description: 'Vibrant lifestyle photography capturing authentic moments.',
+    tags: ['Lifestyle', 'Candid'],
     tools: ['Natural Light', 'Adobe Lightroom'],
-    year: '2024'
-  }
-];
+  },
+  fashion: {
+    description: 'High-end editorial and fashion photography with refined style.',
+    tags: ['Fashion', 'Editorial'],
+    tools: ['Studio Lighting', 'Adobe Photoshop'],
+  },
+  maternity: {
+    description: 'Beautiful maternity photography celebrating new beginnings.',
+    tags: ['Maternity', 'Family'],
+    tools: ['Studio Lighting', 'Adobe Lightroom'],
+  },
+};
+
+// Generate projects from gallery images
+export const PROJECTS: Project[] = Object.entries(GALLERY_IMAGES).flatMap(([category, urls]) =>
+  urls.map((url, i) => ({
+    id: `${category}-${i}`,
+    title: `${category.charAt(0).toUpperCase() + category.slice(1)} ${i + 1}`,
+    category: category.toUpperCase(),
+    imageUrl: url,
+    description: CATEGORY_META[category].description,
+    tags: CATEGORY_META[category].tags,
+    problem: '',
+    solution: '',
+    tools: CATEGORY_META[category].tools,
+    year: '2024',
+  }))
+);
 
 export const SERVICES: Service[] = [
   {
     id: 'creative',
     name: 'Creative Sessions',
     description: 'Conceptual and artistic photo sessions that push creative boundaries and bring unique visions to life.',
-    imageUrl: '/gallery/portrait-1.jpg',
+    imageUrl: '/gallery/portrait-01.jpg',
     features: ['Concept Development', 'Artistic Direction', 'Creative Portraits', 'Themed Shoots']
   },
   {
     id: 'editorial',
     name: 'Editorial & Fashion',
     description: 'High-end editorial and fashion photography with a refined visual style for magazines, brands, and portfolios.',
-    imageUrl: '/gallery/portrait-2.jpg',
+    imageUrl: '/gallery/fashion-01.jpg',
     features: ['Fashion Editorials', 'Lookbooks', 'Brand Campaigns', 'Model Portfolios']
   },
   {
     id: 'events',
     name: 'Events',
-    description: 'Comprehensive event coverage capturing authentic moments and the energy of your special occasions.',
-    imageUrl: '/gallery/lifestyle-1.jpg',
-    features: ['Corporate Events', 'Parties', 'Graduations', 'Celebrations']
+    description: 'Professional event photography capturing celebrations, gatherings, and special occasions.',
+    imageUrl: '/gallery/lifestyle-01.jpg',
+    features: ['Corporate Events', 'Parties', 'Graduations', 'Special Occasions']
   },
   {
     id: 'weddings',
     name: 'Weddings',
-    description: 'Timeless wedding photography that tells your love story with intention and artistry.',
-    imageUrl: '/gallery/maternity-1.jpg',
-    features: ['Full Day Coverage', 'Engagement Sessions', 'Bridal Portraits', 'Reception Coverage']
+    description: 'Elegant wedding photography capturing your love story from ceremony to reception.',
+    imageUrl: '/gallery/lifestyle-02.jpg',
+    features: ['Wedding Day Coverage', 'Engagement Sessions', 'Bridal Portraits', 'Reception Photography']
+  },
+  {
+    id: 'lifestyle',
+    name: 'Lifestyle',
+    description: 'Authentic lifestyle photography capturing genuine moments and personal stories.',
+    imageUrl: '/gallery/lifestyle-01.jpg',
+    features: ['Personal Branding', 'Candid Sessions', 'Location Shoots', 'Story-driven']
+  },
+  {
+    id: 'maternity',
+    name: 'Maternity & Family',
+    description: 'Beautiful maternity and family photography celebrating life milestones and connections.',
+    imageUrl: '/gallery/maternity-01.jpg',
+    features: ['Maternity Sessions', 'Family Portraits', 'Newborn Photography', 'Milestone Photos']
   }
 ];
 
@@ -160,7 +166,7 @@ export const SKILLS = [
 export const SOCIAL_LINKS = {
   linkedin: 'https://www.linkedin.com/in/temilade-quadri-bbb980a8/',
   github: '',
-  instagram: 'https://www.instagram.com/temsvision/',
+  instagram: 'https://www.instagram.com/tems.vision',
   facebook: 'https://www.facebook.com/temsvision',
   pinterest: 'https://www.pinterest.com/homefeed/'
 };

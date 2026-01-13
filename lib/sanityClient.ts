@@ -4,10 +4,10 @@ import type { SanityImageSource } from '@sanity/image-url/lib/types/types';
 
 // Create the Sanity client
 export const client = createClient({
-  projectId: import.meta.env.VITE_SANITY_PROJECT_ID || '',
+  projectId: import.meta.env.VITE_SANITY_PROJECT_ID || 'ul99syn2',
   dataset: import.meta.env.VITE_SANITY_DATASET || 'production',
   apiVersion: '2024-01-01',
-  useCdn: true, // Enable CDN for faster reads
+  useCdn: true,
 });
 
 // Image URL builder
@@ -19,25 +19,21 @@ export function urlFor(source: SanityImageSource) {
 
 // GROQ Queries
 export const queries = {
-  // Fetch all projects ordered by display order
-  projects: `*[_type == "project"] | order(order asc) {
+  // Fetch all gallery categories with photos
+  galleryCategories: `*[_type == "galleryCategory"] | order(order asc) {
     _id,
     title,
     "slug": slug.current,
-    category,
-    "imageUrl": mainImage.asset->url,
     description,
-    tags,
-    year,
-    featured
+    "coverImage": coverImage.asset->url,
+    "photos": photos[].asset->url,
+    order
   }`,
 
-  // Fetch featured projects for marquee
-  featuredProjects: `*[_type == "project" && featured == true] | order(order asc) {
-    _id,
-    title,
-    "imageUrl": mainImage.asset->url,
-    category
+  // Fetch hero slideshow
+  heroSlideshow: `*[_type == "heroSlideshow"][0] {
+    "images": images[].asset->url,
+    interval
   }`,
 
   // Fetch all services ordered by display order
@@ -48,6 +44,14 @@ export const queries = {
     description,
     "imageUrl": image.asset->url,
     features
+  }`,
+
+  // Fetch about section
+  about: `*[_type == "about"][0] {
+    headline,
+    bio,
+    "imageUrl": profileImage.asset->url,
+    stats
   }`,
 
   // Fetch site settings
@@ -66,16 +70,19 @@ export const queries = {
 };
 
 // Type definitions for Sanity data
-export interface SanityProject {
+export interface SanityGalleryCategory {
   _id: string;
   title: string;
   slug: string;
-  category: string;
-  imageUrl: string;
   description?: string;
-  tags?: string[];
-  year?: string;
-  featured?: boolean;
+  coverImage: string;
+  photos: string[];
+  order?: number;
+}
+
+export interface SanityHeroSlideshow {
+  images: string[];
+  interval?: number;
 }
 
 export interface SanityService {
@@ -85,6 +92,13 @@ export interface SanityService {
   description: string;
   imageUrl?: string;
   features?: string[];
+}
+
+export interface SanityAbout {
+  headline?: string;
+  bio?: string;
+  imageUrl?: string;
+  stats?: Array<{ label: string; value: string }>;
 }
 
 export interface SanitySiteSettings {

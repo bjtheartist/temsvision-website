@@ -205,8 +205,8 @@ const Hero: React.FC = () => {
             {isLoaded && (
               <AnimatedLine delay={1.4}>
                 <p className="max-w-md text-lg md:text-xl text-white/60 leading-relaxed">
-                  Atlanta-based photographer specializing in creative sessions, 
-                  editorial & fashion, events, and weddings.
+                  Atlanta-based photographer specializing in creative sessions,
+                  editorial & fashion, sports, lifestyle, and maternity photography.
                 </p>
               </AnimatedLine>
             )}

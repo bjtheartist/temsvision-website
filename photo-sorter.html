@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TemsVision Photo Sorter</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #0a0a0a;
+      color: white;
+      min-height: 100vh;
+      padding: 20px;
+    }
+    h1 { text-align: center; margin-bottom: 10px; font-size: 24px; }
+    .instructions {
+      text-align: center;
+      color: #888;
+      margin-bottom: 20px;
+      font-size: 14px;
+    }
+    .categories {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+      position: sticky;
+      top: 0;
+      background: #0a0a0a;
+      padding: 10px 0;
+      z-index: 100;
+    }
+    .category-btn {
+      padding: 8px 16px;
+      border: 2px solid #333;
+      background: transparent;
+      color: white;
+      cursor: pointer;
+      border-radius: 20px;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      transition: all 0.2s;
+    }
+    .category-btn:hover { border-color: #666; }
+    .category-btn.active { background: #3b82f6; border-color: #3b82f6; }
+    .category-btn.portrait.active { background: #8b5cf6; border-color: #8b5cf6; }
+    .category-btn.sports.active { background: #ef4444; border-color: #ef4444; }
+    .category-btn.maternity.active { background: #ec4899; border-color: #ec4899; }
+    .category-btn.fashion.active { background: #f59e0b; border-color: #f59e0b; }
+    .category-btn.lifestyle.active { background: #10b981; border-color: #10b981; }
+    .category-btn.events.active { background: #06b6d4; border-color: #06b6d4; }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 10px;
+    }
+    .photo-card {
+      position: relative;
+      aspect-ratio: 1;
+      overflow: hidden;
+      border-radius: 8px;
+      cursor: pointer;
+      border: 3px solid transparent;
+      transition: all 0.2s;
+    }
+    .photo-card:hover { transform: scale(1.02); }
+    .photo-card.selected { border-color: #3b82f6; }
+    .photo-card.portrait { border-color: #8b5cf6; }
+    .photo-card.sports { border-color: #ef4444; }
+    .photo-card.maternity { border-color: #ec4899; }
+    .photo-card.fashion { border-color: #f59e0b; }
+    .photo-card.lifestyle { border-color: #10b981; }
+    .photo-card.events { border-color: #06b6d4; }
+
+    .photo-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .photo-card .filename {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(0,0,0,0.8);
+      padding: 4px 8px;
+      font-size: 10px;
+      color: #aaa;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .photo-card .category-badge {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-size: 10px;
+      text-transform: uppercase;
+      font-weight: bold;
+    }
+    .category-badge.portrait { background: #8b5cf6; }
+    .category-badge.sports { background: #ef4444; }
+    .category-badge.maternity { background: #ec4899; }
+    .category-badge.fashion { background: #f59e0b; }
+    .category-badge.lifestyle { background: #10b981; }
+    .category-badge.events { background: #06b6d4; }
+
+    .output {
+      margin-top: 30px;
+      padding: 20px;
+      background: #111;
+      border-radius: 8px;
+    }
+    .output h3 { margin-bottom: 10px; }
+    .output pre {
+      background: #1a1a1a;
+      padding: 15px;
+      border-radius: 4px;
+      overflow-x: auto;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+    .copy-btn {
+      margin-top: 10px;
+      padding: 10px 20px;
+      background: #3b82f6;
+      border: none;
+      color: white;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .copy-btn:hover { background: #2563eb; }
+    .stats {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    .stat {
+      text-align: center;
+    }
+    .stat-value {
+      font-size: 24px;
+      font-weight: bold;
+    }
+    .stat-label {
+      font-size: 11px;
+      color: #666;
+      text-transform: uppercase;
+    }
+  </style>
+</head>
+<body>
+  <h1>TemsVision Photo Sorter</h1>
+  <p class="instructions">
+    1. Select a category below → 2. Click photos to assign → 3. Copy the output at the bottom
+  </p>
+
+  <div class="stats" id="stats"></div>
+
+  <div class="categories">
+    <button class="category-btn portrait" data-category="portrait">Portrait</button>
+    <button class="category-btn sports" data-category="sports">Sports</button>
+    <button class="category-btn maternity" data-category="maternity">Maternity</button>
+    <button class="category-btn fashion" data-category="fashion">Fashion</button>
+    <button class="category-btn lifestyle" data-category="lifestyle">Lifestyle</button>
+    <button class="category-btn events" data-category="events">Events</button>
+    <button class="category-btn" data-category="" style="border-color: #666;">Clear</button>
+  </div>
+
+  <div class="grid" id="grid"></div>
+
+  <div class="output">
+    <h3>Sorted Photos (copy this and paste to Claude)</h3>
+    <pre id="output">No photos categorized yet...</pre>
+    <button class="copy-btn" onclick="copyOutput()">Copy to Clipboard</button>
+  </div>
+
+  <script>
+    const photos = [
+      "1D7D4B3F-CDF6-4C44-9F2A-B24689E7DB88.jpeg",
+      "26D5E76A-8E12-43C2-97AA-AAB2E42DFF68.jpeg",
+      "34F88EA0-E3EB-4F94-A3CA-36A9343BA9CB.jpeg",
+      "603D7F2E-DCC8-430B-A55C-D8DE46E86351.jpeg",
+      "6644D153-8D0B-48B8-BEA8-ED78E3EA4497.jpeg",
+      "6BB56621-C392-49E5-B551-BE825D455867.jpeg",
+      "7A26B7C3-D4EF-4FB3-8091-9228C17178E9.jpeg",
+      "84C12FBC-CE37-4219-9190-4C52220BB4FF.jpeg",
+      "A746276D-74E4-4617-9C48-3FA742E0425B.jpeg",
+      "C5F45BF7-00B3-46AC-A19F-5CEB67D057D7.jpeg",
+      "DSC00456.jpeg",
+      "DSC00459.jpeg",
+      "DSC00494.jpeg",
+      "DSC00497.jpeg",
+      "DSC00500.jpeg",
+      "DSC00511.jpeg",
+      "DSC00779.jpeg",
+      "DSC00796-2.jpeg",
+      "DSC00804.jpeg",
+      "DSC00808.jpeg",
+      "DSC00812.jpeg",
+      "DSC00879.jpeg",
+      "DSC00880.jpeg",
+      "DSC00886.jpeg",
+      "DSC00908-2.jpeg",
+      "DSC00911-2.jpeg",
+      "DSC00927-3.jpeg",
+      "DSC00928-3.jpeg",
+      "DSC030547.jpeg",
+      "DSC03590.jpeg",
+      "DSC03615.jpeg",
+      "DSC03626.jpeg",
+      "DSC03811.jpeg",
+      "DSC03820-2.jpeg",
+      "DSC03822-2.jpeg",
+      "DSC03847.jpeg",
+      "DSC03865.jpeg",
+      "DSC03889-2.jpeg",
+      "DSC03889.jpeg",
+      "DSC03912.jpeg",
+      "DSC03933.jpeg",
+      "DSC03937.jpeg",
+      "DSC03946.jpeg",
+      "DSC03961.jpeg",
+      "DSC03991.jpeg",
+      "DSC03997.jpeg",
+      "DSC03999.jpeg",
+      "DSC04017.jpeg",
+      "DSC04033.jpeg",
+      "DSC04042.jpeg",
+      "DSC04046.jpeg",
+      "DSC04054.jpeg",
+      "DSC04511-2.jpeg",
+      "DSC04511.jpeg",
+      "DSC04522.jpeg",
+      "DSC04615.jpeg",
+      "DSC04640-2.jpeg",
+      "DSC04640.jpeg",
+      "DSC04688.jpeg",
+      "DSC04716-2.jpeg",
+      "DSC04789.jpeg",
+      "DSC04793-2.jpeg",
+      "DSC04838.jpeg",
+      "DSC04839.jpeg",
+      "DSC04846.jpeg",
+      "DSC04874.jpeg",
+      "DSC04907.jpeg",
+      "DSC04915-2.jpeg",
+      "DSC04915.jpeg",
+      "DSC04965.jpeg",
+      "DSC05114.jpeg",
+      "DSC05122.jpeg",
+      "DSC05127.jpeg",
+      "E7ED7776-FB68-4824-A5BC-1EDB7C06AE38.jpeg",
+      "IMG_0677.jpeg",
+      "IMG_1647.jpeg",
+      "IMG_2978.jpeg",
+      "IMG_6345.png",
+      "IMG_6346.png",
+      "IMG_7045.jpeg",
+      "IMG_9401.jpeg",
+      "SONYILCE-64006048x4024_000092.jpeg",
+      "SONYILCE-64006048x4024_000102.jpeg",
+      "SONYILCE-64006048x4024_000125.jpeg",
+      "SONYILCE-64006048x4024_000137.jpeg",
+      "SONYILCE-64006048x4024_000146.jpeg",
+      "SONYILCE-64006048x4024_000148.jpeg",
+      "SONYILCE-64006048x4024_000150.jpeg"
+    ];
+
+    const basePath = "http://localhost:8888/";
+    const assignments = {};
+    let activeCategory = null;
+
+    // Initialize
+    const grid = document.getElementById('grid');
+    photos.forEach(photo => {
+      const card = document.createElement('div');
+      card.className = 'photo-card';
+      card.dataset.filename = photo;
+      card.innerHTML = `
+        <img src="file://${basePath}${photo}" alt="${photo}" loading="lazy">
+        <div class="filename">${photo}</div>
+      `;
+      card.addEventListener('click', () => togglePhoto(photo, card));
+      grid.appendChild(card);
+    });
+
+    // Category buttons
+    document.querySelectorAll('.category-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        activeCategory = btn.dataset.category;
+      });
+    });
+
+    function togglePhoto(filename, card) {
+      if (!activeCategory && assignments[filename]) {
+        // Clear mode
+        delete assignments[filename];
+        card.className = 'photo-card';
+        card.querySelector('.category-badge')?.remove();
+      } else if (activeCategory) {
+        assignments[filename] = activeCategory;
+        card.className = `photo-card ${activeCategory}`;
+
+        // Add/update badge
+        let badge = card.querySelector('.category-badge');
+        if (!badge) {
+          badge = document.createElement('div');
+          badge.className = 'category-badge';
+          card.appendChild(badge);
+        }
+        badge.className = `category-badge ${activeCategory}`;
+        badge.textContent = activeCategory;
+      }
+      updateOutput();
+    }
+
+    function updateOutput() {
+      const grouped = {};
+      Object.entries(assignments).forEach(([file, cat]) => {
+        if (!grouped[cat]) grouped[cat] = [];
+        grouped[cat].push(file);
+      });
+
+      let output = '';
+      Object.entries(grouped).forEach(([cat, files]) => {
+        output += `${cat}:\n${files.join('\n')}\n\n`;
+      });
+
+      document.getElementById('output').textContent = output || 'No photos categorized yet...';
+
+      // Update stats
+      const stats = document.getElementById('stats');
+      const counts = {};
+      Object.values(assignments).forEach(cat => {
+        counts[cat] = (counts[cat] || 0) + 1;
+      });
+      const total = Object.keys(assignments).length;
+      const remaining = photos.length - total;
+
+      stats.innerHTML = `
+        <div class="stat"><div class="stat-value">${remaining}</div><div class="stat-label">Remaining</div></div>
+        <div class="stat"><div class="stat-value" style="color:#8b5cf6">${counts.portrait || 0}</div><div class="stat-label">Portrait</div></div>
+        <div class="stat"><div class="stat-value" style="color:#ef4444">${counts.sports || 0}</div><div class="stat-label">Sports</div></div>
+        <div class="stat"><div class="stat-value" style="color:#ec4899">${counts.maternity || 0}</div><div class="stat-label">Maternity</div></div>
+        <div class="stat"><div class="stat-value" style="color:#f59e0b">${counts.fashion || 0}</div><div class="stat-label">Fashion</div></div>
+        <div class="stat"><div class="stat-value" style="color:#10b981">${counts.lifestyle || 0}</div><div class="stat-label">Lifestyle</div></div>
+        <div class="stat"><div class="stat-value" style="color:#06b6d4">${counts.events || 0}</div><div class="stat-label">Events</div></div>
+      `;
+    }
+
+    function copyOutput() {
+      const text = document.getElementById('output').textContent;
+      navigator.clipboard.writeText(text);
+      alert('Copied to clipboard!');
+    }
+
+    updateOutput();
+  </script>
+</body>
+</html>

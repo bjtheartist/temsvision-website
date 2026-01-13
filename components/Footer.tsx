@@ -117,11 +117,19 @@ const Footer: React.FC = () => {
             <h4 className="font-mono text-sm text-neutral-500 mb-6 uppercase tracking-wider">Contact</h4>
             <ul className="space-y-4">
               <li>
-                <a 
-                  href={`mailto:${SITE_CONFIG.email}`} 
+                <a
+                  href={`mailto:${SITE_CONFIG.email}`}
                   className="hover:text-blue-400 transition-colors cursor-scale"
                 >
                   {SITE_CONFIG.email}
+                </a>
+              </li>
+              <li>
+                <a
+                  href={`tel:${SITE_CONFIG.phone?.replace(/\D/g, '')}`}
+                  className="hover:text-blue-400 transition-colors cursor-scale"
+                >
+                  {SITE_CONFIG.phone}
                 </a>
               </li>
               <li>
