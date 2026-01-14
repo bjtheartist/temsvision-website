@@ -171,10 +171,11 @@ const Lightbox: React.FC<LightboxProps> = ({ category, onClose, currentIndex, on
       exit={{ opacity: 0 }}
       onClick={onClose}
     >
-      {/* Close button */}
+      {/* Close button - larger tap target on mobile, safe area padding */}
       <button
-        className="absolute top-6 right-6 w-12 h-12 rounded-full border border-white/30 flex items-center justify-center text-white hover:bg-white/10 transition-colors z-10"
-        onClick={onClose}
+        className="absolute top-4 right-4 md:top-6 md:right-6 w-14 h-14 md:w-12 md:h-12 rounded-full border border-white/30 flex items-center justify-center text-white text-xl md:text-base bg-black/50 hover:bg-white/10 active:bg-white/20 transition-colors z-[110] touch-manipulation"
+        onClick={(e) => { e.stopPropagation(); onClose(); }}
+        aria-label="Close gallery"
       >
         ✕
       </button>
