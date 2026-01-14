@@ -12,8 +12,8 @@ export const CATEGORIES = [
   },
   {
     id: 'sports',
-    title: 'Events',
-    description: 'Professional event photography capturing celebrations and special moments.',
+    title: 'Jerseys',
+    description: 'Custom jersey photography showcasing style and team spirit.',
     coverImage: '/gallery/sports-01.jpg',
   },
   {
@@ -264,6 +264,11 @@ const Lightbox: React.FC<LightboxProps> = ({ category, onClose, currentIndex, on
 const Portfolio: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<typeof CATEGORIES[0] | null>(null);
   const [categoryIndices, setCategoryIndices] = useState<Record<string, number>>({});
+
+  // Notify navbar when lightbox is open/closed
+  useEffect(() => {
+    window.dispatchEvent(new CustomEvent('lightbox-state', { detail: { isOpen: !!selectedCategory } }));
+  }, [selectedCategory]);
 
   const handleIndexChange = useCallback((newIndex: number) => {
     if (selectedCategory) {

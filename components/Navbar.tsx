@@ -12,6 +12,16 @@ const socialLinks = [
 
 const Navbar: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isLightboxOpen, setIsLightboxOpen] = useState(false);
+
+  // Listen for lightbox open/close events
+  useEffect(() => {
+    const handleLightboxState = (e: CustomEvent<{ isOpen: boolean }>) => {
+      setIsLightboxOpen(e.detail.isOpen);
+    };
+    window.addEventListener('lightbox-state', handleLightboxState as EventListener);
+    return () => window.removeEventListener('lightbox-state', handleLightboxState as EventListener);
+  }, []);
 
   // Prevent body scroll when menu is open
   useEffect(() => {
@@ -39,8 +49,8 @@ const Navbar: React.FC = () => {
 
   return (
     <>
-      {/* Fixed Header */}
-      <header className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 md:px-12 py-6 pointer-events-none">
+      {/* Fixed Header - hidden when lightbox is open */}
+      <header className={`fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 md:px-12 py-6 pointer-events-none transition-opacity duration-300 ${isLightboxOpen ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
         {/* Logo */}
         <a
           href="#"

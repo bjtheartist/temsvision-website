@@ -68,9 +68,9 @@ const CATEGORY_META: Record<string, { description: string; tags: string[]; tools
     tools: ['Sony', 'Natural Light', 'Adobe Lightroom'],
   },
   sports: {
-    description: 'Professional event photography capturing celebrations and special moments.',
-    tags: ['Events', 'Celebrations'],
-    tools: ['Event Coverage', 'Adobe Lightroom'],
+    description: 'Custom jersey photography showcasing style and team spirit.',
+    tags: ['Jerseys', 'Sports'],
+    tools: ['Studio Lighting', 'Adobe Lightroom'],
   },
   lifestyle: {
     description: 'Vibrant lifestyle photography capturing authentic moments.',

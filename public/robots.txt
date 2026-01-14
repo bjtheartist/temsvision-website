@@ -3,4 +3,12 @@ User-agent: *
 Allow: /
 
 # Sitemap location
-Sitemap: https://temsvision.com/sitemap.xml
+Sitemap: https://www.temsvision.com/sitemap.xml
+
+# Allow Google to crawl everything
+User-agent: Googlebot
+Allow: /
+
+# Allow Bing
+User-agent: Bingbot
+Allow: /
