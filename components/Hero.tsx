@@ -218,13 +218,13 @@ const Hero: React.FC = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 1.6 }}
               >
-                <a 
-                  href="#work" 
+                <a
+                  href="#gallery"
                   className="group inline-flex items-center gap-4 text-white cursor-scale"
                   data-magnetic
                 >
                   <span className="text-sm tracking-[0.2em] uppercase">View Work</span>
-                  <motion.span 
+                  <motion.span
                     className="w-12 h-12 rounded-full border border-white/30 flex items-center justify-center"
                     whileHover={{ scale: 1.1, borderColor: 'rgba(255,255,255,0.6)' }}
                   >

@@ -51,7 +51,7 @@ const Navbar: React.FC = () => {
     <>
       {/* Fixed Header - completely hidden when lightbox is open */}
       {!isLightboxOpen && (
-        <header className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 md:px-12 py-6 pointer-events-none">
+        <header className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 md:px-12 py-4 md:py-6 pointer-events-none">
           {/* Logo */}
           <a
             href="#"
@@ -65,14 +65,30 @@ const Navbar: React.FC = () => {
             TEMSVISION
           </a>
 
-          {/* Menu Toggle */}
-          <button
-            className="p-2 hover:opacity-70 transition-opacity pointer-events-auto cursor-scale text-blue-400"
-            onClick={toggleMenu}
-            aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
-          >
-            {isMenuOpen ? <X size={28} strokeWidth={1.5} /> : <Plus size={28} strokeWidth={1.5} />}
-          </button>
+          {/* Right side - CTA + Menu */}
+          <div className="flex items-center gap-3 md:gap-4 pointer-events-auto">
+            {/* Let's Work Together CTA */}
+            <a
+              href="#contact"
+              onClick={(e) => {
+                e.preventDefault();
+                document.querySelector('#contact')?.scrollIntoView({ behavior: 'smooth' });
+              }}
+              className="inline-flex items-center px-3 sm:px-4 md:px-5 py-2 md:py-2.5 bg-blue-500 hover:bg-blue-400 text-white text-xs sm:text-sm font-medium rounded-full transition-all duration-300"
+            >
+              <span className="hidden sm:inline">Let's Work Together</span>
+              <span className="sm:hidden">Contact</span>
+            </a>
+
+            {/* Menu Toggle */}
+            <button
+              className="p-2 hover:opacity-70 transition-opacity cursor-scale text-blue-400"
+              onClick={toggleMenu}
+              aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
+            >
+              {isMenuOpen ? <X size={28} strokeWidth={1.5} /> : <Plus size={28} strokeWidth={1.5} />}
+            </button>
+          </div>
         </header>
       )}
 
