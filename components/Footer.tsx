@@ -31,13 +31,25 @@ const Footer: React.FC = () => {
     'Flexible / Planning ahead',
   ];
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // Simulate form submission - replace with actual API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    console.log('Form submitted:', formData);
+    // Build email body with form data
+    const subject = `New Project Inquiry: ${formData.projectType}`;
+    const body = `
+Name: ${formData.name}
+Email: ${formData.email}
+Project Type: ${formData.projectType}
+Timeline: ${formData.timeline}
+
+Project Details:
+${formData.details || 'No additional details provided.'}
+    `.trim();
+
+    // Open mailto link
+    const mailtoLink = `mailto:${SITE_CONFIG.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    window.location.href = mailtoLink;
 
     setIsSubmitting(false);
     setIsSubmitted(true);
