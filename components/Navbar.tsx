@@ -49,30 +49,32 @@ const Navbar: React.FC = () => {
 
   return (
     <>
-      {/* Fixed Header - hidden when lightbox is open */}
-      <header className={`fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 md:px-12 py-6 pointer-events-none transition-opacity duration-300 ${isLightboxOpen ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
-        {/* Logo */}
-        <a
-          href="#"
-          className="flex items-center text-xl md:text-2xl font-bold tracking-tighter pointer-events-auto cursor-scale text-blue-400"
-          onClick={(e) => {
-            e.preventDefault();
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-          }}
-          style={{ fontFamily: "'Bebas Neue', sans-serif" }}
-        >
-          TEMSVISION
-        </a>
+      {/* Fixed Header - completely hidden when lightbox is open */}
+      {!isLightboxOpen && (
+        <header className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 md:px-12 py-6 pointer-events-none">
+          {/* Logo */}
+          <a
+            href="#"
+            className="flex items-center text-xl md:text-2xl font-bold tracking-tighter pointer-events-auto cursor-scale text-blue-400"
+            onClick={(e) => {
+              e.preventDefault();
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+            style={{ fontFamily: "'Bebas Neue', sans-serif" }}
+          >
+            TEMSVISION
+          </a>
 
-        {/* Menu Toggle */}
-        <button
-          className="p-2 hover:opacity-70 transition-opacity pointer-events-auto cursor-scale text-blue-400"
-          onClick={toggleMenu}
-          aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
-        >
-          {isMenuOpen ? <X size={28} strokeWidth={1.5} /> : <Plus size={28} strokeWidth={1.5} />}
-        </button>
-      </header>
+          {/* Menu Toggle */}
+          <button
+            className="p-2 hover:opacity-70 transition-opacity pointer-events-auto cursor-scale text-blue-400"
+            onClick={toggleMenu}
+            aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
+          >
+            {isMenuOpen ? <X size={28} strokeWidth={1.5} /> : <Plus size={28} strokeWidth={1.5} />}
+          </button>
+        </header>
+      )}
 
       {/* Full Screen Menu */}
       <AnimatePresence>
