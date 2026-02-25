@@ -1,9 +1,22 @@
 import React, { memo } from 'react';
 import { motion } from 'framer-motion';
+import { useSiteSettings } from '../hooks/useSanity';
 import { ABOUT_BIO, SITE_CONFIG, SOCIAL_LINKS } from '../constants';
 
-
 const About: React.FC = () => {
+  // Fetch from Sanity with fallback to constants
+  const { data: settings, loading } = useSiteSettings();
+
+  // Use Sanity data if available, otherwise fall back to constants
+  const fullName = settings?.fullName || SITE_CONFIG.fullName;
+  const bioIntro = settings?.bioIntro || ABOUT_BIO.intro;
+  const bioBackground = settings?.bioBackground || ABOUT_BIO.background;
+  const bioStory = settings?.bioStory || ABOUT_BIO.story;
+  const bioPhilosophy = settings?.bioPhilosophy || ABOUT_BIO.philosophy;
+  const bioApproach = settings?.bioApproach || ABOUT_BIO.approach;
+  const socialLinks = settings?.socialLinks || SOCIAL_LINKS;
+  const headshotUrl = settings?.headshotUrl || '/temi-headshot-new.jpg';
+
   return (
     <section id="about" className="py-24 md:py-32 bg-white text-black">
       {/* Main Statement */}
@@ -22,14 +35,14 @@ const About: React.FC = () => {
             </span>
             <div className="w-12 h-px bg-blue-500/50" />
           </motion.div>
-          <motion.h2 
+          <motion.h2
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
             className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-medium leading-[1.3] tracking-tight"
           >
-            {ABOUT_BIO.intro} {ABOUT_BIO.background}
+            {bioIntro} {bioBackground}
           </motion.h2>
         </div>
       </div>
@@ -46,8 +59,8 @@ const About: React.FC = () => {
             className="relative aspect-[3/4] overflow-hidden bg-neutral-100"
           >
             <img
-              src="/temi-headshot-new.jpg"
-              alt={SITE_CONFIG.fullName}
+              src={headshotUrl}
+              alt={fullName}
               className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700"
             />
             {/* Decorative frame */}
@@ -64,18 +77,18 @@ const About: React.FC = () => {
             <span className="text-sm font-mono text-neutral-400 tracking-wider uppercase mb-6">
               The Story
             </span>
-            
+
             <h3
               className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-wide mb-8"
               style={{ fontFamily: "'Bebas Neue', sans-serif" }}
             >
-              {SITE_CONFIG.fullName}
+              {fullName}
             </h3>
-            
+
             <div className="space-y-6 text-lg md:text-xl text-neutral-600 leading-relaxed">
-              <p>{ABOUT_BIO.story}</p>
-              <p>{ABOUT_BIO.philosophy}</p>
-              <p>{ABOUT_BIO.approach}</p>
+              {bioStory && <p>{bioStory}</p>}
+              {bioPhilosophy && <p>{bioPhilosophy}</p>}
+              {bioApproach && <p>{bioApproach}</p>}
             </div>
 
             {/* Name meaning */}
@@ -107,9 +120,9 @@ const About: React.FC = () => {
 
             {/* Social Links */}
             <div className="mt-8 flex gap-4">
-              {SOCIAL_LINKS.instagram && (
-                <a 
-                  href={SOCIAL_LINKS.instagram}
+              {(socialLinks?.instagram || SOCIAL_LINKS.instagram) && (
+                <a
+                  href={socialLinks?.instagram || SOCIAL_LINKS.instagram}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-sm tracking-wider uppercase text-neutral-400 hover:text-blue-600 transition-colors cursor-scale"
@@ -117,9 +130,9 @@ const About: React.FC = () => {
                   Instagram
                 </a>
               )}
-              {SOCIAL_LINKS.facebook && (
-                <a 
-                  href={SOCIAL_LINKS.facebook}
+              {(socialLinks?.facebook || SOCIAL_LINKS.facebook) && (
+                <a
+                  href={socialLinks?.facebook || SOCIAL_LINKS.facebook}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-sm tracking-wider uppercase text-neutral-400 hover:text-blue-600 transition-colors cursor-scale"
@@ -127,9 +140,9 @@ const About: React.FC = () => {
                   Facebook
                 </a>
               )}
-              {SOCIAL_LINKS.linkedin && (
-                <a 
-                  href={SOCIAL_LINKS.linkedin}
+              {(socialLinks?.linkedin || SOCIAL_LINKS.linkedin) && (
+                <a
+                  href={socialLinks?.linkedin || SOCIAL_LINKS.linkedin}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-sm tracking-wider uppercase text-neutral-400 hover:text-blue-600 transition-colors cursor-scale"
@@ -140,8 +153,8 @@ const About: React.FC = () => {
             </div>
 
             {/* CTA */}
-            <motion.a 
-              href="#contact" 
+            <motion.a
+              href="#contact"
               className="group inline-flex items-center gap-4 mt-12 text-black cursor-scale"
               whileHover={{ x: 10 }}
               transition={{ duration: 0.3 }}

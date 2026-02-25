@@ -3,6 +3,7 @@ import Preloader from './components/Preloader';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import MagneticCursor from './components/MagneticCursor';
+import { VisualEditing, VisualEditingIndicator } from './components/VisualEditing';
 
 // Lazy load below-the-fold components for better performance
 const MarqueeSlider = lazy(() => import('./components/MarqueeSlider'));
@@ -59,6 +60,10 @@ const App: React.FC = () => {
 
   return (
     <>
+      {/* Visual Editing - only active when inside Sanity Studio */}
+      <VisualEditing />
+      <VisualEditingIndicator />
+
       {/* Custom Cursor - Desktop only */}
       {!isMobile && <MagneticCursor isVisible={!isLoading} />}
 

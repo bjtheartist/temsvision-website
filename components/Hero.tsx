@@ -1,6 +1,14 @@
 import React, { memo, useEffect, useState, useCallback } from 'react';
 import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
 import { HERO_IMAGES } from '../constants';
+import { useSiteSettings } from '../hooks/useSanity';
+
+// Default hero content (fallback)
+const DEFAULT_HERO = {
+  tagline: 'Photography & Visual Storytelling',
+  headline: ['CAPTURING', 'MOMENTS THAT', 'TRANSCEND'],
+  description: 'Atlanta-based photographer specializing in creative sessions, editorial & fashion, sports, lifestyle, and maternity photography.',
+};
 
 // Letter animation component
 const AnimatedText: React.FC<{ text: string; delay?: number; className?: string }> = ({ 
@@ -60,6 +68,14 @@ const Hero: React.FC = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [imagesPreloaded, setImagesPreloaded] = useState(false);
   const { scrollY } = useScroll();
+
+  // Fetch hero content from Sanity
+  const { data: settings } = useSiteSettings();
+
+  // Use Sanity content or fallback to defaults
+  const heroTagline = settings?.heroTagline || DEFAULT_HERO.tagline;
+  const heroHeadline = settings?.heroHeadline || DEFAULT_HERO.headline;
+  const heroDescription = settings?.heroDescription || DEFAULT_HERO.description;
 
   // Parallax effects
   const heroOpacity = useTransform(scrollY, [0, 400], [1, 0]);
@@ -165,38 +181,32 @@ const Hero: React.FC = () => {
           {isLoaded && (
             <AnimatedLine delay={0.2}>
               <p className="text-sm md:text-base tracking-[0.3em] uppercase text-white/40 mb-8 md:mb-12">
-                Photography & Visual Storytelling
+                {heroTagline}
               </p>
             </AnimatedLine>
           )}
 
           {/* Main headline */}
           <div className="space-y-1 md:space-y-2 lg:space-y-3">
-            {isLoaded && (
-              <>
-                <h1
-                  className="text-[13vw] md:text-[11vw] lg:text-[9vw] font-bold leading-[0.95] tracking-tight text-white"
-                  style={{ fontFamily: "'Bebas Neue', sans-serif" }}
-                >
-                  <AnimatedText text="CAPTURING" delay={0.4} />
-                </h1>
-                <h1
-                  className="text-[13vw] md:text-[11vw] lg:text-[9vw] font-bold leading-[0.95] tracking-tight text-white"
-                  style={{ fontFamily: "'Bebas Neue', sans-serif" }}
-                >
-                  <AnimatedText text="MOMENTS" delay={0.6} />
-                  <span className="text-blue-400">
-                    <AnimatedText text=" THAT" delay={0.8} />
-                  </span>
-                </h1>
-                <h1
-                  className="text-[13vw] md:text-[11vw] lg:text-[9vw] font-bold leading-[0.95] tracking-tight text-white"
-                  style={{ fontFamily: "'Bebas Neue', sans-serif" }}
-                >
-                  <AnimatedText text="TRANSCEND" delay={1.0} />
-                </h1>
-              </>
-            )}
+            {isLoaded && heroHeadline.map((line, index) => (
+              <h1
+                key={index}
+                className="text-[13vw] md:text-[11vw] lg:text-[9vw] font-bold leading-[0.95] tracking-tight text-white"
+                style={{ fontFamily: "'Bebas Neue', sans-serif" }}
+              >
+                {/* Check if this line contains "THAT" or specific highlight word */}
+                {line.includes('THAT') ? (
+                  <>
+                    <AnimatedText text={line.replace(' THAT', '')} delay={0.4 + index * 0.2} />
+                    <span className="text-blue-400">
+                      <AnimatedText text=" THAT" delay={0.6 + index * 0.2} />
+                    </span>
+                  </>
+                ) : (
+                  <AnimatedText text={line} delay={0.4 + index * 0.2} />
+                )}
+              </h1>
+            ))}
           </div>
 
           {/* Bottom section */}
@@ -205,8 +215,7 @@ const Hero: React.FC = () => {
             {isLoaded && (
               <AnimatedLine delay={1.4}>
                 <p className="max-w-md text-lg md:text-xl text-white/60 leading-relaxed">
-                  Atlanta-based photographer specializing in creative sessions,
-                  editorial & fashion, sports, lifestyle, and maternity photography.
+                  {heroDescription}
                 </p>
               </AnimatedLine>
             )}

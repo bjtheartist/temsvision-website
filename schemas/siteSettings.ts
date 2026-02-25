@@ -6,6 +6,7 @@ export default defineType({
   type: 'document',
   groups: [
     { name: 'general', title: 'General', default: true },
+    { name: 'hero', title: 'Hero Section' },
     { name: 'about', title: 'About Me' },
     { name: 'contact', title: 'Contact & Social' },
   ],
@@ -31,6 +32,33 @@ export default defineType({
       type: 'image',
       options: { hotspot: true },
       group: 'general',
+    }),
+
+    // Hero Section
+    defineField({
+      name: 'heroTagline',
+      title: 'Hero Tagline',
+      type: 'string',
+      description: 'Small text above the headline (e.g., "Photography & Visual Storytelling")',
+      initialValue: 'Photography & Visual Storytelling',
+      group: 'hero',
+    }),
+    defineField({
+      name: 'heroHeadline',
+      title: 'Hero Headline',
+      type: 'array',
+      of: [{ type: 'string' }],
+      description: 'Each line of the headline (e.g., "CAPTURING", "MOMENTS THAT", "TRANSCEND")',
+      group: 'hero',
+    }),
+    defineField({
+      name: 'heroDescription',
+      title: 'Hero Description',
+      type: 'text',
+      rows: 2,
+      description: 'The paragraph below the headline',
+      initialValue: 'Atlanta-based photographer specializing in creative sessions, editorial & fashion, sports, lifestyle, and maternity photography.',
+      group: 'hero',
     }),
 
     // About Section

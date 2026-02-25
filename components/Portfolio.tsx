@@ -1,9 +1,10 @@
-import React, { memo, useState, useCallback, useEffect } from 'react';
+import React, { memo, useState, useCallback, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { GALLERY_IMAGES } from '../constants';
+import { useGalleryCategories } from '../hooks/useSanity';
 
-// Category data - 5 main categories
-export const CATEGORIES = [
+// Default category data (fallback)
+const DEFAULT_CATEGORIES = [
   {
     id: 'portraits',
     title: 'Portraits',
@@ -36,10 +37,22 @@ export const CATEGORIES = [
   },
 ];
 
+// Export for backward compatibility
+export const CATEGORIES = DEFAULT_CATEGORIES;
+
+// Unified category type that works with both Sanity and fallback data
+interface Category {
+  id: string;
+  title: string;
+  description: string;
+  coverImage: string;
+  photos?: string[];
+}
+
 interface CategoryCardProps {
-  category: typeof CATEGORIES[0];
+  category: Category;
   photoCount: number;
-  onSelect: (category: typeof CATEGORIES[0]) => void;
+  onSelect: (category: Category) => void;
   className?: string;
   size?: 'large' | 'medium' | 'small';
 }
@@ -138,7 +151,7 @@ const CategoryCard: React.FC<CategoryCardProps> = ({
 
 // Lightbox Modal for browsing category photos
 interface LightboxProps {
-  category: typeof CATEGORIES[0] | null;
+  category: Category | null;
   onClose: () => void;
   currentIndex: number;
   onIndexChange: (index: number) => void;
@@ -147,7 +160,10 @@ interface LightboxProps {
 const Lightbox: React.FC<LightboxProps> = ({ category, onClose, currentIndex, onIndexChange }) => {
   if (!category) return null;
 
-  const images = GALLERY_IMAGES[category.id] || [];
+  // Use photos from Sanity if available, otherwise fall back to GALLERY_IMAGES
+  const images = category.photos && category.photos.length > 0
+    ? category.photos
+    : (GALLERY_IMAGES[category.id] || []);
 
   const nextImage = () => onIndexChange((currentIndex + 1) % images.length);
   const prevImage = () => onIndexChange((currentIndex - 1 + images.length) % images.length);
@@ -263,8 +279,26 @@ const Lightbox: React.FC<LightboxProps> = ({ category, onClose, currentIndex, on
 };
 
 const Portfolio: React.FC = () => {
-  const [selectedCategory, setSelectedCategory] = useState<typeof CATEGORIES[0] | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
   const [categoryIndices, setCategoryIndices] = useState<Record<string, number>>({});
+
+  // Fetch gallery categories from Sanity
+  const { data: sanityCategories } = useGalleryCategories();
+
+  // Transform Sanity data to unified Category format, or use defaults
+  const categories: Category[] = useMemo(() => {
+    if (!sanityCategories || sanityCategories.length === 0) {
+      return DEFAULT_CATEGORIES;
+    }
+
+    return sanityCategories.map((cat) => ({
+      id: cat.slug || cat._id,
+      title: cat.title,
+      description: cat.subtitle || '',
+      coverImage: cat.coverImageUrl || '/gallery/portrait-01.jpg',
+      photos: cat.photos?.map((p) => p.url) || [],
+    }));
+  }, [sanityCategories]);
 
   // Notify navbar when lightbox is open/closed
   useEffect(() => {
@@ -282,15 +316,19 @@ const Portfolio: React.FC = () => {
     return categoryIndices[selectedCategory.id] || 0;
   };
 
-  const getPhotoCount = (categoryId: string) => {
-    return GALLERY_IMAGES[categoryId]?.length || 0;
+  const getPhotoCount = (category: Category) => {
+    // Use Sanity photos if available, otherwise fall back to GALLERY_IMAGES
+    if (category.photos && category.photos.length > 0) {
+      return category.photos.length;
+    }
+    return GALLERY_IMAGES[category.id]?.length || 0;
   };
 
   // For external access (from MarqueeSlider)
   const openCategory = useCallback((categoryId: string) => {
-    const category = CATEGORIES.find(c => c.id === categoryId);
+    const category = categories.find(c => c.id === categoryId);
     if (category) setSelectedCategory(category);
-  }, []);
+  }, [categories]);
 
   // Expose openCategory to window for cross-component communication
   useEffect(() => {
@@ -335,50 +373,16 @@ const Portfolio: React.FC = () => {
 
           {/* Bento Grid Layout */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 auto-rows-[200px] md:auto-rows-[250px] lg:auto-rows-[300px]">
-            {/* Portraits - Large, spans 2 cols and 2 rows */}
-            <CategoryCard
-              category={CATEGORIES[0]}
-              photoCount={getPhotoCount(CATEGORIES[0].id)}
-              onSelect={setSelectedCategory}
-              className="col-span-2 row-span-2"
-              size="large"
-            />
-
-            {/* Sports - Medium */}
-            <CategoryCard
-              category={CATEGORIES[1]}
-              photoCount={getPhotoCount(CATEGORIES[1].id)}
-              onSelect={setSelectedCategory}
-              className="col-span-1 row-span-1"
-              size="medium"
-            />
-
-            {/* Lifestyle - Medium */}
-            <CategoryCard
-              category={CATEGORIES[2]}
-              photoCount={getPhotoCount(CATEGORIES[2].id)}
-              onSelect={setSelectedCategory}
-              className="col-span-1 row-span-1"
-              size="medium"
-            />
-
-            {/* Fashion - Medium */}
-            <CategoryCard
-              category={CATEGORIES[3]}
-              photoCount={getPhotoCount(CATEGORIES[3].id)}
-              onSelect={setSelectedCategory}
-              className="col-span-1 row-span-1"
-              size="medium"
-            />
-
-            {/* Maternity - Medium */}
-            <CategoryCard
-              category={CATEGORIES[4]}
-              photoCount={getPhotoCount(CATEGORIES[4].id)}
-              onSelect={setSelectedCategory}
-              className="col-span-1 row-span-1"
-              size="medium"
-            />
+            {categories.map((category, index) => (
+              <CategoryCard
+                key={category.id}
+                category={category}
+                photoCount={getPhotoCount(category)}
+                onSelect={setSelectedCategory}
+                className={index === 0 ? 'col-span-2 row-span-2' : 'col-span-1 row-span-1'}
+                size={index === 0 ? 'large' : 'medium'}
+              />
+            ))}
           </div>
         </div>
       </div>

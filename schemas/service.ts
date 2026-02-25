@@ -1,10 +1,13 @@
 import { defineField, defineType } from 'sanity';
+import { orderRankField, orderRankOrdering } from '@sanity/orderable-document-list';
 
 export default defineType({
   name: 'service',
   title: 'Service',
   type: 'document',
+  orderings: [orderRankOrdering],
   fields: [
+    orderRankField({ type: 'service' }),
     defineField({
       name: 'name',
       title: 'Service Name',
@@ -41,12 +44,6 @@ export default defineType({
       type: 'array',
       of: [{ type: 'string' }],
       description: 'List of features or offerings for this service',
-    }),
-    defineField({
-      name: 'order',
-      title: 'Display Order',
-      type: 'number',
-      description: 'Lower numbers appear first',
     }),
   ],
   preview: {

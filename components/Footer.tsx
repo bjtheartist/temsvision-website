@@ -1,5 +1,6 @@
 import React, { memo, useState } from 'react';
 import { motion } from 'framer-motion';
+import { useSiteSettings } from '../hooks/useSanity';
 import { SOCIAL_LINKS, SITE_CONFIG } from '../constants';
 
 const Footer: React.FC = () => {
@@ -13,6 +14,16 @@ const Footer: React.FC = () => {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+
+  // Fetch from Sanity with fallback to constants
+  const { data: settings } = useSiteSettings();
+
+  // Use Sanity data if available, otherwise fall back to constants
+  const email = settings?.email || SITE_CONFIG.email;
+  const phone = settings?.phone || SITE_CONFIG.phone;
+  const location = settings?.location || SITE_CONFIG.location;
+  const tagline = settings?.tagline || SITE_CONFIG.tagline;
+  const socialLinks = settings?.socialLinks || SOCIAL_LINKS;
 
   const projectTypes = [
     'Portrait Session',
@@ -48,7 +59,7 @@ ${formData.details || 'No additional details provided.'}
     `.trim();
 
     // Open mailto link
-    const mailtoLink = `mailto:${SITE_CONFIG.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    const mailtoLink = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
     window.location.href = mailtoLink;
 
     setIsSubmitting(false);
@@ -88,15 +99,15 @@ ${formData.details || 'No additional details provided.'}
                 Tell me about your project and let's create something extraordinary together.
               </p>
               <div className="flex flex-col gap-3 text-neutral-500">
-                <a href={`mailto:${SITE_CONFIG.email}`} className="hover:text-blue-400 transition-colors">
-                  {SITE_CONFIG.email}
+                <a href={`mailto:${email}`} className="hover:text-blue-400 transition-colors">
+                  {email}
                 </a>
-                {SITE_CONFIG.phone && (
-                  <a href={`tel:${SITE_CONFIG.phone?.replace(/\D/g, '')}`} className="hover:text-blue-400 transition-colors">
-                    {SITE_CONFIG.phone}
+                {phone && (
+                  <a href={`tel:${phone?.replace(/\D/g, '')}`} className="hover:text-blue-400 transition-colors">
+                    {phone}
                   </a>
                 )}
-                <span>{SITE_CONFIG.location}</span>
+                <span>{location}</span>
               </div>
             </motion.div>
 
@@ -232,64 +243,64 @@ ${formData.details || 'No additional details provided.'}
         <div className="max-w-[1800px] mx-auto grid grid-cols-1 md:grid-cols-4 gap-12 mb-16 md:mb-24">
           {/* Brand */}
           <div className="col-span-1 md:col-span-2">
-            <h2 
+            <h2
               className="text-3xl md:text-4xl font-bold tracking-tighter mb-6"
               style={{ fontFamily: "'Bebas Neue', sans-serif" }}
             >
               Tems<span className="text-blue-400">Vision</span>®
             </h2>
             <p className="max-w-md text-neutral-400 leading-relaxed">
-              A photography studio capturing moments that transcend time. 
+              A photography studio capturing moments that transcend time.
               Based in Atlanta, working globally.
             </p>
           </div>
-          
+
           {/* Socials */}
           <div>
             <h4 className="font-mono text-sm text-neutral-500 mb-6 uppercase tracking-wider">Socials</h4>
             <ul className="space-y-4">
-              {SOCIAL_LINKS.instagram && (
+              {(socialLinks?.instagram || SOCIAL_LINKS.instagram) && (
                 <li>
-                  <a 
-                    href={SOCIAL_LINKS.instagram} 
-                    target="_blank" 
-                    rel="noopener noreferrer" 
+                  <a
+                    href={socialLinks?.instagram || SOCIAL_LINKS.instagram}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="hover:text-blue-400 transition-colors cursor-scale"
                   >
                     Instagram
                   </a>
                 </li>
               )}
-              {SOCIAL_LINKS.facebook && (
+              {(socialLinks?.facebook || SOCIAL_LINKS.facebook) && (
                 <li>
-                  <a 
-                    href={SOCIAL_LINKS.facebook} 
-                    target="_blank" 
-                    rel="noopener noreferrer" 
+                  <a
+                    href={socialLinks?.facebook || SOCIAL_LINKS.facebook}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="hover:text-blue-400 transition-colors cursor-scale"
                   >
                     Facebook
                   </a>
                 </li>
               )}
-              {SOCIAL_LINKS.linkedin && (
+              {(socialLinks?.linkedin || SOCIAL_LINKS.linkedin) && (
                 <li>
-                  <a 
-                    href={SOCIAL_LINKS.linkedin} 
-                    target="_blank" 
-                    rel="noopener noreferrer" 
+                  <a
+                    href={socialLinks?.linkedin || SOCIAL_LINKS.linkedin}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="hover:text-blue-400 transition-colors cursor-scale"
                   >
                     LinkedIn
                   </a>
                 </li>
               )}
-              {SOCIAL_LINKS.pinterest && (
+              {(socialLinks?.pinterest || SOCIAL_LINKS.pinterest) && (
                 <li>
-                  <a 
-                    href={SOCIAL_LINKS.pinterest} 
-                    target="_blank" 
-                    rel="noopener noreferrer" 
+                  <a
+                    href={socialLinks?.pinterest || SOCIAL_LINKS.pinterest}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="hover:text-blue-400 transition-colors cursor-scale"
                   >
                     Pinterest
@@ -298,40 +309,42 @@ ${formData.details || 'No additional details provided.'}
               )}
             </ul>
           </div>
-          
+
           {/* Contact */}
           <div>
             <h4 className="font-mono text-sm text-neutral-500 mb-6 uppercase tracking-wider">Contact</h4>
             <ul className="space-y-4">
               <li>
                 <a
-                  href={`mailto:${SITE_CONFIG.email}`}
+                  href={`mailto:${email}`}
                   className="hover:text-blue-400 transition-colors cursor-scale"
                 >
-                  {SITE_CONFIG.email}
+                  {email}
                 </a>
               </li>
+              {phone && (
+                <li>
+                  <a
+                    href={`tel:${phone?.replace(/\D/g, '')}`}
+                    className="hover:text-blue-400 transition-colors cursor-scale"
+                  >
+                    {phone}
+                  </a>
+                </li>
+              )}
               <li>
-                <a
-                  href={`tel:${SITE_CONFIG.phone?.replace(/\D/g, '')}`}
-                  className="hover:text-blue-400 transition-colors cursor-scale"
-                >
-                  {SITE_CONFIG.phone}
-                </a>
-              </li>
-              <li>
-                <span className="text-neutral-400">{SITE_CONFIG.location}</span>
+                <span className="text-neutral-400">{location}</span>
               </li>
             </ul>
           </div>
         </div>
-        
+
         {/* Copyright */}
         <div className="max-w-[1800px] mx-auto flex flex-col md:flex-row justify-between items-center pt-8 border-t border-white/10 text-sm text-neutral-500">
           <p>© {currentYear} TemsVision. All rights reserved.</p>
           <p className="mt-4 md:mt-0">
             <span className="text-neutral-600">[</span>
-            {SITE_CONFIG.tagline}
+            {tagline}
             <span className="text-neutral-600">]</span>
           </p>
         </div>

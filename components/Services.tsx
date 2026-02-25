@@ -1,9 +1,24 @@
 import React, { useState, memo } from 'react';
 import { motion } from 'framer-motion';
+import { useServices } from '../hooks/useSanity';
 import { SERVICES } from '../constants';
 
 const Services: React.FC = () => {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+
+  // Fetch from Sanity with fallback to constants
+  const { data: sanityServices, loading } = useServices();
+
+  // Use Sanity services if available, otherwise fall back to constants
+  const services = (sanityServices && sanityServices.length > 0)
+    ? sanityServices.map(s => ({
+        id: s._id,
+        name: s.name,
+        description: s.description,
+        features: s.features || [],
+        imageUrl: s.imageUrl || ''
+      }))
+    : SERVICES;
 
   return (
     <section id="services" className="py-24 md:py-32 bg-neutral-900">
@@ -42,7 +57,7 @@ const Services: React.FC = () => {
 
           {/* Services list */}
           <div className="space-y-0 relative">
-            {SERVICES.map((service, index) => (
+            {services.map((service, index) => (
               <motion.div
                 key={service.id}
                 className="group border-t border-white/10 cursor-scale relative"
@@ -54,7 +69,7 @@ const Services: React.FC = () => {
                 onMouseLeave={() => setHoveredIndex(null)}
               >
                 {/* Background highlight */}
-                <motion.div 
+                <motion.div
                   className="absolute inset-0 bg-white/5"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: hoveredIndex === index ? 1 : 0 }}
@@ -67,10 +82,10 @@ const Services: React.FC = () => {
                     <span className="text-sm font-mono text-white/30 w-8">
                       {String(index + 1).padStart(2, '0')}
                     </span>
-                    <motion.h3 
+                    <motion.h3
                       className="text-3xl md:text-4xl lg:text-5xl font-bold text-white tracking-tight"
                       style={{ fontFamily: "'Bebas Neue', sans-serif" }}
-                      animate={{ 
+                      animate={{
                         x: hoveredIndex === index ? 20 : 0,
                         color: hoveredIndex === index ? '#ffffff' : 'rgba(255,255,255,0.7)'
                       }}
@@ -82,21 +97,21 @@ const Services: React.FC = () => {
 
                   {/* Right - Description and Features */}
                   <div className="md:max-w-md lg:max-w-lg ml-14 md:ml-0">
-                    <motion.p 
+                    <motion.p
                       className="text-white/50 leading-relaxed mb-4"
                       animate={{ opacity: hoveredIndex === index ? 1 : 0.6 }}
                       transition={{ duration: 0.3 }}
                     >
                       {service.description}
                     </motion.p>
-                    <motion.div 
+                    <motion.div
                       className="flex flex-wrap gap-2"
                       initial={{ opacity: 0 }}
                       animate={{ opacity: hoveredIndex === index ? 1 : 0 }}
                       transition={{ duration: 0.3 }}
                     >
                       {service.features.map((feature, i) => (
-                        <span 
+                        <span
                           key={i}
                           className="text-xs px-3 py-1 border border-blue-400/30 text-blue-400/80 rounded-full"
                         >
@@ -109,7 +124,7 @@ const Services: React.FC = () => {
                   {/* Arrow */}
                   <motion.div
                     className="hidden lg:flex items-center justify-center w-12 h-12 rounded-full border border-white/20"
-                    animate={{ 
+                    animate={{
                       scale: hoveredIndex === index ? 1.1 : 1,
                       borderColor: hoveredIndex === index ? 'rgba(59, 130, 246, 0.5)' : 'rgba(255, 255, 255, 0.2)',
                     }}
@@ -126,13 +141,13 @@ const Services: React.FC = () => {
                 </div>
               </motion.div>
             ))}
-            
+
             {/* Bottom border */}
             <div className="border-t border-white/10" />
           </div>
 
           {/* CTA */}
-          <motion.div 
+          <motion.div
             className="mt-16 md:mt-24 text-center"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
